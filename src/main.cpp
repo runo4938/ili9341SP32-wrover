@@ -21,14 +21,14 @@
 #define RU8 &FreeSans9pt7b
 #define BAHAMAS &Bahamas18pt8b
 #define SAN &FreeSans18pt7b
-#define LED_BRIGHTNESS 90 // яркость дисплея при старте
-#define LED_BUILT   22     // управление яркостью дисплея
+#define LED_BRIGHTNESS 60 // яркость дисплея при старте
+#define LED_BUILT 22      // управление яркостью дисплея
 #define DIG20 &DIG_Bold_20
 
 TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite txtSprite = TFT_eSprite(&tft); // Create Sprite
 TFT_eSprite vuSprite = TFT_eSprite(&tft);  // Create Sprite
-// TFT_eSprite WeatherSpr = TFT_eSprite(&tft); // Create Sprite
+
 UnixTime stamp(3); // указать GMT (3 для Москвы)
 
 // Loop
@@ -38,7 +38,6 @@ String newSt;
 const String space = " ";
 //---------
 // WiFiManager wifiManager;
-
 WiFiManager wifiManager;
 /* this info will be read by the python script */
 #define FORMAT_SPIFFS_IF_FAILED true
@@ -71,7 +70,7 @@ String nameStations[30];   // Наименования ст
 // bool calendar = false;
 bool getClock = true; // Получать время только при запуске
 bool first = true;    // Вывести дату и день недели
-bool rnd = true;      // для случ числа
+// bool rnd = true;      // для случ числа
 
 String listRadio; // радиостанции на странице
 unsigned long lastTime = 0;
@@ -88,6 +87,7 @@ bool f_startProgress = true;
 bool showRadio = true; // show radio or menu of station,
 bool stations;         // Станция вверх или вниз (true or false)
 void nextStation(bool stepStation);
+
 EncButton enc1(CLK, DT, SW);
 File file;
 bool volUpdate = true;
@@ -109,6 +109,7 @@ String days[8] = {"Воскресенье", "ПН", "ВТ", "СР", "ЧТ", "П�
 // Scrolling
 String MessageToScroll_1 = F("For scrolling text 23 23 23 45 2 - Для прокрутки влево ");
 
+//int totalStations = 0; // ← ВОТ ОН — реальный счётчик заполненных элементов!
 int16_t width_txt;
 // int16_t width_txtW;
 
@@ -118,8 +119,6 @@ int x_scroll_R;
 Audio audio;
 GyverNTP ntp(3);
 AsyncWebServer server(80);
-//--filesystem --------------
-// String filelist = "";
 
 const char *host = "esp32";
 //---------------------------------
@@ -187,7 +186,7 @@ void setup()
   tft.println(WiFi.SSID());
   delay(1000);
 
-  // newVer();
+    // newVer();
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(EEPROM.read(6));
   // audio.setVolume(audiovol);
@@ -388,7 +387,7 @@ void loop()
       audio.connecttohost(sl); // новая станция
       OLDStation = NEWStation;
     }
-    
+
     if (vumetersDelay < millis())
     {
       soundShow();
@@ -461,16 +460,16 @@ String trim(const String &str)
 void soundShow()
 {
   int x_show = 0;
-  int width = 25;
-  int space = 3;
+  int width = 25;         // ширина
+  int space = 3;          // расстояние между каналами
   int total_height = 150; // Высота VU-метра
-  int y_offset = 70;
+  int y_offset = 70;      // сдиг сверху
 
   // Получаем текущие уровни (замените на ваши реальные значения)
   uint16_t vulevel = audio.getVUlevel();
   uint8_t y1_lev = (vulevel >> 8) & 0xFF; // Левый канал
-  uint8_t y2_lev = vulevel & 0xFF;         // Правый канал
-  
+  uint8_t y2_lev = vulevel & 0xFF;        // Правый канал
+
   int segment_height = 10;
   for (int y = 0; y < 150; y += segment_height)
   {
@@ -905,7 +904,7 @@ void initSpiffs()
   {
     Serial.println("------File does not exist!------");
   }
-  int i = 0;
+  int i= 0;
   while (myFile.available())
   {
     StationList[i] = myFile.readStringUntil('\n');
@@ -1220,6 +1219,7 @@ void onMenu()
     currentMillis = millis(); // начало отсчета времени простоя
     tft.fillRect(0, 0, 320, 220, TFT_BLACK);
     stationDisplay(NEWStation);
+   
   }
   if (showRadio)
   {

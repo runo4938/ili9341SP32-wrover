@@ -38,15 +38,11 @@ enum State
   MOVING_OFF_LEFT
 };
 
-
 const unsigned long waitDuration = 3000; // 3 секунды ожидания
 const int screenWidth = 320;
 const int spriteWidth = 250;
 const int speed = 4;    // Скорость движения (пикс/кадр)
 const int spriteY = 64; // Y-позиция спрайта на экране
-
-   // for initial values
-
 
 void stationDisplay(int st);
 void deleteFile(fs::FS &fs, const String &path);
