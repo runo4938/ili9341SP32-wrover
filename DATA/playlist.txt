@@ -10,6 +10,7 @@
 Remix rmx.amgradio.ru/RemixFM
 Fresh fresh.amgradio.ru/Fresh
 ХитFM hitfm.hostingradio.ru/hitfm96.aacp
+Кавказ https://kavkazhit.hostingradio.ru:8017/kavkazhit96.mp3
 NewRadio stream.newradio.ru/novoe96.aacp
 Overpass mp3.ffh.de/radioffh/hqlivestream.mp3
 Авторадио http://pub0101.101.ru:8000/stream/air/mp3/256/100

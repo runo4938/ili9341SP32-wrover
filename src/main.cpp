@@ -5,10 +5,8 @@
 #include <GyverNTP.h>
 #include <settings.h>
 #include <routes.h>
-// #include <ArduinoJSON.h>
 #include <UnixTime.h>
 #include <ImgWea60.h>
-// #include <SPI.h>
 
 #include "../lib/fonts.h"
 #include "../lib/CourierCyr10.h"
@@ -21,7 +19,7 @@
 #define RU8 &FreeSans9pt7b
 #define BAHAMAS &Bahamas18pt8b
 #define SAN &FreeSans18pt7b
-#define LED_BRIGHTNESS 60 // яркость дисплея при старте
+#define LED_BRIGHTNESS 70 // яркость дисплея при старте
 #define LED_BUILT 22      // управление яркостью дисплея
 #define DIG20 &DIG_Bold_20
 
@@ -62,11 +60,11 @@ String bitrate;
 // Radio
 uint8_t NEWStation = 0;
 uint8_t OLDStation = 1;
-int numbStations = 30; // количество радиостанций
+int numbStations = 35; // количество радиостанций
 
 String displayStations[8]; // Массив для станций на дисплее
-String StationList[30];    // Всего станций
-String nameStations[30];   // Наименования ст
+String StationList[35];    // Всего станций
+String nameStations[35];   // Наименования ст
 // bool calendar = false;
 bool getClock = true; // Получать время только при запуске
 bool first = true;    // Вывести дату и день недели
@@ -109,7 +107,7 @@ String days[8] = {"Воскресенье", "ПН", "ВТ", "СР", "ЧТ", "П�
 // Scrolling
 String MessageToScroll_1 = F("For scrolling text 23 23 23 45 2 - Для прокрутки влево ");
 
-//int totalStations = 0; // ← ВОТ ОН — реальный счётчик заполненных элементов!
+// int totalStations = 0; // ← ВОТ ОН — реальный счётчик заполненных элементов!
 int16_t width_txt;
 // int16_t width_txtW;
 
@@ -135,7 +133,7 @@ void wifiLevel();
 void myEncoder();
 void menuStation();
 void clock_on_core0();
-void drawlineClock();
+// void drawlineClock();
 void soundShow();
 void lineondisp();
 void audioVolume();
@@ -186,15 +184,13 @@ void setup()
   tft.println(WiFi.SSID());
   delay(1000);
 
-    // newVer();
+  // newVer();
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(EEPROM.read(6));
   // audio.setVolume(audiovol);
 
   tft.fillScreen(TFT_BLACK);
   // firs raw
-  lineondisp();
-
   if (!MDNS.begin(host))
   {
     Serial.println("Error setting up MDNS responder!");
@@ -223,6 +219,7 @@ void setup()
   OLDStation = NEWStation;  //
   printStation(NEWStation); // display the name of the station on the screen
   printCodecAndBitrate();
+  lineondisp();
 
   // For CORE0
   xTaskCreatePinnedToCore(
@@ -315,7 +312,7 @@ void loop()
     //-------------
     // Scrolling
     //-------------
-    if (!show_title) // если получены титры
+    if (!show_title) // если не получены титры
     {
       txtSprite.fillScreen(TFT_BLACK);
       after = "";
@@ -475,10 +472,10 @@ void soundShow()
   {
     uint16_t color = (y < 50) ? VU_MAX : (y < 100) ? TFT_CYAN
                                                    : VU_MIN;
-    vuSprite.fillRect(0, y, 25, segment_height - 2, color);
-    vuSprite.fillRect(28, y, 25, segment_height - 2, color);
+    vuSprite.fillRect(0, y, 25, segment_height - 2, color);  // левый канал
+    vuSprite.fillRect(28, y, 25, segment_height - 2, color); // правый канал
   }
-
+  // уровни каналов
   vuSprite.fillRect(0, 0, 25, total_height - y1_lev, TFT_BLACK);
   vuSprite.fillRect(28, 0, 25, total_height - y2_lev, TFT_BLACK);
 
@@ -633,7 +630,6 @@ void myEncoder()
       printCodecAndBitrate();
     }
   }
-
   if (enc1.rightH())
   {
     audiovol++;
@@ -694,7 +690,7 @@ void stationDisplay(int st)
   }
   tft.setTextSize(1);
   tft.setFreeFont(&CourierCyr12pt8b);
-  tft.setTextColor(TFT_CYAN, TFT_BLACK);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
   // счетчик для меню
   int stanonMenu = 4; // Положение текущей станции в меню
   int k;              //
@@ -796,11 +792,11 @@ void stationDisplay(int st)
 }
 
 // Разделитель минут и секунд
-void drawlineClock()
-{ //             x    y    x    y
-  tft.drawRect(260, 50, 60, 37, 0x9772);
-  tft.drawRect(260, 87, 60, 33, 0x9772);
-}
+// void drawlineClock()
+// { //             x    y    x    y
+//   tft.drawRect(260, 50, 60, 37, 0x9772);
+//   tft.drawRect(260, 87, 60, 33, 0x9772);
+// }
 
 // Дополнить строку пробелами
 String make_str(String str)
@@ -904,7 +900,7 @@ void initSpiffs()
   {
     Serial.println("------File does not exist!------");
   }
-  int i= 0;
+  int i = 0;
   while (myFile.available())
   {
     StationList[i] = myFile.readStringUntil('\n');
@@ -1174,7 +1170,7 @@ void wifiLevel()
   }
 }
 
-// если меню
+// Движение по меню через сайт
 void onMenuOn()
 {
   if (showRadio)
@@ -1192,6 +1188,7 @@ void onMenuOn()
     currentMillis = millis(); // Пока ходим по меню
   }
 }
+// Движение по меню через сайт
 void onMenuOff()
 {
   if (showRadio)
@@ -1209,7 +1206,7 @@ void onMenuOff()
     currentMillis = millis(); // Пока ходим по меню
   }
 }
-
+// Показать меню радиостанций
 void onMenu()
 {
   showRadio = !showRadio;
@@ -1219,7 +1216,6 @@ void onMenu()
     currentMillis = millis(); // начало отсчета времени простоя
     tft.fillRect(0, 0, 320, 220, TFT_BLACK);
     stationDisplay(NEWStation);
-   
   }
   if (showRadio)
   {
@@ -1502,37 +1498,37 @@ void performUpdate(Stream &updateSource, size_t updateSize)
   // http send 'result'
 }
 
-void updateFromFS(fs::FS &fs)
-{
-  File updateBin = fs.open("/firmware.bin");
-  if (updateBin)
-  {
-    if (updateBin.isDirectory())
-    {
-      Serial.println("Error, update.bin is not a file");
-      updateBin.close();
-      return;
-    }
+// void updateFromFS(fs::FS &fs)
+// {
+//   File updateBin = fs.open("/firmware.bin");
+//   if (updateBin)
+//   {
+//     if (updateBin.isDirectory())
+//     {
+//       Serial.println("Error, update.bin is not a file");
+//       updateBin.close();
+//       return;
+//     }
 
-    size_t updateSize = updateBin.size();
+//     size_t updateSize = updateBin.size();
 
-    if (updateSize > 0)
-    {
-      Serial.println("Trying to start update");
-      performUpdate(updateBin, updateSize);
-    }
-    else
-    {
-      Serial.println("Error, file is empty");
-    }
-    updateBin.close();
-    // when finished remove the binary from spiffs to indicate end of the process
-    Serial.println("Removing update file");
-    fs.remove("/firmware.bin");
-    rebootEspWithReason("Rebooting to complete OTA update");
-  }
-  else
-  {
-    Serial.println("Could not load update.bin from spiffs root");
-  }
-}
+//     if (updateSize > 0)
+//     {
+//       Serial.println("Trying to start update");
+//       performUpdate(updateBin, updateSize);
+//     }
+//     else
+//     {
+//       Serial.println("Error, file is empty");
+//     }
+//     updateBin.close();
+//     // when finished remove the binary from spiffs to indicate end of the process
+//     Serial.println("Removing update file");
+//     fs.remove("/firmware.bin");
+//     rebootEspWithReason("Rebooting to complete OTA update");
+//   }
+//   else
+//   {
+//     Serial.println("Could not load update.bin from spiffs root");
+//   }
+// }
