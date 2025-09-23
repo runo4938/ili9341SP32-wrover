@@ -258,7 +258,7 @@ int x_sprite = 65;
 uint8_t ssid_show = 1;
 void loop()
 {
-  if (title_flag)
+  if (title_flag && showRadio)
   {
     title_flag = false;
     tft.fillRect(70, 47, 250, 25, TFT_BLACK);
