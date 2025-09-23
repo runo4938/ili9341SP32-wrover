@@ -6,7 +6,6 @@
 #include <settings.h>
 #include <routes.h>
 #include <UnixTime.h>
-//#include <ImgWea60.h>
 
 #include "../lib/fonts.h"
 #include "../lib/CourierCyr10.h"
