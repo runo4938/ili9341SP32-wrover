@@ -791,11 +791,14 @@ void menuStation()
   { // list stations
     delay(1);
     ind = StationList[i].indexOf('\t');
-    if (ind == -1) {
+    if (ind == -1)
+    {
       Serial.printf("WARNING: No tab in StationList[%d]: %s\n", i, StationList[i].c_str());
       nameStations[i] = make_str(utf8rus(StationList[i])); // Берем всю строку
-    } else {
-    nameStations[i] = make_str(utf8rus(StationList[i].substring(0, ind))); // Получили именования
+    }
+    else
+    {
+      nameStations[i] = make_str(utf8rus(StationList[i].substring(0, ind))); // Получили именования
     }
   }
 }
@@ -840,7 +843,7 @@ void initSpiffs()
     i++;
   }
   file.close();
-  numbStations = i-1; // Количесто реальных станций
+  numbStations = i - 1; // Количесто реальных станций
   Serial.printf("Read %d stations, numbStations = %d\n", i, numbStations);
   Serial.printf("SPIFFS total: %d bytes\n", SPIFFS.totalBytes());
   Serial.printf("SPIFFS used: %d bytes\n", SPIFFS.usedBytes());
@@ -988,6 +991,8 @@ void initWiFi()
 
 void startWiFiManager()
 {
+  tft.fillScreen(TFT_BLACK);
+  tft.setCursor(40,60);
   Serial.println("Starting WiFiManager");
   tft.println("Starting WiFiManager");
   tft.println("SSID: ESP32-Clock");
@@ -1355,6 +1360,7 @@ void lineondisp()
   // clock секунды
   // tft.drawRect(260, 87, 60, 43, 0x9772);
   tft.drawLine(260, 130, 320, 130, 0x9772);
+  //tft.drawLine(284, 95, 284, 160, 0x9772);
   // wifi level codec bitrate
   tft.drawRect(70, 175, 250, 42, TFT_CYAN);
   tft.setTextColor(TFT_CYAN);
@@ -1435,24 +1441,3 @@ void performUpdate(Stream &updateSource, size_t updateSize)
   }
   // http send 'result'
 }
-
-// PlayList
-
-// void selectStation()
-// {
-//   String url = stations_newMenu.getStationUrl(currentStationIndex);
-//   String name = stations_newMenu.getStationName(currentStationIndex);
-
-//   tft.fillScreen(TFT_BLACK);
-//   tft.setCursor(0, 0);
-//   tft.setTextSize(1);
-//   tft.print("Playing:");
-//   tft.setCursor(0, 20);
-//   tft.print(name);
-
-//   Serial.println("Selected: " + name);
-//   Serial.println("URL: " + url);
-
-//   // Здесь можно запустить аудиоплеер (например, через Audio.h + ESP32-audioI2S)
-//   // audio.connecttohost(url.c_str());
-// }
