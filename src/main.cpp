@@ -275,7 +275,13 @@ void loop()
   if (title_flag && showRadio)
   {
     title_flag = false;
-    tft.fillRect(0, 47, 255, 25, TFT_BLACK);
+    txtTrek.fillRect(0, 47, 255, 25, TFT_BLACK);
+    txtTrek.drawString("                                             ",0,0);
+    txtTrek.pushSprite(0,47);
+    txtSprite.fillRect(0, 69, 255, 25, TFT_BLACK);
+    txtSprite.drawString("                                             ",0,0);
+    txtSprite.pushSprite(0,69);
+
     String str = MessageToScroll_1;
     char delimiter = '-';
     int pos = str.indexOf(delimiter); // Находим позицию символа
@@ -1121,61 +1127,88 @@ void printConnectionInfo()
 // end initwifi
 
 // уровень вафай
-void wifiLevel()
-{
-  uint16_t x_wifi = 140, y_wifi = ypos, y_lev_wifi = 3;
-  if (WiFi.RSSI() >= -60)
-  {
-    tft.fillRect(x_wifi + 8, y_wifi, 3, y_lev_wifi + 3, TFT_CYAN);
-    tft.fillRect(x_wifi + 13, y_wifi - 2, 3, y_lev_wifi + 5, TFT_CYAN);
-    tft.fillRect(x_wifi + 18, y_wifi - 2 * 2, 3, y_lev_wifi + 7, TFT_CYAN);
-    tft.fillRect(x_wifi + 23, y_wifi - 2 * 3, 3, y_lev_wifi + 9, TFT_CYAN);
-    tft.fillRect(x_wifi + 28, y_wifi - 2 * 4, 3, y_lev_wifi + 11, TFT_CYAN);
-    tft.fillRect(x_wifi + 33, y_wifi - 2 * 5, 3, y_lev_wifi + 13, TFT_CYAN);
-    tft.fillRect(x_wifi + 38, y_wifi - 2 * 6, 3, y_lev_wifi + 15, TFT_CYAN);
-  }
-  if (WiFi.RSSI() < -60 && WiFi.RSSI() >= -70)
-  {
-    tft.fillRect(x_wifi + 8, y_wifi, 3, y_lev_wifi + 3, TFT_CYAN);
-    tft.fillRect(x_wifi + 13, y_wifi - 2, 3, y_lev_wifi + 5, TFT_CYAN);
-    tft.fillRect(x_wifi + 18, y_wifi - 2 * 2, 3, y_lev_wifi + 7, TFT_CYAN);
-    tft.fillRect(x_wifi + 23, y_wifi - 2 * 3, 3, y_lev_wifi + 9, TFT_CYAN);
-    tft.fillRect(x_wifi + 28, y_wifi - 2 * 4, 3, y_lev_wifi + 11, TFT_CYAN);
-    tft.fillRect(x_wifi + 33, y_wifi - 2 * 5, 3, y_lev_wifi + 13, TFT_CYAN);
-    tft.fillRect(x_wifi + 38, y_wifi - 2 * 6, 3, y_lev_wifi + 15, 0x39C4);
-  }
-  if (WiFi.RSSI() < -70 && WiFi.RSSI() > -80)
-  {
-    tft.fillRect(x_wifi + 8, y_wifi, 3, y_lev_wifi + 3, TFT_CYAN);
-    tft.fillRect(x_wifi + 13, y_wifi - 2, 3, y_lev_wifi + 5, TFT_CYAN);
-    tft.fillRect(x_wifi + 18, y_wifi - 2 * 2, 3, y_lev_wifi + 7, TFT_CYAN);
-    tft.fillRect(x_wifi + 23, y_wifi - 2 * 3, 3, y_lev_wifi + 9, TFT_CYAN);
-    tft.fillRect(x_wifi + 28, y_wifi - 2 * 4, 3, y_lev_wifi + 11, TFT_CYAN);
-    tft.fillRect(x_wifi + 33, y_wifi - 2 * 5, 3, y_lev_wifi + 13, 0x39C4);
-    tft.fillRect(x_wifi + 38, y_wifi - 2 * 6, 3, y_lev_wifi + 15, 0x39C4);
-  }
-
-  if (WiFi.RSSI() < -80 && WiFi.RSSI() > -90)
-  {
-    tft.fillRect(x_wifi + 8, y_wifi, 3, y_lev_wifi + 3, TFT_CYAN);
-    tft.fillRect(x_wifi + 13, y_wifi - 2, 3, y_lev_wifi + 5, TFT_CYAN);
-    tft.fillRect(x_wifi + 18, y_wifi - 2 * 2, 3, y_lev_wifi + 7, TFT_CYAN);
-    tft.fillRect(x_wifi + 23, y_wifi - 2 * 3, 3, y_lev_wifi + 9, TFT_CYAN);
-    tft.fillRect(x_wifi + 28, y_wifi - 2 * 4, 3, y_lev_wifi + 11, 0x39C4);
-    tft.fillRect(x_wifi + 33, y_wifi - 2 * 5, 3, y_lev_wifi + 13, 0x39C4);
-    tft.fillRect(x_wifi + 38, y_wifi - 2 * 6, 3, y_lev_wifi + 15, 0x39C4);
-  }
-  if (WiFi.RSSI() < -90)
-  {
-    tft.fillRect(x_wifi + 8, y_wifi, 3, y_lev_wifi + 3, TFT_CYAN);
-    tft.fillRect(x_wifi + 13, y_wifi - 2, 3, y_lev_wifi + 5, 0x39C4);
-    tft.fillRect(x_wifi + 18, y_wifi - 2 * 2, 3, y_lev_wifi + 7, 0x39C4);
-    tft.fillRect(x_wifi + 23, y_wifi - 2 * 3, 3, y_lev_wifi + 9, 0x39C4);
-    tft.fillRect(x_wifi + 28, y_wifi - 2 * 4, 3, y_lev_wifi + 11, 0x39C4);
-    tft.fillRect(x_wifi + 33, y_wifi - 2 * 5, 3, y_lev_wifi + 13, 0x39C4);
-    tft.fillRect(x_wifi + 38, y_wifi - 2 * 6, 3, y_lev_wifi + 15, 0x39C4);
-  }
+void wifiLevel() {
+    uint16_t x_wifi = 140, y_wifi = ypos;
+    int8_t rssi = WiFi.RSSI();
+    
+    // Определяем количество полосок по уровню сигнала
+    int bars;
+    if (rssi >= -55) bars = 7;
+    else if (rssi >= -65) bars = 6;
+    else if (rssi >= -70) bars = 5;
+    else if (rssi >= -75) bars = 4;
+    else if (rssi >= -80) bars = 3;
+    else if (rssi >= -85) bars = 2;
+    else bars = 1;
+    
+    // Очищаем область перед отрисовкой
+    tft.fillRect(x_wifi + 8, y_wifi - 12, 35, 15, TFT_BLACK);
+    
+    // Рисуем полоски сигнала
+    for (int i = 0; i < 7; i++) {
+        int height = 3 + i * 2;
+        int y_pos = y_wifi - i * 2;
+        uint16_t color = (i < bars) ? TFT_CYAN : 0x39C4;
+        
+        tft.fillRect(x_wifi + 8 + i * 5, y_pos+3, 3, height, color);
+    }
 }
+
+// void wifiLevel()
+// {
+//   uint16_t x_wifi = 140, y_wifi = ypos, y_lev_wifi = 3;
+//   if (WiFi.RSSI() >= -60)
+//   {
+//     tft.fillRect(x_wifi + 8, y_wifi, 3, y_lev_wifi + 3, TFT_CYAN);
+//     tft.fillRect(x_wifi + 13, y_wifi - 2, 3, y_lev_wifi + 5, TFT_CYAN);
+//     tft.fillRect(x_wifi + 18, y_wifi - 2 * 2, 3, y_lev_wifi + 7, TFT_CYAN);
+//     tft.fillRect(x_wifi + 23, y_wifi - 2 * 3, 3, y_lev_wifi + 9, TFT_CYAN);
+//     tft.fillRect(x_wifi + 28, y_wifi - 2 * 4, 3, y_lev_wifi + 11, TFT_CYAN);
+//     tft.fillRect(x_wifi + 33, y_wifi - 2 * 5, 3, y_lev_wifi + 13, TFT_CYAN);
+//     tft.fillRect(x_wifi + 38, y_wifi - 2 * 6, 3, y_lev_wifi + 15, TFT_CYAN);
+//   }
+//   if (WiFi.RSSI() < -60 && WiFi.RSSI() >= -70)
+//   {
+//     tft.fillRect(x_wifi + 8, y_wifi, 3, y_lev_wifi + 3, TFT_CYAN);
+//     tft.fillRect(x_wifi + 13, y_wifi - 2, 3, y_lev_wifi + 5, TFT_CYAN);
+//     tft.fillRect(x_wifi + 18, y_wifi - 2 * 2, 3, y_lev_wifi + 7, TFT_CYAN);
+//     tft.fillRect(x_wifi + 23, y_wifi - 2 * 3, 3, y_lev_wifi + 9, TFT_CYAN);
+//     tft.fillRect(x_wifi + 28, y_wifi - 2 * 4, 3, y_lev_wifi + 11, TFT_CYAN);
+//     tft.fillRect(x_wifi + 33, y_wifi - 2 * 5, 3, y_lev_wifi + 13, TFT_CYAN);
+//     tft.fillRect(x_wifi + 38, y_wifi - 2 * 6, 3, y_lev_wifi + 15, 0x39C4);
+//   }
+//   if (WiFi.RSSI() < -70 && WiFi.RSSI() > -80)
+//   {
+//     tft.fillRect(x_wifi + 8, y_wifi, 3, y_lev_wifi + 3, TFT_CYAN);
+//     tft.fillRect(x_wifi + 13, y_wifi - 2, 3, y_lev_wifi + 5, TFT_CYAN);
+//     tft.fillRect(x_wifi + 18, y_wifi - 2 * 2, 3, y_lev_wifi + 7, TFT_CYAN);
+//     tft.fillRect(x_wifi + 23, y_wifi - 2 * 3, 3, y_lev_wifi + 9, TFT_CYAN);
+//     tft.fillRect(x_wifi + 28, y_wifi - 2 * 4, 3, y_lev_wifi + 11, TFT_CYAN);
+//     tft.fillRect(x_wifi + 33, y_wifi - 2 * 5, 3, y_lev_wifi + 13, 0x39C4);
+//     tft.fillRect(x_wifi + 38, y_wifi - 2 * 6, 3, y_lev_wifi + 15, 0x39C4);
+//   }
+
+//   if (WiFi.RSSI() < -80 && WiFi.RSSI() > -90)
+//   {
+//     tft.fillRect(x_wifi + 8, y_wifi, 3, y_lev_wifi + 3, TFT_CYAN);
+//     tft.fillRect(x_wifi + 13, y_wifi - 2, 3, y_lev_wifi + 5, TFT_CYAN);
+//     tft.fillRect(x_wifi + 18, y_wifi - 2 * 2, 3, y_lev_wifi + 7, TFT_CYAN);
+//     tft.fillRect(x_wifi + 23, y_wifi - 2 * 3, 3, y_lev_wifi + 9, TFT_CYAN);
+//     tft.fillRect(x_wifi + 28, y_wifi - 2 * 4, 3, y_lev_wifi + 11, 0x39C4);
+//     tft.fillRect(x_wifi + 33, y_wifi - 2 * 5, 3, y_lev_wifi + 13, 0x39C4);
+//     tft.fillRect(x_wifi + 38, y_wifi - 2 * 6, 3, y_lev_wifi + 15, 0x39C4);
+//   }
+//   if (WiFi.RSSI() < -90)
+//   {
+//     tft.fillRect(x_wifi + 8, y_wifi, 3, y_lev_wifi + 3, TFT_CYAN);
+//     tft.fillRect(x_wifi + 13, y_wifi - 2, 3, y_lev_wifi + 5, 0x39C4);
+//     tft.fillRect(x_wifi + 18, y_wifi - 2 * 2, 3, y_lev_wifi + 7, 0x39C4);
+//     tft.fillRect(x_wifi + 23, y_wifi - 2 * 3, 3, y_lev_wifi + 9, 0x39C4);
+//     tft.fillRect(x_wifi + 28, y_wifi - 2 * 4, 3, y_lev_wifi + 11, 0x39C4);
+//     tft.fillRect(x_wifi + 33, y_wifi - 2 * 5, 3, y_lev_wifi + 13, 0x39C4);
+//     tft.fillRect(x_wifi + 38, y_wifi - 2 * 6, 3, y_lev_wifi + 15, 0x39C4);
+//   }
+// }
 
 // Движение по меню через сайт
 void onMenuOn()
