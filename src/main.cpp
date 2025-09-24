@@ -23,6 +23,7 @@
 TFT_eSPI tft = TFT_eSPI();
 TFT_eSprite txtSprite = TFT_eSprite(&tft); // Create Sprite
 TFT_eSprite vuSprite = TFT_eSprite(&tft);  // Create Sprite
+TFT_eSprite txtTrek = TFT_eSprite(&tft);   // Create Sprite
 
 UnixTime stamp(3); // указать GMT (3 для Москвы)
 
@@ -71,9 +72,13 @@ unsigned long lastTime = 0;
 unsigned long lastTime_ssid = 0;
 unsigned long timerDelay_ssid = 4000;
 uint32_t vumetersDelay = 250;
-int16_t spriteX = 320; // Начинаем справа
+int16_t spriteX = 320;       // Начинаем справа
+int16_t spriteXForRIGHT = 0; // Начинаем с 0 позиции
 State currentState = MOVING_TO_LEFT_EDGE;
+State currentStateForRight = MOVING_TO_LEFT;
 unsigned long stateStartTime = 0;
+unsigned long stateStartTimeForRight = 0;
+
 bool textUpdated = false;
 unsigned long currentMillis;   // To return from the menu after the time has expired
 unsigned long intervalForMenu; // Для возврата из меню по истечении времении
@@ -229,7 +234,16 @@ void setup()
   txtSprite.fillSprite(TFT_BLACK);
   txtSprite.setFreeFont(&CourierCyr10pt8b);
   txtSprite.setTextDatum(TL_DATUM); // Привязка к верхнему левому углу
-  vuSprite.createSprite(60, 140);   // Ширина 60, высота 150
+
+  txtTrek.createSprite(250, 25); // Название трека
+  txtTrek.setTextSize(1);
+  txtTrek.setTextColor(TFT_WHITE, TFT_BLACK);
+  txtTrek.fillSprite(TFT_BLACK);
+  txtTrek.setFreeFont(&CourierCyr10pt8b);
+  txtTrek.setTextDatum(TL_DATUM); // Привязка к верхнему левому углу
+
+  vuSprite.createSprite(60, 140); // Ширина 60, высота 150
+
 } // End Setup
 
 //----------------------------------------
@@ -261,7 +275,7 @@ void loop()
   if (title_flag && showRadio)
   {
     title_flag = false;
-    tft.fillRect(70, 47, 250, 25, TFT_BLACK);
+    tft.fillRect(0, 47, 255, 25, TFT_BLACK);
     String str = MessageToScroll_1;
     char delimiter = '-';
     int pos = str.indexOf(delimiter); // Находим позицию символа
@@ -269,15 +283,19 @@ void loop()
     {                                 // Если символ найден
       before = str.substring(0, pos); // До символа: "Hello"
       after = str.substring(pos + 1); // После символа: "World!"
+      before = utf8rus(before) + char(0x20);
       after = utf8rus(after) + char(0x20);
       tft.setTextSize(1);
       tft.setTextColor(0x9772);
       tft.setFreeFont(&CourierCyr10pt8b);
-      tft.fillRect(0, 47, 319, 20, TFT_BLACK);
-      tft.drawString(utf8rus(before), 0, 47);
+      txtTrek.fillRect(0, 47, 255, 25, TFT_BLACK);
+      txtTrek.drawString(before, 0, 0);
       txtSprite.drawString(after, 320, 0);
     }
   }
+
+  txtTrek.fillRect(0, 47, 255, 25, TFT_BLACK);
+  txtSprite.fillRect(0, 69, 255, 25, TFT_BLACK);
 
   if (enc1.tick())
     myEncoder();
@@ -294,6 +312,7 @@ void loop()
     showRadio = true;
     vuSprite.createSprite(60, 140);
     txtSprite.createSprite(250, 25);
+    txtTrek.createSprite(250, 25);
     lineondisp();
     printCodecAndBitrate();
     first = true;
@@ -302,15 +321,20 @@ void loop()
   {
     clock_on_core0();
     //-------------
-    // Scrolling
+    // Scrolling left
     //-------------
     if (!show_title) // если не получены титры
     {
       txtSprite.fillScreen(TFT_BLACK);
+      txtTrek.fillScreen(TFT_BLACK);
       after = "";
+      before = "";
     }
     if (millis() - lastUpdate > frameInterval)
     {
+      tft.setTextSize(1);
+      tft.setTextColor(0x9772);
+      tft.setFreeFont(&CourierCyr10pt8b);
       lastUpdate = millis();
       unsigned long now = millis();
       switch (currentState)
@@ -332,7 +356,6 @@ void loop()
         break;
       case MOVING_OFF_LEFT:
         spriteX -= speed; // Продолжаем движение влево
-        // Serial.println("2 -- "+spriteX);
         int16_t width = 320 - tft.textWidth(after);
         if (spriteX <= -tft.textWidth(after) - width)
         {                                     // Полностью ушел за левый край
@@ -342,9 +365,52 @@ void loop()
         break;
       }
       txtSprite.drawString(after, spriteX, 0);
-      txtSprite.pushSprite(0, 64);
+      txtSprite.pushSprite(0, 69);
     }
-    //----------------------------------------
+    //---Scrolling RIGHT
+    if (millis() - lastUpdateForRight > frameInterval)
+    {
+      tft.setTextSize(1);
+      tft.setTextColor(0x9772);
+      tft.setFreeFont(&CourierCyr10pt8b);
+      lastUpdateForRight = millis();
+      unsigned long nowRight = millis();
+      switch (currentStateForRight)
+      {
+      case MOVING_TO_LEFT:
+        spriteXForRIGHT = spriteXForRIGHT - speed; // Движение влево
+        if (spriteXForRIGHT <= -(tft.textWidth(before) - 250))
+        { 
+          currentStateForRight = WAITING_AT_RIGHT;
+          stateStartTimeForRight = nowRight;
+        }
+        break;
+      case WAITING_AT_RIGHT:
+        if (nowRight - stateStartTimeForRight >= 3000)
+        { // Ждем 3 секунды
+          currentStateForRight = MOVING_TO_RIGHT;
+        }
+        break;
+      case MOVING_TO_RIGHT:
+        spriteXForRIGHT += speed; // Двигаемс вправо
+                                  // int16_t width = 320 - tft.textWidth(after);
+        if (spriteXForRIGHT >= 0)
+        { // Дошли до левого края
+          // spriteX = 320;
+          currentStateForRight = WAITING_TO_RIGHT; // Начинаем цикл заново
+        }
+        break;
+      case WAITING_TO_RIGHT:
+        if (nowRight - stateStartTimeForRight >= 7000)
+        { // Ждем 3 секунды
+          currentStateForRight = MOVING_TO_LEFT;
+        }
+        break;
+      }
+      txtTrek.drawString(before, spriteXForRIGHT, 0);
+      txtTrek.pushSprite(0, 47);
+    }
+    //-------end Scrolling---------------------------------
     if (first && CurrentDate != "Not sync" && CurrentDate != "20.02.1611")
     { // выввод даты после меню станций
       tft.setTextSize(1);
@@ -451,8 +517,8 @@ void soundShow()
   int x_show = 0;
   int width = 25;         // ширина
   int space = 3;          // расстояние между каналами
-  int total_height = 140; // Высота VU-метра
-  int y_offset = 80;      // сдиг сверху
+  int total_height = 136; // Высота VU-метра
+  int y_offset = 84;      // сдиг сверху
 
   // Получаем текущие уровни (замените на ваши реальные значения)
   uint16_t vulevel = audio.getVUlevel();
@@ -610,6 +676,7 @@ void myEncoder()
       currentMillis = millis(); // начало отсчета времени простоя
       tft.fillScreen(TFT_BLACK);
       txtSprite.deleteSprite();
+      txtTrek.deleteSprite();
       vuSprite.deleteSprite();
       stationDisplay(NEWStation);
     }
@@ -992,7 +1059,7 @@ void initWiFi()
 void startWiFiManager()
 {
   tft.fillScreen(TFT_BLACK);
-  tft.setCursor(40,60);
+  tft.setCursor(40, 60);
   Serial.println("Starting WiFiManager");
   tft.println("Starting WiFiManager");
   tft.println("SSID: ESP32-Clock");
@@ -1156,6 +1223,7 @@ void onMenu()
     tft.fillRect(0, 0, 320, 220, TFT_BLACK);
     vuSprite.deleteSprite();
     txtSprite.deleteSprite();
+    txtTrek.deleteSprite();
     stationDisplay(NEWStation);
   }
   if (showRadio)
@@ -1164,6 +1232,7 @@ void onMenu()
     tft.fillRect(0, 0, 320, 240, TFT_BLACK);
     // printStation(NEWStation);
     txtSprite.createSprite(250, 25);
+    txtTrek.createSprite(250, 25);
     vuSprite.createSprite(60, 140);
     getClock = true; // получить время при переходе от меню станций
     lineondisp();
@@ -1360,8 +1429,8 @@ void lineondisp()
   // clock секунды
   // tft.drawRect(260, 87, 60, 43, 0x9772);
   tft.drawLine(260, 130, 320, 130, 0x9772);
-  //tft.drawLine(284, 95, 284, 160, 0x9772);
-  // wifi level codec bitrate
+  // tft.drawLine(284, 95, 284, 160, 0x9772);
+  //  wifi level codec bitrate
   tft.drawRect(70, 175, 250, 42, TFT_CYAN);
   tft.setTextColor(TFT_CYAN);
   tft.drawString("WiFi", x_wifi, y_wifi);

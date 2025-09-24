@@ -33,13 +33,19 @@ extern String listRadio; // радиостанции на странице
 #define U_PART U_SPIFFS
 
 static unsigned long lastUpdate = 0;
+static unsigned long lastUpdateForRight = 0;
+
 const unsigned long frameInterval = 30; // ~33 FPS
 // int16_t spriteX = -250;        // Начинаем за пределами слева
 enum State
 {
   MOVING_TO_LEFT_EDGE,
   WAITING_AT_LEFT,
-  MOVING_OFF_LEFT
+  MOVING_OFF_LEFT,
+  MOVING_TO_LEFT, //-----------
+  WAITING_AT_RIGHT,
+  MOVING_TO_RIGHT,
+  WAITING_TO_RIGHT
 };
 
 const unsigned long waitDuration = 3000; // 3 секунды ожидания
