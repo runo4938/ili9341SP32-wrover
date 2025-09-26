@@ -276,11 +276,11 @@ void loop()
   {
     title_flag = false;
     txtTrek.fillRect(0, 47, 255, 25, TFT_BLACK);
-    txtTrek.drawString("                                             ",0,0);
-    txtTrek.pushSprite(0,47);
+    txtTrek.drawString("                                             ", 0, 0);
+    txtTrek.pushSprite(0, 47);
     txtSprite.fillRect(0, 69, 255, 25, TFT_BLACK);
-    txtSprite.drawString("                                             ",0,0);
-    txtSprite.pushSprite(0,69);
+    txtSprite.drawString("                                             ", 0, 0);
+    txtSprite.pushSprite(0, 69);
 
     String str = MessageToScroll_1;
     char delimiter = '-';
@@ -386,7 +386,7 @@ void loop()
       case MOVING_TO_LEFT:
         spriteXForRIGHT = spriteXForRIGHT - speed; // Движение влево
         if (spriteXForRIGHT <= -(tft.textWidth(before) - 250))
-        { 
+        {
           currentStateForRight = WAITING_AT_RIGHT;
           stateStartTimeForRight = nowRight;
         }
@@ -689,6 +689,9 @@ void myEncoder()
     if (showRadio)
     {
       first = true;
+      txtSprite.createSprite(250, 25);
+      txtTrek.createSprite(250, 25);
+      vuSprite.createSprite(60, 140);
       tft.fillScreen(TFT_BLACK);
       printStation(NEWStation);
       getClock = true; // получить время при переходе от меню станций
@@ -1127,31 +1130,40 @@ void printConnectionInfo()
 // end initwifi
 
 // уровень вафай
-void wifiLevel() {
-    uint16_t x_wifi = 140, y_wifi = ypos;
-    int8_t rssi = WiFi.RSSI();
-    
-    // Определяем количество полосок по уровню сигнала
-    int bars;
-    if (rssi >= -55) bars = 7;
-    else if (rssi >= -65) bars = 6;
-    else if (rssi >= -70) bars = 5;
-    else if (rssi >= -75) bars = 4;
-    else if (rssi >= -80) bars = 3;
-    else if (rssi >= -85) bars = 2;
-    else bars = 1;
-    
-    // Очищаем область перед отрисовкой
-    tft.fillRect(x_wifi + 8, y_wifi - 12, 35, 15, TFT_BLACK);
-    
-    // Рисуем полоски сигнала
-    for (int i = 0; i < 7; i++) {
-        int height = 3 + i * 2;
-        int y_pos = y_wifi - i * 2;
-        uint16_t color = (i < bars) ? TFT_CYAN : 0x39C4;
-        
-        tft.fillRect(x_wifi + 8 + i * 5, y_pos+3, 3, height, color);
-    }
+void wifiLevel()
+{
+  uint16_t x_wifi = 140, y_wifi = ypos;
+  int8_t rssi = WiFi.RSSI();
+
+  // Определяем количество полосок по уровню сигнала
+  int bars;
+  if (rssi >= -55)
+    bars = 7;
+  else if (rssi >= -65)
+    bars = 6;
+  else if (rssi >= -70)
+    bars = 5;
+  else if (rssi >= -75)
+    bars = 4;
+  else if (rssi >= -80)
+    bars = 3;
+  else if (rssi >= -85)
+    bars = 2;
+  else
+    bars = 1;
+
+  // Очищаем область перед отрисовкой
+  tft.fillRect(x_wifi + 8, y_wifi - 12, 35, 15, TFT_BLACK);
+
+  // Рисуем полоски сигнала
+  for (int i = 0; i < 7; i++)
+  {
+    int height = 3 + i * 2;
+    int y_pos = y_wifi - i * 2;
+    uint16_t color = (i < bars) ? TFT_CYAN : 0x39C4;
+
+    tft.fillRect(x_wifi + 8 + i * 5, y_pos + 3, 3, height, color);
+  }
 }
 
 // Движение по меню через сайт
