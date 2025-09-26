@@ -701,6 +701,7 @@ void myEncoder()
   }
   if (enc1.rightH())
   {
+    audiovol = EEPROM.read(6);
     audiovol++;
     audio.setVolume(audiovol);
     EEPROM.write(6, 15);
@@ -710,6 +711,7 @@ void myEncoder()
 
   if (enc1.leftH())
   {
+    audiovol = EEPROM.read(6);
     audiovol--;
     audio.setVolume(audiovol);
     EEPROM.write(6, 15);
