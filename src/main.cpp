@@ -704,7 +704,7 @@ void myEncoder()
     audiovol = EEPROM.read(6);
     audiovol++;
     audio.setVolume(audiovol);
-    EEPROM.write(6, 15);
+    EEPROM.write(6, audiovol);
     EEPROM.commit();
     filePosition();
   }
@@ -714,7 +714,7 @@ void myEncoder()
     audiovol = EEPROM.read(6);
     audiovol--;
     audio.setVolume(audiovol);
-    EEPROM.write(6, 15);
+    EEPROM.write(6, audiovol);
     EEPROM.commit();
     filePosition();
   }
