@@ -65,5 +65,4 @@ void notFound(AsyncWebServerRequest *request);
 void handleDoUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final);
 void setupRoutes(AsyncWebServer &server);
 String processor_update(const String &var);
-
 #endif

@@ -172,6 +172,7 @@ void setup()
   readEEprom();
   initSpiffs();
   initWiFi();
+  
   tft.fillScreen(TFT_BLACK);
   tft.setCursor(40, 90);
   tft.println("Connected to SSID: ");
@@ -913,10 +914,10 @@ void initSpiffs()
   Serial.printf("Lines in file: ");
 
   int i = 0;
-  while (file.available() && i < 40)
+  while (file.available() && i < MAX_STATIONS)
   {
     StationList[i] = file.readStringUntil('\n'); // Станции в массиве пронумерованы от 0
-    if (i >= 40)
+    if (i >= MAX_STATIONS)
       break; // Дополнительная защита
     i++;
   }
@@ -967,7 +968,6 @@ void initWiFi()
   // Список известных WiFi сетей (SSID и пароль)
   const char *knownNetworks[][2] = {
       {"RT-GPON-D5D9", "tB5DVdR9"},
-      {"Repeater-2", "19621962"},
       {"WiFi-Repeater", "tB5DVdR9"}};
 
   const int networkCount = sizeof(knownNetworks) / sizeof(knownNetworks[0]);
@@ -1248,6 +1248,7 @@ String readFile(fs::FS &fs, const char *path)
   }
   return fileContent;
 }
+// end readFile
 
 String utf8rus(String source)
 {
