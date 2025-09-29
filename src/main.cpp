@@ -279,9 +279,9 @@ void loop()
     txtTrek.fillRect(0, 47, 255, 25, TFT_BLACK);
     txtTrek.drawString("                                               ", 0, 0);
     txtTrek.pushSprite(0, 47);
-    txtSprite.fillRect(0, 69, 255, 25, TFT_BLACK);
+    txtSprite.fillRect(0, 70, 255, 25, TFT_BLACK);
     txtSprite.drawString("                                             ", 0, 0);
-    txtSprite.pushSprite(0, 69);
+    txtSprite.pushSprite(0, 70);
 
     String str = MessageToScroll_1;
     char delimiter = '-';
@@ -302,7 +302,7 @@ void loop()
   }
 
   txtTrek.fillRect(0, 47, 255, 25, TFT_BLACK);
-  txtSprite.fillRect(0, 69, 255, 25, TFT_BLACK);
+  txtSprite.fillRect(0, 70, 255, 25, TFT_BLACK);
 
   if (enc1.tick())
     myEncoder();
@@ -379,7 +379,7 @@ void loop()
         break;
       }
       txtSprite.drawString(after, spriteX, 0);
-      txtSprite.pushSprite(0, 69);
+      txtSprite.pushSprite(0, 70);
     }
     //---Scrolling RIGHT
     if (millis() - lastUpdateForRight > frameInterval)
