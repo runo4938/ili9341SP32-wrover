@@ -277,7 +277,7 @@ void loop()
   {
     title_flag = false;
     txtTrek.fillRect(0, 47, 255, 25, TFT_BLACK);
-    txtTrek.drawString("                                             ", 0, 0);
+    txtTrek.drawString("                                               ", 0, 0);
     txtTrek.pushSprite(0, 47);
     txtSprite.fillRect(0, 69, 255, 25, TFT_BLACK);
     txtSprite.drawString("                                             ", 0, 0);
@@ -344,13 +344,14 @@ void loop()
       tft.setFreeFont(&CourierCyr10pt8b);
       lastUpdate = millis();
       unsigned long now = millis();
+      unsigned long nowRight_2 = millis();
       switch (currentState)
       {
       case MOVING_TO_LEFT_EDGE:
         spriteX = spriteX - speed; // Движение влево
-        if (spriteX <= 0)
+        if (spriteX <= -(tft.textWidth(after) - 250))
         { // Достигли левого края
-          spriteX = 0;
+          // spriteX = 0;
           currentState = WAITING_AT_LEFT;
           stateStartTime = now;
         }
@@ -362,12 +363,18 @@ void loop()
         }
         break;
       case MOVING_OFF_LEFT:
-        spriteX -= speed; // Продолжаем движение влево
-        int16_t width = 320 - tft.textWidth(after);
-        if (spriteX <= -tft.textWidth(after) - width)
-        {                                     // Полностью ушел за левый край
-          spriteX = 320;                      // Появляемся с правого края
-          currentState = MOVING_TO_LEFT_EDGE; // Начинаем цикл заново
+        spriteX += speed; // Продолжаем движение влево
+        // int16_t width = 320 - tft.textWidth(after);
+        if (spriteX >= 0) //<= -tft.textWidth(after) - width)
+        {                 // Полностью ушел за левый край
+          // spriteX = 320;                      // Появляемся с правого края
+          currentState = WAITING_TO_LEFT; // Начинаем цикл заново
+        }
+        break;
+      case WAITING_TO_LEFT:
+        if (nowRight_2 - stateStartTime >= 7000)
+        { // Ждем 3 секунды
+          currentState = MOVING_TO_LEFT_EDGE;
         }
         break;
       }

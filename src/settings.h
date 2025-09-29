@@ -45,7 +45,8 @@ enum State
   MOVING_TO_LEFT, //-----------
   WAITING_AT_RIGHT,
   MOVING_TO_RIGHT,
-  WAITING_TO_RIGHT
+  WAITING_TO_RIGHT,
+  WAITING_TO_LEFT
 };
 
 const unsigned long waitDuration = 3000; // 3 секунды ожидания
