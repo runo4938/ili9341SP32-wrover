@@ -3,7 +3,6 @@
 #include "routes.h"
 #define FIRMWARE_VERSION "1.0.0"
 
-
 String filelist = "";
 
 // Функция настройки всех роутов
@@ -86,6 +85,7 @@ void setupRoutes(AsyncWebServer &server)
       inputMessage = "No message sent";
       inputParam = "none";
     }
+
     request->send(200, "text/plain", "OK"); });
 
     //------------------------------------
@@ -111,7 +111,6 @@ void setupRoutes(AsyncWebServer &server)
     server.onNotFound([](AsyncWebServerRequest *request)
                       { request->send(404, "text/plain", "Not Found"); });
 }
-
 
 void listDir(fs::FS &fs, const char *dirname, uint8_t levels)
 {
@@ -191,6 +190,7 @@ void handleDoUpload(AsyncWebServerRequest *request, String filename, size_t inde
         request->send(response);
         file.close();
         opened = false;
+        initSpiffs();
         Serial.println("---------------");
         Serial.println("Upload complete");
     }

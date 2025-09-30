@@ -1,5 +1,4 @@
 РетроFM	http://emgregion.hostingradio.ru:8064/moscow.retrofm.mp3?8206
-ВестиФМ	http://icecast-vgtrk.cdnvideo.ru/vestifm_mp3_192kbps
 РадиоКП	http://kpradio.hostingradio.ru:8000/128?radiostatistica=top-radio.ru
 Радио7	http://radio7.hostingradio.ru:8040/radio7256.mp3
 РадиоОдесса	http://listen6.myradio24.com/odesradio

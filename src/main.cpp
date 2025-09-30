@@ -125,12 +125,12 @@ TaskHandle_t Task1;
 void Task1code(void *pvParameters);
 void printStation(uint8_t indexOfStation);
 void printCodecAndBitrate();
-void initSpiffs();
+
 void readEEprom();
 void initWiFi();
 void wifiLevel();
 void myEncoder();
-void menuStation();
+
 void nextStation(bool stepStation);
 void clock_on_core0();
 void soundShow();
@@ -145,7 +145,7 @@ String utf8rus(String source);
 String readFile(fs::FS &fs, const char *path);
 void listDir(fs::FS &fs, const char *dirname, uint8_t levels);
 void printProgress(size_t prg, size_t sz);
-void listStaton();
+
 String processor_playlst(const String &var);
 String processor(const String &var);
 // void newrelease();
