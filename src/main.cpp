@@ -1380,22 +1380,20 @@ void audio_eof_speech(const char *info)
 //   }
 // }
 
+
 void listStaton()
 {
   String partlistStation;
   uint8_t i = 0;
   while (i <= numbStations)
   {
-    int ind_to_tab = StationList[i].indexOf('\t');
-    String nameStat = StationList[i].substring(0, ind_to_tab);
-    String newStat = StationList[i].substring(ind_to_tab + 1, StationList[i].length());
+    int ind_to_scace = StationList[i].indexOf('\t');
+    String nameStat = StationList[i].substring(0, ind_to_scace);
 
-    partlistStation += String("<tr><td class='index-cell'>") + String(i) + String("</td>") +
-                       String("<td class='name-cell'>") + nameStat + String("</td>") +
-                       String("<td class='url-cell'><span class='url-text'>") + newStat + String("</span></td></tr>");
+    String newStat = StationList[i].substring(ind_to_scace + 1, StationList[i].length());
 
-    listRadio = String("<div class='dark-table-wrapper'><table class='dark-table'><thead><tr><th>#</th><th>STATION</th><th>URL</th></tr></thead><tbody>") +
-                partlistStation + String("</tbody></table></div>");
+    partlistStation += String("<tr><td>") + String(i) + String("</td>") + String("<td>") + nameStat + String("</td>") + String("<td>") + newStat + String("</td></tr>");
+    listRadio = String("<table class=\"table table-success table-striped\"> <thead><tr><th>№</th><th>Station name</th><th>Station url</th></tr></thead><tbody>") + partlistStation + String("</tbody></table>");
     i++;
   }
 }
