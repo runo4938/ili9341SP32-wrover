@@ -151,6 +151,8 @@ String processor(const String &var);
 // void newrelease();
 void startWiFiManager();
 void printConnectionInfo();
+int8_t txtSpriteHight = 17;
+int8_t txtTrekHight = 17;
 
 //--- START ---
 void setup()
@@ -172,7 +174,7 @@ void setup()
   readEEprom();
   initSpiffs();
   initWiFi();
-  
+
   tft.fillScreen(TFT_BLACK);
   tft.setCursor(40, 90);
   tft.println("Connected to SSID: ");
@@ -229,21 +231,21 @@ void setup()
   delay(1);
 
   tft.setSwapBytes(true);
-  txtSprite.createSprite(250, 25); // Ширина и высота спрайта
+  txtSprite.createSprite(250, txtSpriteHight); // Ширина и высота спрайта
   txtSprite.setTextSize(1);
   txtSprite.setTextColor(TFT_WHITE, TFT_BLACK);
   txtSprite.fillSprite(TFT_BLACK);
   txtSprite.setFreeFont(&CourierCyr10pt8b);
   txtSprite.setTextDatum(TL_DATUM); // Привязка к верхнему левому углу
 
-  txtTrek.createSprite(250, 25); // Название трека
+  txtTrek.createSprite(250, txtTrekHight); // Название трека
   txtTrek.setTextSize(1);
   txtTrek.setTextColor(TFT_WHITE, TFT_BLACK);
   txtTrek.fillSprite(TFT_BLACK);
   txtTrek.setFreeFont(&CourierCyr10pt8b);
   txtTrek.setTextDatum(TL_DATUM); // Привязка к верхнему левому углу
 
-  vuSprite.createSprite(60, 140); // Ширина 60, высота 150
+  vuSprite.createSprite(60, 130); // Ширина 60, высота 150
 
 } // End Setup
 
@@ -276,10 +278,10 @@ void loop()
   if (title_flag && showRadio)
   {
     title_flag = false;
-    txtTrek.fillRect(0, 47, 255, 25, TFT_BLACK);
+    txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
     txtTrek.drawString("                                               ", 0, 0);
     txtTrek.pushSprite(0, 47);
-    txtSprite.fillRect(0, 70, 255, 25, TFT_BLACK);
+    txtSprite.fillRect(0, 70, 255, txtSpriteHight, TFT_BLACK);
     txtSprite.drawString("                                             ", 0, 0);
     txtSprite.pushSprite(0, 70);
 
@@ -295,14 +297,14 @@ void loop()
       tft.setTextSize(1);
       tft.setTextColor(0x9772);
       tft.setFreeFont(&CourierCyr10pt8b);
-      txtTrek.fillRect(0, 47, 255, 25, TFT_BLACK);
+      txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
       txtTrek.drawString(before, 0, 0);
       txtSprite.drawString(after, 320, 0);
     }
   }
 
-  txtTrek.fillRect(0, 47, 255, 25, TFT_BLACK);
-  txtSprite.fillRect(0, 70, 255, 25, TFT_BLACK);
+  txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
+  txtSprite.fillRect(0, 70, 255, txtSpriteHight, TFT_BLACK);
 
   if (enc1.tick())
     myEncoder();
@@ -317,9 +319,9 @@ void loop()
     wifiLevel();
     getClock = true; // получить время при переходе от меню станций
     showRadio = true;
-    vuSprite.createSprite(60, 140);
-    txtSprite.createSprite(250, 25);
-    txtTrek.createSprite(250, 25);
+    vuSprite.createSprite(60, 130);
+    txtSprite.createSprite(250, txtSpriteHight);
+    txtTrek.createSprite(250, txtTrekHight);
     lineondisp();
     printCodecAndBitrate();
     first = true;
@@ -531,8 +533,8 @@ void soundShow()
   int x_show = 0;
   int width = 25;         // ширина
   int space = 3;          // расстояние между каналами
-  int total_height = 136; // Высота VU-метра
-  int y_offset = 84;      // сдиг сверху
+  int total_height = 130; // Высота VU-метра
+  int y_offset = 94;      // сдиг сверху
 
   // Получаем текущие уровни (замените на ваши реальные значения)
   uint16_t vulevel = audio.getVUlevel();
@@ -697,9 +699,9 @@ void myEncoder()
     if (showRadio)
     {
       first = true;
-      txtSprite.createSprite(250, 25);
-      txtTrek.createSprite(250, 25);
-      vuSprite.createSprite(60, 140);
+      txtSprite.createSprite(250, txtSpriteHight);
+      txtTrek.createSprite(250, txtTrekHight);
+      vuSprite.createSprite(60, 130);
       tft.fillScreen(TFT_BLACK);
       printStation(NEWStation);
       getClock = true; // получить время при переходе от меню станций
@@ -1229,9 +1231,9 @@ void onMenu()
     first = true;
     tft.fillRect(0, 0, 320, 240, TFT_BLACK);
     // printStation(NEWStation);
-    txtSprite.createSprite(250, 25);
-    txtTrek.createSprite(250, 25);
-    vuSprite.createSprite(60, 140);
+    txtSprite.createSprite(250, txtSpriteHight);
+    txtTrek.createSprite(250, txtTrekHight);
+    vuSprite.createSprite(60, 130);
     getClock = true; // получить время при переходе от меню станций
     lineondisp();
     // printCodecAndBitrate();
@@ -1388,16 +1390,14 @@ void listStaton()
     String nameStat = StationList[i].substring(0, ind_to_tab);
     String newStat = StationList[i].substring(ind_to_tab + 1, StationList[i].length());
 
-    partlistStation += String("<tr><td class='index-cell'>") + String(i) + String("</td>") + 
-                      String("<td class='name-cell'>") + nameStat + String("</td>") + 
-                      String("<td class='url-cell'><span class='url-text'>") + newStat + String("</span></td></tr>");
-    
-    listRadio = String("<div class='dark-table-wrapper'><table class='dark-table'><thead><tr><th>#</th><th>STATION</th><th>URL</th></tr></thead><tbody>") + 
-                partlistStation + String("</tbody></table></div>");
-     i++;
-  }
-  
+    partlistStation += String("<tr><td class='index-cell'>") + String(i) + String("</td>") +
+                       String("<td class='name-cell'>") + nameStat + String("</td>") +
+                       String("<td class='url-cell'><span class='url-text'>") + newStat + String("</span></td></tr>");
 
+    listRadio = String("<div class='dark-table-wrapper'><table class='dark-table'><thead><tr><th>#</th><th>STATION</th><th>URL</th></tr></thead><tbody>") +
+                partlistStation + String("</tbody></table></div>");
+    i++;
+  }
 }
 
 String processor(const String &var)
