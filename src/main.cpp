@@ -245,7 +245,7 @@ void setup()
   txtTrek.setFreeFont(&CourierCyr10pt8b);
   txtTrek.setTextDatum(TL_DATUM); // Привязка к верхнему левому углу
 
-  vuSprite.createSprite(60, 130); // Ширина 60, высота 150
+  vuSprite.createSprite(60, 140); // Ширина 60, высота 150
 
 } // End Setup
 
@@ -281,9 +281,9 @@ void loop()
     txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
     txtTrek.drawString("                                               ", 0, 0);
     txtTrek.pushSprite(0, 47);
-    txtSprite.fillRect(0, 70, 255, txtSpriteHight, TFT_BLACK);
+    txtSprite.fillRect(0, 64, 255, txtSpriteHight, TFT_BLACK);
     txtSprite.drawString("                                             ", 0, 0);
-    txtSprite.pushSprite(0, 70);
+    txtSprite.pushSprite(0, 64);
 
     String str = MessageToScroll_1;
     char delimiter = '-';
@@ -304,7 +304,7 @@ void loop()
   }
 
   txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
-  txtSprite.fillRect(0, 70, 255, txtSpriteHight, TFT_BLACK);
+  txtSprite.fillRect(0, 64, 255, txtSpriteHight, TFT_BLACK);
 
   if (enc1.tick())
     myEncoder();
@@ -319,7 +319,7 @@ void loop()
     wifiLevel();
     getClock = true; // получить время при переходе от меню станций
     showRadio = true;
-    vuSprite.createSprite(60, 130);
+    vuSprite.createSprite(60, 140);
     txtSprite.createSprite(250, txtSpriteHight);
     txtTrek.createSprite(250, txtTrekHight);
     lineondisp();
@@ -381,7 +381,7 @@ void loop()
         break;
       }
       txtSprite.drawString(after, spriteX, 0);
-      txtSprite.pushSprite(0, 70);
+      txtSprite.pushSprite(0, 64);
     }
     //---Scrolling RIGHT
     if (millis() - lastUpdateForRight > frameInterval)
@@ -533,8 +533,8 @@ void soundShow()
   int x_show = 0;
   int width = 25;         // ширина
   int space = 3;          // расстояние между каналами
-  int total_height = 130; // Высота VU-метра
-  int y_offset = 94;      // сдиг сверху
+  int total_height = 140; // Высота VU-метра
+  int y_offset = 80;      // сдиг сверху
 
   // Получаем текущие уровни (замените на ваши реальные значения)
   uint16_t vulevel = audio.getVUlevel();
@@ -690,7 +690,7 @@ void myEncoder()
     if (!showRadio)
     {
       currentMillis = millis(); // начало отсчета времени простоя
-      tft.fillScreen(TFT_BLACK);
+      tft.fillRect(0, 0, 320, 220, TFT_BLACK);
       txtSprite.deleteSprite();
       txtTrek.deleteSprite();
       vuSprite.deleteSprite();
@@ -701,7 +701,7 @@ void myEncoder()
       first = true;
       txtSprite.createSprite(250, txtSpriteHight);
       txtTrek.createSprite(250, txtTrekHight);
-      vuSprite.createSprite(60, 130);
+      vuSprite.createSprite(60, 140);
       tft.fillScreen(TFT_BLACK);
       printStation(NEWStation);
       getClock = true; // получить время при переходе от меню станций
@@ -1233,7 +1233,7 @@ void onMenu()
     // printStation(NEWStation);
     txtSprite.createSprite(250, txtSpriteHight);
     txtTrek.createSprite(250, txtTrekHight);
-    vuSprite.createSprite(60, 130);
+    vuSprite.createSprite(60, 140);
     getClock = true; // получить время при переходе от меню станций
     lineondisp();
     // printCodecAndBitrate();
