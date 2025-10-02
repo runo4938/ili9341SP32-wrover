@@ -14,7 +14,7 @@ void setupRoutes(AsyncWebServer &server)
     request->send(200, "text/html", listRadio); });
     
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send(SPIFFS, "/index.html", String(), false, processor_playlst); });
+              { request->send(SPIFFS, "/index.html", "text/html", false, processor_playlst); });
 
     server.on("/setting", HTTP_GET, [](AsyncWebServerRequest *requiest)
               { requiest->send(SPIFFS, "/settings.html", String(), false, processor); });
@@ -213,6 +213,7 @@ String processor_playlst(const String &var)
     // Serial.println(listRadio);
     if (var == "nameST")
     {
+        listStaton();
         return listRadio;
     }
     if (var == "version")
