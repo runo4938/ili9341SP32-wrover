@@ -1381,23 +1381,60 @@ void audio_eof_speech(const char *info)
 // }
 
 
+// void listStaton()
+// {
+//   String partlistStation;
+//   uint8_t i = 0;
+//   while (i <= numbStations)
+//   {
+//     int ind_to_scace = StationList[i].indexOf('\t');
+//     String nameStat = StationList[i].substring(0, ind_to_scace);
+
+//     String newStat = StationList[i].substring(ind_to_scace + 1, StationList[i].length());
+
+//     partlistStation += String("<tr><td>") + String(i) + String("</td>") + String("<td>") + nameStat + String("</td>") + String("<td>") + newStat + String("</td></tr>");
+//     listRadio = String("<table class=\"table table-success table-striped\"> <thead><tr><th>№</th><th>Station name</th><th>Station url</th></tr></thead><tbody>") + partlistStation + String("</tbody></table>");
+//     i++;
+//   }
+// }
+// ---------new ListRadio ----------
 void listStaton()
 {
-  String partlistStation;
-  uint8_t i = 0;
-  while (i <= numbStations)
-  {
-    int ind_to_scace = StationList[i].indexOf('\t');
-    String nameStat = StationList[i].substring(0, ind_to_scace);
+    String partlistStation;
+    uint8_t i = 0;
 
-    String newStat = StationList[i].substring(ind_to_scace + 1, StationList[i].length());
+    // Убедитесь, что numbStations — это количество станций (не индекс последней!)
+    // Если StationList[0..numbStations-1], то цикл должен быть i < numbStations
+    while (i < numbStations) // ← важно: <, а не <=
+    {
+        int ind_to_scace = StationList[i].indexOf('\t');
+        if (ind_to_scace == -1) {
+            // Защита от некорректных строк
+            i++;
+            continue;
+        }
 
-    partlistStation += String("<tr><td>") + String(i) + String("</td>") + String("<td>") + nameStat + String("</td>") + String("<td>") + newStat + String("</td></tr>");
-    listRadio = String("<table class=\"table table-success table-striped\"> <thead><tr><th>№</th><th>Station name</th><th>Station url</th></tr></thead><tbody>") + partlistStation + String("</tbody></table>");
-    i++;
-  }
+        String nameStat = StationList[i].substring(0, ind_to_scace);
+        String urlStat = StationList[i].substring(ind_to_scace + 1);
+
+        String rowClass = "";
+        if (i == NEWStation) {
+            rowClass = " class=\"current-station\"";
+        }
+
+        partlistStation += "<tr" + rowClass + "><td>" + String(i) + 
+                          "</td><td>" + nameStat + 
+                          "</td><td>" + urlStat + 
+                          "</td></tr>";
+        i++;
+    }
+
+    listRadio = "<table class=\"table table-striped\">"
+                "<thead><tr><th>№</th><th>Station name</th><th>Station url</th></tr></thead>"
+                "<tbody>" + partlistStation + "</tbody></table>";
 }
 
+// ---------end ---------------
 String processor(const String &var)
 {
   if (var == "SLIDERVALUE")
