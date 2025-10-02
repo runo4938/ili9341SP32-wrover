@@ -8,7 +8,11 @@ String filelist = "";
 // Функция настройки всех роутов
 void setupRoutes(AsyncWebServer &server)
 {
-
+    server.on("/stations", HTTP_GET, [](AsyncWebServerRequest *request)
+              {
+    listStaton(); // генерирует listRadio с актуальным currentStationIndex
+    request->send(200, "text/html", listRadio); });
+    
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(SPIFFS, "/index.html", String(), false, processor_playlst); });
 
@@ -93,14 +97,16 @@ void setupRoutes(AsyncWebServer &server)
     ////------------------------------------
     server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-              request->send(200, "text/plain", "OK - Next"); // SPIFFS, "/index.html", String(), false, processor_playlst);
-              onMenuOff(); });
+                onMenuOff();  
+                request->send(200, "text/plain", "OK - Next"); });
+
     //    Если переключили станцию назад
     //----------------------------------
     server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-              request->send(200,"text/plain", "OK");
-              onMenuOn(); });
+                onMenuOn(); 
+                request->send(200,"text/plain", "OK");
+                });
     server.on("/menu", HTTP_GET, [](AsyncWebServerRequest *request)
               {
              request->send(20,"text/plain", "OK");

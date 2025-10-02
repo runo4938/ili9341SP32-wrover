@@ -1,6 +1,5 @@
-<!DOCTYPE HTML>
+<!DOCTYPE HTML><html lang="en">
 <html>
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -206,6 +205,18 @@
             font-weight: bold;
             color: #0288d1;
         }
+    
+
+       .styled-table tbody tr.current-station {
+        background-color: #bbdefb !important;
+        font-weight: bold;
+        color: #0d47a1 !important;
+    }
+
+    .styled-table tbody tr.current-station:hover {
+        background-color: #90caf9 !important;
+    }
+        
     </style>
 </head>
 
@@ -242,26 +253,37 @@
             </div>
         </div>
     </div>
+<script>
+    function updateStationsTable() {
+        fetch("/stations")
+            .then(response => response.text())
+            .then(html => {
+                document.querySelector('.table-container').innerHTML = html;
+            })
+            .catch(err => console.error("Ошибка обновления таблицы:", err));
+    }
 
-    <script>
-        function toggleCheckbox(element) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/on", true);
-            xhr.send();
-        }
+    function sendCommand(url) {
+        fetch(url)
+            .then(() => {
+                // После успешной команды — обновляем таблицу
+                updateStationsTable();
+            })
+            .catch(err => console.error("Ошибка команды:", err));
+    }
 
-        function toggleCheckboxoff(element) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/off", true);
-            xhr.send();
-        }
+    function toggleCheckbox(element) {
+        sendCommand("/on");
+    }
 
-        function toggleCheckboxmenu(element) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", "/menu", true);
-            xhr.send();
-        }
-    </script>
+    function toggleCheckboxoff(element) {
+        sendCommand("/off");
+    }
+
+    function toggleCheckboxmenu(element) {
+        sendCommand("/menu");
+    }
+</script>
 </body>
 
 </html>

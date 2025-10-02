@@ -1429,7 +1429,7 @@ void listStaton()
         i++;
     }
 
-    listRadio = "<table class=\"table table-striped\">"
+    listRadio = "<table class=\"styled-table\">"
                 "<thead><tr><th>№</th><th>Station name</th><th>Station url</th></tr></thead>"
                 "<tbody>" + partlistStation + "</tbody></table>";
 }
