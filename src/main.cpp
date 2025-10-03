@@ -66,7 +66,7 @@ String StationList[MAX_STATIONS];  // Реальные станции в мас�
 String nameStations[MAX_STATIONS]; // Наименования станций
 bool getClock = true;              // Получать время только при запуске
 bool first = true;                 // Вывести дату и день недели
-
+bool volUpdate = true;
 String listRadio; // радиостанции на странице
 unsigned long lastTime = 0;
 unsigned long lastTime_ssid = 0;
@@ -88,7 +88,7 @@ bool stations;         // Станция вверх или вниз (true or fal
 
 EncButton enc1(CLK, DT, SW);
 File file;
-bool volUpdate = true;
+
 String sliderValue;
 const char *PARAM_INPUT = "value";
 bool opened = false;
@@ -1318,93 +1318,17 @@ void audio_showstreamtitle(const char *info)
   MessageToScroll_1 += F(" ");
   MessageToScroll_1 = utf8rus(MessageToScroll_1);
 }
-// optional
-/* void audio_info(const char *info)
-{
-  Serial.print("info        ");
-  Serial.println(info);
-}
-void audio_id3data(const char *info)
-{ // id3 metadata
-  Serial.print("id3data     ");
-  Serial.println(info);
-}
-void audio_eof_audio(const char *info)
-{ // end of file
-  Serial.print("eof_audio     ");
-  Serial.println(info);
-}
-*/
+
 void audio_bitrate(const char *info)
 {
   bitrate = info;
 }
-/*
-void audio_commercial(const char *info)
-{ // duration in sec
-  Serial.print("commercial  ");
-  Serial.println(info);
-}
-void audio_icyurl(const char *info)
-{ // homepage
-  Serial.print("icyurl      ");
-  Serial.println(info);
 
-}
-void audio_lasthost(const char *info)
-{ // stream URL played
-  Serial.print("lasthost    ");
-  Serial.println(info);
-}
-void audio_eof_speech(const char *info)
-{
-  Serial.print("eof_speech  ");
-  Serial.println(info);
-}
-*/
-// для старого меню
-// void listStaton()
-// {
-//   String partlistStation;
-//   uint8_t i = 0;
-//   while (i <= numbStations)
-//   {
-//     int ind_to_tab = StationList[i].indexOf('\t');
-//     String nameStat = StationList[i].substring(0, ind_to_tab);
-
-//     String newStat = StationList[i].substring(ind_to_tab + 1, StationList[i].length());
-
-//     partlistStation += String("<tr><td>") + String(i) + String("</td>") + String("<td>") + nameStat + String("</td>") + String("<td>") + newStat + String("</td></tr>");
-//     listRadio = String("<table class=\"table table-success table-striped\"> <thead><tr><th>№</th><th>Station name</th><th>Station url</th></tr></thead><tbody>") + partlistStation + String("</tbody></table>");
-//     i++;
-//   }
-// }
-
-
-// void listStaton()
-// {
-//   String partlistStation;
-//   uint8_t i = 0;
-//   while (i <= numbStations)
-//   {
-//     int ind_to_scace = StationList[i].indexOf('\t');
-//     String nameStat = StationList[i].substring(0, ind_to_scace);
-
-//     String newStat = StationList[i].substring(ind_to_scace + 1, StationList[i].length());
-
-//     partlistStation += String("<tr><td>") + String(i) + String("</td>") + String("<td>") + nameStat + String("</td>") + String("<td>") + newStat + String("</td></tr>");
-//     listRadio = String("<table class=\"table table-success table-striped\"> <thead><tr><th>№</th><th>Station name</th><th>Station url</th></tr></thead><tbody>") + partlistStation + String("</tbody></table>");
-//     i++;
-//   }
-// }
 // ---------new ListRadio ----------
 void listStaton()
 {
     String partlistStation;
     uint8_t i = 0;
-
-    // Убедитесь, что numbStations — это количество станций (не индекс последней!)
-    // Если StationList[0..numbStations-1], то цикл должен быть i < numbStations
     while (i < numbStations) // ← важно: <, а не <=
     {
         int ind_to_scace = StationList[i].indexOf('\t');

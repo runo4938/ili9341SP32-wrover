@@ -30,6 +30,7 @@ extern bool volUpdate;
 extern File file;
 extern String listRadio; // радиостанции на странице
 
+
 #define U_PART U_SPIFFS
 
 static unsigned long lastUpdate = 0;
@@ -59,6 +60,7 @@ void stationDisplay(int st);
 void deleteFile(fs::FS &fs, const String &path);
 void onMenu();
 void onMenuOff();
+
 // void handleDoUpdate(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final);
 void newrelease();
 void onMenuOn();
