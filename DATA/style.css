@@ -4,7 +4,7 @@
  * {
      box-sizing: border-box;
  }
- body {font-family: 'Roboto', Arial, sans-serif;margin: 0;padding: 0;background-color: #f8f9fa;color: var(--text-color);line-height: 1.6;padding-top: 80px;}
+ body {font-family: 'Roboto', Arial, sans-serif;margin: 0;padding: 0;background-color: #f8f9fa;color: var(--text-color);line-height: 1.6;padding-top: 40px;}
  .header {position: fixed;top: 0;left: 0;width: 100%;background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));color: white;padding: 15px 0;box-shadow: var(--shadow);z-index: 1000;}
 .header h3 {
      margin: 0;
@@ -20,8 +20,8 @@
      background: white;
      border-radius: var(--border-radius);
      box-shadow: var(--shadow);
-     padding: 25px;
-     margin-bottom: 25px;
+     padding: 5px;
+     margin-bottom: 5px;
      border: none;
  }
  .btn {

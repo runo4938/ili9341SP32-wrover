@@ -135,8 +135,8 @@ void nextStation(bool stepStation);
 void clock_on_core0();
 void soundShow();
 void lineondisp();
-void audioVolume();
-void filePosition();
+
+
 static void rebootEspWithReason(String reason);
 void performUpdate(Stream &updateSource, size_t updateSize);
 String trim(const String &str);
@@ -1329,7 +1329,7 @@ void listStaton()
 {
     String partlistStation;
     uint8_t i = 0;
-    while (i < numbStations) // ← важно: <, а не <=
+    while (i <= numbStations) // ← важно: <, а не <=
     {
         int ind_to_scace = StationList[i].indexOf('\t');
         if (ind_to_scace == -1) {

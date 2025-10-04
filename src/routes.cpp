@@ -8,19 +8,24 @@ String filelist = "";
 uint8_t currentVolumePercent = 50; // 0–100%
 
 // Преобразует 0–100% в 21–0 (инверсия!)
-uint8_t percentToVolume(uint8_t percent) {
+uint8_t percentToVolume(uint8_t percent)
+{
     // Ограничиваем вход
-    if (percent > 100) percent = 100;
+    if (percent > 21)
+        percent = 21;
     // Маппинг: 0% → 21, 100% → 0
-    return (percent * 21) / 100;
+    return percent;
 }
 
-uint8_t volumeToPercent(uint8_t vol) {
-    if (vol > 21) vol = 21;
-    return (vol * 100) / 21;
+uint8_t volumeToPercent(uint8_t vol)
+{
+    if (vol > 21)
+        vol = 21;
+    return vol;
 }
 
-void setVolumePercent(uint8_t percent) {
+void setVolumePercent(uint8_t percent)
+{
     currentVolumePercent = percent;
     uint8_t vol = percentToVolume(percent);
     audio.setVolume(vol); // ← основной вызов!
@@ -36,13 +41,12 @@ void setupRoutes(AsyncWebServer &server)
               {
     listStaton(); // генерирует listRadio с актуальным currentStationIndex
     request->send(200, "text/html", listRadio); });
-    
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send(SPIFFS, "/index.html", "text/html",false,processor_playlst); });
 
-    server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request) {
-        request->send(SPIFFS, "/style.css", "text/css");
-    });
+    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+                { request->send(SPIFFS, "/index.html", String(), false, processor_playlst); });
+
+    server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request)
+              { request->send(SPIFFS, "/style.css", "text/css"); });
 
     server.on("/setting", HTTP_GET, [](AsyncWebServerRequest *requiest)
               { requiest->send(SPIFFS, "/settings.html", String(), false, processor); });
@@ -72,10 +76,10 @@ void setupRoutes(AsyncWebServer &server)
               { request->send(204);
                newrelease(); });
 
-               server.on("/filesystem", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/filesystem", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(SPIFFS, "/fs.html", String(), false, processor_update); });
 
-              server.on("/reboot", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/reboot", HTTP_GET, [](AsyncWebServerRequest *request)
               {
     request->send(200, "text/plain", "Device will reboot in 2 seconds");
     delay(2000);
@@ -128,20 +132,20 @@ void setupRoutes(AsyncWebServer &server)
     server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request)
               {
                 onMenuOn(); 
-                request->send(200,"text/plain", "OK");
-                });
+                request->send(200,"text/plain", "OK"); });
     server.on("/menu", HTTP_GET, [](AsyncWebServerRequest *request)
               {
              request->send(20,"text/plain", "OK");
              onMenu(); });
 
     // Добавьте остальные роуты здесь...
-    server.on("/volume", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/volume", HTTP_GET, [](AsyncWebServerRequest *request)
+              {
     String json = "{\"percent\":" + String(currentVolumePercent) + "}";
-    request->send(200, "application/json", json);
-});
+    request->send(200, "application/json", json); });
 
-server.on("/set_volume", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/set_volume", HTTP_GET, [](AsyncWebServerRequest *request)
+              {
     if (request->hasParam("percent")) {
         String pStr = request->getParam("percent")->value();
         uint8_t percent = pStr.toInt();
@@ -151,8 +155,7 @@ server.on("/set_volume", HTTP_GET, [](AsyncWebServerRequest *request) {
             return;
         }
     }
-    request->send(400, "text/plain", "Invalid percent (0-100)");
-});
+    request->send(400, "text/plain", "Invalid percent (0-100)"); });
 
     server.onNotFound([](AsyncWebServerRequest *request)
                       { request->send(404, "text/plain", "Not Found"); });
@@ -247,13 +250,13 @@ void printProgress(size_t prg, size_t sz)
     Serial.printf("Progress: %d%%\n", (prg * 100) / content_len);
 }
 
-String processor_playlst(const String& var)
+String processor_playlst(const String &var)
 {
     if (var == "nameST")
     {
         return listRadio;
     }
-   
+
     return String();
 }
 
