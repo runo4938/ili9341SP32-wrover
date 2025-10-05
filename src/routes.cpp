@@ -5,7 +5,7 @@
 
 String filelist = "";
 #define VOLUME_EEPROM_ADDR 6
-uint8_t currentVolumePercent = 50; // 0–100%
+uint8_t currentVolumePercent = 10; // 0–100%
 
 // Преобразует 0–100% в 21–0 (инверсия!)
 uint8_t percentToVolume(uint8_t percent)
@@ -13,7 +13,6 @@ uint8_t percentToVolume(uint8_t percent)
     // Ограничиваем вход
     if (percent > 21)
         percent = 21;
-    // Маппинг: 0% → 21, 100% → 0
     return percent;
 }
 
@@ -138,6 +137,7 @@ void setupRoutes(AsyncWebServer &server)
     // Добавьте остальные роуты здесь...
     server.on("/volume", HTTP_GET, [](AsyncWebServerRequest *request)
               {
+    currentVolumePercent = EEPROM.read(VOLUME_EEPROM_ADDR);
     String json = "{\"percent\":" + String(currentVolumePercent) + "}";
     request->send(200, "application/json", json); });
 
@@ -145,14 +145,14 @@ void setupRoutes(AsyncWebServer &server)
               {
     if (request->hasParam("percent")) {
         String pStr = request->getParam("percent")->value();
-        uint8_t percent = pStr.toInt();
-        if (percent <= 100) {
+        uint16_t percent = pStr.toInt();
+        if (percent <= 21) {
             setVolumePercent(percent);
             request->send(200, "text/plain", "OK");
             return;
         }
     }
-    request->send(400, "text/plain", "Invalid percent (0-100)"); });
+    request->send(400, "text/plain", "Invalid percent (0-21)"); });
 
     server.onNotFound([](AsyncWebServerRequest *request)
                       { request->send(404, "text/plain", "Not Found"); });

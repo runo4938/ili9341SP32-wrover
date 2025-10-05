@@ -1,7 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <html>
-
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
 </head>
-
 <body>
     <div class="container">
         <div class="card text-center">
@@ -34,13 +32,12 @@
             </div>
         </div>
         <div class="card">
-          
             <div class="volume-control text-center" style="padding: 15px; display: inline-block;">
                 <label>Volume</label>
                 <input type="range" id="volumeSlider" min="0" max="21" value="5" class="form-control-range"
                     style="width: 400px; margin: 0 auto; display: inline-block;">
                 <div id="volumeValue" style="margin-top: 10px; font-size: 18px; display: inline-block;">
-                    <span id="volPercent">70</span>
+                    <span id="volPercent">10</span>
                 </div
             </div>
         </div>
@@ -51,7 +48,6 @@
             </div>
         </div>
     </div>
-
     <script>
         function updateStationsTable() {
             fetch("/stations")
@@ -83,7 +79,7 @@
             fetch('/volume')
                 .then(response => response.json())
                 .then(data => {
-                    const percent = data.percent || 50;
+                    const percent = data.percent || 10;
                     document.getElementById('volumeSlider').value = percent;
                     document.getElementById('volPercent').textContent = percent;
                 })

@@ -716,7 +716,8 @@ void myEncoder()
     audio.setVolume(audiovol);
     EEPROM.write(6, audiovol);
     EEPROM.commit();
-    filePosition();
+    audioVolume();
+    // filePosition();
   }
 
   if (enc1.leftH())
@@ -726,7 +727,8 @@ void myEncoder()
     audio.setVolume(audiovol);
     EEPROM.write(6, audiovol);
     EEPROM.commit();
-    filePosition();
+    audioVolume();
+    // filePosition();
   }
   if (enc1.step(2))
   {
@@ -1417,28 +1419,32 @@ void lineondisp()
   audioVolume();
 }
 
-int volumeLevel;
+//**********************************
+//  Уровень громкости
+//**********************************
 int x_FP = 75, y_FP = ypos + 13; // position in line
 void audioVolume()
 {
-  volumeLevel = audio.getVolume() * 10;
-  tft.fillRect(x_FP, y_FP, 242, 5, TFT_BLACK);
-  tft.drawRect(x_FP, y_FP, 242, 6, color_volume);
+  int16_t volumeLevel = audio.getVolume() * 10;
+  tft.fillRect(x_FP, y_FP, 210, 5, TFT_BLACK);
+  tft.drawRect(x_FP, y_FP, 210, 6, color_volume);
   tft.fillRect(x_FP, y_FP, volumeLevel, 6, color_volume);
+  tft.setTextSize(1);
+  tft.setFreeFont(RU8);
+  tft.fillRect(290,y_FP-5,20,17,TFT_BLACK);
+  tft.drawString(String(volumeLevel/10),290,y_FP-5);
 }
-//**********************************
-// File position Уровень громкости
-//**********************************
-int x1_FP = 75, y1_FP = ypos + 12; // position in line
-void filePosition()
-{
-  Serial.print("Volume = ");
-  Serial.println(audiovol);
-  audiovol = audio.getVolume();
-  tft.fillRect(x1_FP, y1_FP - 2, 248, 8, TFT_BLACK);
-  tft.drawRect(x1_FP, y1_FP, 248, 6, TFT_GREEN);
-  tft.fillRect(x1_FP, y1_FP, audiovol * 10, 6, TFT_GREEN);
-}
+
+// int x1_FP = 75, y1_FP = ypos + 12; // position in line
+// void filePosition()
+// {
+//   Serial.print("Volume = ");
+//   Serial.println(audiovol);
+//   audiovol = audio.getVolume();
+//   tft.fillRect(x1_FP, y1_FP - 2, 248, 8, TFT_BLACK);
+//   tft.drawRect(x1_FP, y1_FP, 248, 6, TFT_GREEN);
+//   tft.fillRect(x1_FP, y1_FP, audiovol * 10, 6, TFT_GREEN);
+// }
 
 static void rebootEspWithReason(String reason)
 {
