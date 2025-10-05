@@ -77,7 +77,6 @@ table {
 input{
   background-color: #12cd34;
   color: #000;
- 
 }
   </style>
   </head>
@@ -112,7 +111,6 @@ input{
           </form>   
       </tr>
         </table>
-
         <div align="center">
             <p><label> Volume</label>
            <input type="range" class="btnSlider" onchange="updateSliderPWM(this)"id="pwmSlider"
@@ -123,12 +121,10 @@ input{
           <h2 align="center">Reset password and SSID for new connection</h2>
         <a class="btn" href="/reboot"
           onclick="return confirm('Сбросить пароль?')">Reset</a>
-
         <input type="button" class="btn" onclick="location.href='/';"
           value="Main page">
 </div>
       </div>
-    
  <script>
 function updateSliderPWM(element) {
   var sliderValue = document.getElementById("pwmSlider").value;
@@ -139,40 +135,37 @@ function updateSliderPWM(element) {
   xhr.send();
 }
 
-function toggleCheckbox(element) {
-  var xhr = new XMLHttpRequest();
-  if(element.checked){ xhr.open("GET", "/rotation1", true); }
-  else { xhr.open("GET", "/rotation3", true); }
-  xhr.send();
-}
+// function toggleCheckbox(element) {
+//   var xhr = new XMLHttpRequest();
+//   if(element.checked){ xhr.open("GET", "/rotation1", true); }
+//   else { xhr.open("GET", "/rotation3", true); }
+//   xhr.send();
+// }
 
-setInterval(function ( ) {
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      var inputChecked;
-      var outputStateM;
-      if( this.responseText == 1){ 
-        inputChecked = true;
-        outputStateM = "On";
-      }
-      else { 
-        inputChecked = false;
-        outputStateM = "Off";
-      }
-      document.getElementById("output").checked = inputChecked;
-      document.getElementById("outputState").innerHTML = outputStateM;
-    }
-  };
-  xhttp.open("GET", "/state", true);
-  xhttp.send();
-}, 1000 ) ;
+// setInterval(function ( ) {
+//   var xhttp = new XMLHttpRequest();
+//   xhttp.onreadystatechange = function() {
+//     if (this.readyState == 4 && this.status == 200) {
+//       var inputChecked;
+//       var outputStateM;
+//       if( this.responseText == 1){ 
+//         inputChecked = true;
+//         outputStateM = "On";
+//       }
+//       else { 
+//         inputChecked = false;
+//         outputStateM = "Off";
+//       }
+//       document.getElementById("output").checked = inputChecked;
+//       document.getElementById("outputState").innerHTML = outputStateM;
+//     }
+//   };
+//   xhttp.open("GET", "/state", true);
+//   xhttp.send();
+// }, 1000 ) ;
 
 /* sdfsdfsdfsdf */
 /* sdfsdf                           */
-
-
-
 </script>
     </body>
   </html>
