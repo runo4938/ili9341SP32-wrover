@@ -275,6 +275,11 @@ int x_sprite = 65;
 uint8_t ssid_show = 1;
 void loop()
 {
+  if (volUpdate)
+      {
+        audioVolume();
+        volUpdate = false;
+      }
   if (title_flag && showRadio)
   {
     title_flag = false;
@@ -472,11 +477,6 @@ void loop()
       timer_prev = timer_curr;
       direct = false; // random(0, 2);
       wifiLevel();
-      if (volUpdate)
-      {
-        audioVolume();
-        volUpdate = false;
-      }
     }
 
     if ((millis() - lastTime_ssid) > timerDelay_ssid)
