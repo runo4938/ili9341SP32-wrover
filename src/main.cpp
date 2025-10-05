@@ -1178,7 +1178,7 @@ void wifiLevel()
 }
 
 // Движение по меню через сайт
-void onMenuOn()
+void onMenuPrev()
 {
   if (showRadio)
   {
@@ -1195,7 +1195,7 @@ void onMenuOn()
   }
 }
 // Движение по меню через сайт
-void onMenuOff()
+void onMenuNext()
 {
   if (showRadio)
   {

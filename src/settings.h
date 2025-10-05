@@ -59,13 +59,13 @@ const int spriteY = 64; // Y-позиция спрайта на экране
 void stationDisplay(int st);
 void deleteFile(fs::FS &fs, const String &path);
 void onMenu();
-void onMenuOff();
+void onMenuNext();
 void filePosition();
 void audioVolume();
 
 // void handleDoUpdate(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final);
 void newrelease();
-void onMenuOn();
+void onMenuPrev();
 void notFound(AsyncWebServerRequest *request);
 void handleDoUpload(AsyncWebServerRequest *request, String filename, size_t index, uint8_t *data, size_t len, bool final);
 void initSpiffs();

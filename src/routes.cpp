@@ -105,35 +105,32 @@ void setupRoutes(AsyncWebServer &server)
               {
     String inputMessage;
     String inputParam;
-    // GET input1 value on <ESP_IP>/update?state=<inputMessage>
     if (request->hasParam(PARAM)) {
       inputMessage = request->getParam(PARAM)->value();
       inputParam = PARAM;
-
       deleteFile(SPIFFS, inputMessage);
     }
     else {
       inputMessage = "No message sent";
       inputParam = "none";
     }
-
     request->send(200, "text/plain", "OK"); });
 
     //------------------------------------
     // Если переключили станцию вперед
     ////------------------------------------
-    server.on("/off", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/Next", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-                onMenuOff();  
+                onMenuNext();  
                 request->send(200, "text/plain", "OK - Next"); });
 
     //    Если переключили станцию назад
     //----------------------------------
-    server.on("/on", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/Prev", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-                onMenuOn(); 
+                onMenuPrev(); 
                 request->send(200,"text/plain", "OK"); });
-    server.on("/menu", HTTP_GET, [](AsyncWebServerRequest *request)
+    server.on("/Menu", HTTP_GET, [](AsyncWebServerRequest *request)
               {
              request->send(20,"text/plain", "OK");
              onMenu(); });

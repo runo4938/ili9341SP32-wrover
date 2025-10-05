@@ -69,13 +69,13 @@
                 .catch(err => console.error("Ошибка команды:", err));
         }
         function toggleCheckbox(element) {
-            sendCommand("/on");
+            sendCommand("/Prev");
         }
         function toggleCheckboxoff(element) {
-            sendCommand("/off");
+            sendCommand("/Next");
         }
         function toggleCheckboxmenu(element) {
-            sendCommand("/menu");
+            sendCommand("/Menu");
         }
 
         // Загрузка текущей громкости при старте
