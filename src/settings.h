@@ -30,6 +30,9 @@ extern bool volUpdate;
 extern File file;
 extern String listRadio; // радиостанции на странице
 
+extern uint8_t NEWStation;
+extern int numbStations;        // количество радиостанций
+
 
 #define U_PART U_SPIFFS
 

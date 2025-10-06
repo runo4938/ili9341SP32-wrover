@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/style.css">
 </head>
+
 <body>
     <div class="container">
         <div class="card text-center">
@@ -38,64 +40,82 @@
                     style="width: 400px; margin: 0 auto; display: inline-block;">
                 <div id="volumeValue" style="margin-top: 10px; font-size: 18px; display: inline-block;">
                     <span id="volPercent">10</span>
-                </div
+                </div </div>
+            </div>
+
+            <div class="card">
+                <div class="table-container">
+                    %nameST%
+                </div>
             </div>
         </div>
+        <script>
+            function updateStationsTable() {
+                fetch("/stations")
+                    .then(response => response.text())
+                    .then(html => {
+                        document.querySelector('.table-container').innerHTML = html;
+                    })
+                    .catch(err => console.error("Ошибка обновления таблицы:", err));
+            }
+            function sendCommand(url) {
+                fetch(url)
+                    .then(() => {
+                        updateStationsTable();
+                    })
+                    .catch(err => console.error("Ошибка команды:", err));
+            }
+            function toggleCheckbox(element) {
+                sendCommand("/Prev");
+            }
+            function toggleCheckboxoff(element) {
+                sendCommand("/Next");
+            }
+            function toggleCheckboxmenu(element) {
+                sendCommand("/Menu");
+            }
 
-        <div class="card">
-            <div class="table-container">
-                %nameST%
-            </div>
-        </div>
-    </div>
-    <script>
-        function updateStationsTable() {
-            fetch("/stations")
-                .then(response => response.text())
-                .then(html => {
-                    document.querySelector('.table-container').innerHTML = html;
-                })
-                .catch(err => console.error("Ошибка обновления таблицы:", err));
-        }
-        function sendCommand(url) {
-            fetch(url)
-                .then(() => {
-                    updateStationsTable();
-                })
-                .catch(err => console.error("Ошибка команды:", err));
-        }
-        function toggleCheckbox(element) {
-            sendCommand("/Prev");
-        }
-        function toggleCheckboxoff(element) {
-            sendCommand("/Next");
-        }
-        function toggleCheckboxmenu(element) {
-            sendCommand("/Menu");
-        }
+            // Загрузка текущей громкости при старте
+            document.addEventListener('DOMContentLoaded', function () {
+                fetch('/volume')
+                    .then(response => response.json())
+                    .then(data => {
+                        const percent = data.percent || 10;
+                        document.getElementById('volumeSlider').value = percent;
+                        document.getElementById('volPercent').textContent = percent;
+                    })
+                    .catch(err => console.error("Не удалось загрузить громкость:", err));
+            });
 
-        // Загрузка текущей громкости при старте
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('/volume')
-                .then(response => response.json())
-                .then(data => {
-                    const percent = data.percent || 10;
-                    document.getElementById('volumeSlider').value = percent;
-                    document.getElementById('volPercent').textContent = percent;
-                })
-                .catch(err => console.error("Не удалось загрузить громкость:", err));
-        });
+            // Отправка при изменении
+            document.getElementById('volumeSlider').addEventListener('input', function () {
+                const percent = this.value;
+                fetch(`/set_volume?percent=${percent}`)
+                    .then(() => {
+                        document.getElementById('volPercent').textContent = percent;
+                    })
+                    .catch(err => console.error("Ошибка установки громкости:", err));
+            });
 
-        // Отправка при изменении
-        document.getElementById('volumeSlider').addEventListener('input', function () {
-            const percent = this.value;
-            fetch(`/set_volume?percent=${percent}`)
-                .then(() => {
-                    document.getElementById('volPercent').textContent = percent;
-                })
-                .catch(err => console.error("Ошибка установки громкости:", err));
-        });
-    </script>
+            // Делегирование: клик по любой строке с data-station-id
+            document.addEventListener('click', function (e) {
+                const row = e.target.closest('.station-row');
+                if (row) {
+                    const stationId = row.getAttribute('data-station-id');
+                    if (stationId !== null) {
+                        sendStationCommand(stationId);
+                    }
+                }
+            });
+
+            function sendStationCommand(stationId) {
+                fetch(`/play_station?station=${stationId}`)
+                    .then(() => {
+                        updateStationsTable(); // обновить таблицу, чтобы выделить новую текущую станцию
+                    })
+                    .catch(err => console.error("Ошибка переключения станции:", err));
+            }
+        </script>
 </body>
 
 </html>

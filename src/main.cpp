@@ -1345,13 +1345,20 @@ void listStaton()
 
         String rowClass = "";
         if (i == NEWStation) {
-            rowClass = " class=\"current-station\"";
+            rowClass = "current-station";
         }
 
-        partlistStation += "<tr" + rowClass + "><td>" + String(i) + 
-                          "</td><td>" + nameStat + 
-                          "</td><td>" + urlStat + 
-                          "</td></tr>";
+        // partlistStation += "<tr" + rowClass + "><td>" + String(i) + 
+        //                   "</td><td>" + nameStat + 
+        //                   "</td><td>" + urlStat + 
+        //                   "</td></tr>";
+
+        partlistStation += "<tr class=\"station-row " + rowClass + "\" data-station-id=\"" + String(i) + "\""  ">"
+                  "<td>" + String(i) + "</td>"
+                  "<td>" + nameStat + "</td>"
+                  "<td>" + urlStat + "</td>"
+                  "</tr>";
+
         i++;
     }
 

@@ -154,6 +154,21 @@ void setupRoutes(AsyncWebServer &server)
     }
     request->send(400, "text/plain", "Invalid percent (0-21)"); });
 
+    server.on("/play_station", HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (request->hasParam("station")) {
+        String idStr = request->getParam("station")->value();
+        int stationIndex = idStr.toInt();
+
+        if (stationIndex >= 0 && stationIndex < numbStations) {
+            NEWStation = stationIndex;
+            // startPlayingCurrentStation(); // ваша функция воспроизведения
+            request->send(200, "text/plain", "OK");
+            return;
+        }
+    }
+    request->send(400, "text/plain", "Invalid station");
+});
+
     server.onNotFound([](AsyncWebServerRequest *request)
                       { request->send(404, "text/plain", "Not Found"); });
 }

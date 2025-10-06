@@ -126,3 +126,11 @@
 .styled-table tbody tr.current-station:hover {
 background-color: #90caf9 !important;
 }
+.station-row {
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.station-row:hover {
+    background-color: #e8f5e9 !important;
+}
