@@ -159,7 +159,7 @@ void setupRoutes(AsyncWebServer &server)
         String idStr = request->getParam("station")->value();
         int stationIndex = idStr.toInt();
 
-        if (stationIndex >= 0 && stationIndex < numbStations) {
+        if (stationIndex >= 0 && stationIndex <= numbStations) {
             NEWStation = stationIndex;
             // startPlayingCurrentStation(); // ваша функция воспроизведения
             request->send(200, "text/plain", "OK");
