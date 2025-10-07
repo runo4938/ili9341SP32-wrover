@@ -267,11 +267,7 @@ void Task1code(void *pvParameters)
 //*******************************
 unsigned long timer_prev = 0;
 int timer_interval = 3000;
-bool allow = true;
 int timer_interval_W = 4000;
-bool allow_W = true;
-bool direct, direct1;
-int x_sprite = 65;
 uint8_t ssid_show = 1;
 void loop()
 {
@@ -473,9 +469,9 @@ void loop()
     unsigned long timer_curr = millis();
     if (timer_curr - timer_prev >= timer_interval) // 2 sec
     {
-      allow = !allow;
+      //allow = !allow;
       timer_prev = timer_curr;
-      direct = false; // random(0, 2);
+     // direct = false; // random(0, 2);
       wifiLevel();
     }
 
@@ -717,7 +713,6 @@ void myEncoder()
     EEPROM.write(6, audiovol);
     EEPROM.commit();
     audioVolume();
-    // filePosition();
   }
 
   if (enc1.leftH())
@@ -728,7 +723,6 @@ void myEncoder()
     EEPROM.write(6, audiovol);
     EEPROM.commit();
     audioVolume();
-    // filePosition();
   }
   if (enc1.step(2))
   {
@@ -743,10 +737,9 @@ void myEncoder()
 //----------------------------------
 // ******* Menu stations ***********
 //----------------------------------
-uint16_t TFT_DARKBROWN = tft.color565(96, 96, 96);
-uint16_t TFT_DARKGREY1 = tft.color565(128, 128, 128);
-uint16_t TFT_Y1 = tft.color565(255, 204, 153);
-
+// uint16_t TFT_DARKBROWN = tft.color565(96, 96, 96);
+// uint16_t TFT_DARKGREY1 = tft.color565(128, 128, 128);
+// uint16_t TFT_Y1 = tft.color565(255, 204, 153);
 // Вывод плейлиста на экран с центрированием текущей станции
 void stationDisplay(int currentStation)
 {
@@ -782,7 +775,6 @@ void stationDisplay(int currentStation)
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
     tft.drawString(utf8rus(displayStations[i]), 65, yPos);
   }
-
   // Выделяем текущую станцию
   int highlightY = HIGHLIGHT_POS * LINE_HEIGHT;
   tft.fillRect(65, highlightY, 242, LINE_HEIGHT, ST_BG);
@@ -1147,7 +1139,6 @@ void wifiLevel()
 {
   uint16_t x_wifi = 140, y_wifi = ypos;
   int8_t rssi = WiFi.RSSI();
-
   // Определяем количество полосок по уровню сигнала
   int bars;
   if (rssi >= -55)
@@ -1314,7 +1305,7 @@ void audio_showstreamtitle(const char *info)
   title_flag = true;
   show_title = true;
   MessageToScroll_1 = info;
-  width_txt = tft.textWidth(MessageToScroll_1);
+ // width_txt = tft.textWidth(MessageToScroll_1);
   MessageToScroll_1 = F(" ");
   MessageToScroll_1 += trim(info);
   MessageToScroll_1 += F(" ");
@@ -1347,18 +1338,11 @@ void listStaton()
         if (i == NEWStation) {
             rowClass = "current-station";
         }
-
-        // partlistStation += "<tr" + rowClass + "><td>" + String(i) + 
-        //                   "</td><td>" + nameStat + 
-        //                   "</td><td>" + urlStat + 
-        //                   "</td></tr>";
-
         partlistStation += "<tr class=\"station-row " + rowClass + "\" data-station-id=\"" + String(i) + "\""  ">"
                   "<td>" + String(i) + "</td>"
                   "<td>" + nameStat + "</td>"
                   "<td>" + urlStat + "</td>"
                   "</tr>";
-
         i++;
     }
 
@@ -1441,17 +1425,6 @@ void audioVolume()
   tft.fillRect(290,y_FP-5,20,17,TFT_BLACK);
   tft.drawString(String(volumeLevel/10),290,y_FP-5);
 }
-
-// int x1_FP = 75, y1_FP = ypos + 12; // position in line
-// void filePosition()
-// {
-//   Serial.print("Volume = ");
-//   Serial.println(audiovol);
-//   audiovol = audio.getVolume();
-//   tft.fillRect(x1_FP, y1_FP - 2, 248, 8, TFT_BLACK);
-//   tft.drawRect(x1_FP, y1_FP, 248, 6, TFT_GREEN);
-//   tft.fillRect(x1_FP, y1_FP, audiovol * 10, 6, TFT_GREEN);
-// }
 
 static void rebootEspWithReason(String reason)
 {
