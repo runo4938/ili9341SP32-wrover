@@ -698,7 +698,7 @@ void myEncoder()
       txtSprite.createSprite(250, txtSpriteHight);
       txtTrek.createSprite(250, txtTrekHight);
       vuSprite.createSprite(60, 140);
-      tft.fillScreen(TFT_BLACK);
+      tft.fillRect(0, 0, 320, 220, TFT_BLACK);
       printStation(NEWStation);
       getClock = true; // получить время при переходе от меню станций
       lineondisp();
@@ -796,7 +796,6 @@ void printStation(uint8_t indexOfStation)
 {
   uint8_t localIndex;
   String StName;
-  // String space = " ";
   localIndex = StationList[indexOfStation].indexOf('\t');
   StName = StationList[indexOfStation].substring(0, localIndex + 1);
   tft.setTextColor(TFT_BLACK, ST_BG);
@@ -804,7 +803,6 @@ void printStation(uint8_t indexOfStation)
   tft.setFreeFont(RU12);
   tft.fillRect(0, 0, 319, 43, ST_BG);
   tft.fillRect(0, 44, 319, 43, TFT_BLACK); // очистка бегущей строки
-  Serial.println(StName);
   tft.drawString(utf8rus(StName), x_stName, y_stName);
   show_title = false;
 } // end PrintStation
@@ -816,9 +814,7 @@ void printCodecAndBitrate()
   tft.setTextColor(TFT_CYAN, TFT_BLACK);
   tft.setFreeFont(&CourierCyr10pt8b);
   tft.setTextSize(1);
-
   tft.drawString(String(audio.getCodecname()).substring(0, 3), x_codec, y_codec);
-
   int bit = audio.getBitRate(); // bitrate.toInt();
   if (bit < 128000)
   {
@@ -1225,14 +1221,14 @@ void onMenu()
   if (showRadio)
   {
     first = true;
-    tft.fillRect(0, 0, 320, 240, TFT_BLACK);
-    // printStation(NEWStation);
     txtSprite.createSprite(250, txtSpriteHight);
     txtTrek.createSprite(250, txtTrekHight);
     vuSprite.createSprite(60, 140);
-    getClock = true; // получить время при переходе от меню станций
+    tft.fillRect(0, 0, 320, 220, TFT_BLACK);
+    // //printStation(NEWStation);
+    // getClock = true; // получить время при переходе от меню станций
     lineondisp();
-    // printCodecAndBitrate();
+    printCodecAndBitrate();
   }
 }
 

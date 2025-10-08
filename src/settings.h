@@ -17,9 +17,9 @@
 #define LED_BUILT 22      // управление яркостью дисплея
 
 // encoder
-#define CLK 32 // 35 //
-#define DT 33  //  //
-#define SW 35  //  //
+#define CLK 35 // 35 //
+#define DT 32  //  //
+#define SW 33  //  //
 
 
 
@@ -29,6 +29,7 @@ extern Audio audio;
 extern bool volUpdate;
 extern File file;
 extern String listRadio; // радиостанции на странице
+extern unsigned long currentMillis;
 
 extern uint8_t NEWStation;
 extern int numbStations;        // количество радиостанций

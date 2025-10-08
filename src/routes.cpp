@@ -38,11 +38,11 @@ void setupRoutes(AsyncWebServer &server)
 {
     server.on("/stations", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-    listStaton(); // генерирует listRadio с актуальным currentStationIndex
-    request->send(200, "text/html", listRadio); });
+                listStaton(); // генерирует listRadio с актуальным currentStationIndex
+                request->send(200, "text/html", listRadio); });
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-                { request->send(SPIFFS, "/index.html", String(), false, processor_playlst); });
+              { request->send(SPIFFS, "/index.html", String(), false, processor_playlst); });
 
     server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(SPIFFS, "/style.css", "text/css"); });
@@ -119,20 +119,21 @@ void setupRoutes(AsyncWebServer &server)
     // Если переключили станцию вперед
     ////------------------------------------
     server.on("/Next", HTTP_GET, [](AsyncWebServerRequest *request)
-              {
-                onMenuNext();  
-                request->send(200, "text/plain", "OK - Next"); });
+              {  
+                request->send(200, "text/plain", "OK - Next"); 
+                onMenuNext(); });
 
     //    Если переключили станцию назад
     //----------------------------------
     server.on("/Prev", HTTP_GET, [](AsyncWebServerRequest *request)
               {
-                onMenuPrev(); 
-                request->send(200,"text/plain", "OK"); });
+                request->send(200,"text/plain", "OK");
+                onMenuPrev(); });
+
     server.on("/Menu", HTTP_GET, [](AsyncWebServerRequest *request)
-              {
-             request->send(20,"text/plain", "OK");
-             onMenu(); });
+              { 
+                request->send(20,"text/plain", "OK");
+                onMenu(); });
 
     // Добавьте остальные роуты здесь...
     server.on("/volume", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -154,7 +155,8 @@ void setupRoutes(AsyncWebServer &server)
     }
     request->send(400, "text/plain", "Invalid percent (0-21)"); });
 
-    server.on("/play_station", HTTP_GET, [](AsyncWebServerRequest *request) {
+    server.on("/play_station", HTTP_GET, [](AsyncWebServerRequest *request)
+              {
     if (request->hasParam("station")) {
         String idStr = request->getParam("station")->value();
         int stationIndex = idStr.toInt();
@@ -166,8 +168,7 @@ void setupRoutes(AsyncWebServer &server)
             return;
         }
     }
-    request->send(400, "text/plain", "Invalid station");
-});
+    request->send(400, "text/plain", "Invalid station"); });
 
     server.onNotFound([](AsyncWebServerRequest *request)
                       { request->send(404, "text/plain", "Not Found"); });
