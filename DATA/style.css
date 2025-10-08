@@ -69,39 +69,7 @@
      overflow-x: auto;
      margin-top: 20px;
  }
- .styled-table {
-     width: 100%;
-     border-collapse: collapse;
-     margin: 20px 0;
-     font-size: 16px;
-     border-radius: var(--border-radius);
-     overflow: hidden;
-     box-shadow: var(--shadow);
- }
- .styled-table thead tr {
-     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-     color: white;
-     text-align: left;
-     font-weight: bold;
- }
- .styled-table th,
- .styled-table td {
-     padding: 15px 20px;
-     text-align: left;
-     border-bottom: 1px solid #dddddd;
- }
- .styled-table tbody tr {
-     transition: background-color 0.2s;
- }
- .styled-table tbody tr:nth-of-type(even) {
-     background-color: #f8f9fa;
- }
- .styled-table tbody tr:last-of-type {
-     border-bottom: 2px solid var(--primary-color);
- }
- .styled-table tbody tr:hover {
-     background-color: #e3f2fd;
- }
+ 
  .status-indicator {
      display: inline-block;
      width: 12px;
@@ -122,10 +90,7 @@
 .styled-table th,.styled-table td {padding: 10px 15px;}
 }
 .current-station {background-color: #e1f5fe !important;font-weight: bold;color: #0288d1;}
-.styled-table tbody tr.current-station { background-color: #bbdefb !important;font-weight: bold;color: #0d47a1 !important;}
-.styled-table tbody tr.current-station:hover {
-background-color: #90caf9 !important;
-}
+
 .station-row {
     cursor: pointer;
     transition: background-color 0.15s;
@@ -133,4 +98,9 @@ background-color: #90caf9 !important;
 
 .station-row:hover {
     background-color: #e8f5e9 !important;
+}
+
+.scrolable {
+    height: 400px;
+    overflow: scroll;
 }

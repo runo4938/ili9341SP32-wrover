@@ -34,7 +34,7 @@
             </div>
         </div>
         <div class="card">
-            <div class="volume-control text-center" style="padding: 15px; display: inline-block;">
+            <div class="volume-control text-center" style="padding: 5px; display: inline-block;">
                 <label>Volume</label>
                 <input type="range" id="volumeSlider" min="0" max="21" value="5" class="form-control-range"
                     style="width: 400px; margin: 0 auto; display: inline-block;">
@@ -42,13 +42,13 @@
                     <span id="volPercent">10</span>
                 </div </div>
             </div>
-
+ </div>
             <div class="card">
-                <div class="table-container">
+                <div class="table-container scrolable">
                     %nameST%
                 </div>
             </div>
-        </div>
+       
         <script>
             function updateStationsTable() {
                 fetch("/stations")
