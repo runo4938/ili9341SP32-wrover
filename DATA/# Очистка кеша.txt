@@ -1,0 +1,8 @@
+# Очистка кеша
+platformio.exe run --target clean
+
+# Или полная очистка
+platformio.exe system prune
+
+# Затем загрузка
+platformio.exe run --target upload --environment upesy_wrover

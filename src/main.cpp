@@ -162,7 +162,7 @@ void setup()
 
   Serial.begin(115200);
   tft.begin();
-  tft.setRotation(3);
+  tft.setRotation(1);
   // tft.loadFont(DS_DIGI28pt7b);
 
   tft.fillScreen(TFT_BLACK);
@@ -1115,6 +1115,9 @@ void printConnectionInfo()
   sysInfo += F(" bytes");
   sysInfo += F("\nFree Heap: ");
   sysInfo += ESP.getFreeHeap();
+  sysInfo += F(" bytes");
+  sysInfo += F("\nHeapSize: ");
+  sysInfo += ESP.getHeapSize();
   sysInfo += F(" bytes");
   sysInfo += F("\nFree PSRAM: ");
   sysInfo += ESP.getFreePsram();

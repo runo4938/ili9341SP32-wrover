@@ -13,7 +13,7 @@
 #define I2S_BCLK 26 // 26// Bit clock
 #define I2S_LRC 25  //  25// Left Right Clock
                     // end audio
-#define LED_BRIGHTNESS 90 // яркость дисплея при старте
+#define LED_BRIGHTNESS 100 // яркость дисплея при старте
 #define LED_BUILT 22      // управление яркостью дисплея
 
 // encoder
