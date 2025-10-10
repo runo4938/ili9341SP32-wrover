@@ -21,8 +21,6 @@
 #define DT 32  //  //
 #define SW 33  //  //
 
-
-
 extern const char *PARAM_INPUT;
 extern String sliderValue;
 extern Audio audio;
