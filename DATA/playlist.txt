@@ -25,3 +25,4 @@ FFH	http://mp3.ffh.de/radioffh/hqlivestream.aac
 ДядяВаня	https://ic1.radiosignal.one/vanya-mp3
 VOA	https://1a-90er.radionetz.de/1a-90er.mp3
 LBS	https://media-ssl.musicradio.com/LBCLondon
+Check	http://192.168.0.106:8000/LRchanal.mp3
