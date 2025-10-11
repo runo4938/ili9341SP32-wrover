@@ -136,7 +136,6 @@ void clock_on_core0();
 void soundShow();
 void lineondisp();
 
-
 static void rebootEspWithReason(String reason);
 void performUpdate(Stream &updateSource, size_t updateSize);
 String trim(const String &str);
@@ -272,10 +271,10 @@ uint8_t ssid_show = 1;
 void loop()
 {
   if (volUpdate)
-      {
-        audioVolume();
-        volUpdate = false;
-      }
+  {
+    audioVolume();
+    volUpdate = false;
+  }
   if (title_flag && showRadio)
   {
     title_flag = false;
@@ -469,9 +468,9 @@ void loop()
     unsigned long timer_curr = millis();
     if (timer_curr - timer_prev >= timer_interval) // 2 sec
     {
-      //allow = !allow;
+      // allow = !allow;
       timer_prev = timer_curr;
-     // direct = false; // random(0, 2);
+      // direct = false; // random(0, 2);
       wifiLevel();
     }
 
@@ -577,6 +576,7 @@ void clock_on_core0()
   {
     // Set next update for 1 second later
     targetTime_clock = millis() + 1000;
+    Serial.println(String(ss)); // debug
     getClock = true;
     // Adjust the time values by adding 1 second
     ss++; // Advance second
@@ -1304,7 +1304,7 @@ void audio_showstreamtitle(const char *info)
   title_flag = true;
   show_title = true;
   MessageToScroll_1 = info;
- // width_txt = tft.textWidth(MessageToScroll_1);
+  // width_txt = tft.textWidth(MessageToScroll_1);
   MessageToScroll_1 = F(" ");
   MessageToScroll_1 += trim(info);
   MessageToScroll_1 += F(" ");
@@ -1319,36 +1319,42 @@ void audio_bitrate(const char *info)
 // ---------new ListRadio ----------
 void listStaton()
 {
-    String partlistStation;
-    uint8_t i = 0;
-    while (i <= numbStations) // ← важно: <, а не <=
+  String partlistStation;
+  uint8_t i = 0;
+  while (i <= numbStations) // ← важно: <, а не <=
+  {
+    int ind_to_scace = StationList[i].indexOf('\t');
+    if (ind_to_scace == -1)
     {
-        int ind_to_scace = StationList[i].indexOf('\t');
-        if (ind_to_scace == -1) {
-            // Защита от некорректных строк
-            i++;
-            continue;
-        }
-
-        String nameStat = StationList[i].substring(0, ind_to_scace);
-        String urlStat = StationList[i].substring(ind_to_scace + 1);
-
-        String rowClass = "";
-        if (i == NEWStation) {
-            rowClass = "current-station";
-        }
-        partlistStation += "<tr class=\"station-row " + rowClass + "\" data-station-id=\"" + String(i) + "\""  ">"
-                  "<td>" + String(i) + "</td>"
-                  "<td>" + nameStat + "</td>"
-                  "<td>" + urlStat + "</td>"
-                  "</tr>";
-        i++;
+      // Защита от некорректных строк
+      i++;
+      continue;
     }
 
-    listRadio = "<table class=\"table table-success table-striped\">"
-                "<thead><tr><th>№</th><th>Station name</th><th>Station url</th></tr></thead>"
-                "<tbody>" + partlistStation + "</tbody></table>";
-             
+    String nameStat = StationList[i].substring(0, ind_to_scace);
+    String urlStat = StationList[i].substring(ind_to_scace + 1);
+
+    String rowClass = "";
+    if (i == NEWStation)
+    {
+      rowClass = "current-station";
+    }
+    partlistStation += "<tr class=\"station-row " + rowClass + "\" data-station-id=\"" + String(i) + "\""
+                                                                                                     ">"
+                                                                                                     "<td>" +
+                       String(i) + "</td>"
+                                   "<td>" +
+                       nameStat + "</td>"
+                                  "<td>" +
+                       urlStat + "</td>"
+                                 "</tr>";
+    i++;
+  }
+
+  listRadio = "<table class=\"table table-success table-striped\">"
+              "<thead><tr><th>№</th><th>Station name</th><th>Station url</th></tr></thead>"
+              "<tbody>" +
+              partlistStation + "</tbody></table>";
 }
 
 // ---------end ---------------
@@ -1422,8 +1428,8 @@ void audioVolume()
   tft.fillRect(x_FP, y_FP, volumeLevel, 6, color_volume);
   tft.setTextSize(1);
   tft.setFreeFont(RU8);
-  tft.fillRect(290,y_FP-5,20,17,TFT_BLACK);
-  tft.drawString(String(volumeLevel/10),290,y_FP-5);
+  tft.fillRect(290, y_FP - 5, 20, 17, TFT_BLACK);
+  tft.drawString(String(volumeLevel / 10), 290, y_FP - 5);
 }
 
 static void rebootEspWithReason(String reason)
