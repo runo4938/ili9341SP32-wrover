@@ -573,7 +573,7 @@ void clock_on_core0()
   {
     // Set next update for 1 second later
     targetTime_clock = millis() + 1000;
-    Serial.println(String(ss)); // debug
+    //Serial.println(String(ss)); // debug
     getClock = true;
     // Adjust the time values by adding 1 second
     ss++; // Advance second
@@ -833,7 +833,7 @@ void menuStation()
 {
   int i = 0;
   int ind = 0;
-  for (int i = 0; i <= numbStations; i++)
+  for (int i = 0; i < numbStations; i++)
   { // list stations
     delay(1);
     ind = StationList[i].indexOf('\t');
