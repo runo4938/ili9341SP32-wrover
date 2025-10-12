@@ -517,6 +517,7 @@ String trim(const String &str)
     return "";
   return str.substring(start, end + 1);
 }
+
 //-------------------
 // Показать VUmeter
 //-------------------
@@ -816,31 +817,10 @@ void printCodecAndBitrate()
   EEPROM.commit();
 }
 
-// Next station
+//-- new nextStation
 void nextStation(bool stepStation)
 {
-  if (stepStation)
-  {
-    if (NEWStation != 0)
-    {
-      NEWStation--;
-    }
-    else
-    {
-      NEWStation = numbStations;
-    }
-  }
-  else
-  {
-    if (NEWStation != numbStations)
-    {
-      NEWStation++;
-    }
-    else
-    {
-      NEWStation = 0;
-    }
-  }
+  (stepStation) ? (NEWStation = (NEWStation + 1) % numbStations) : (NEWStation = (NEWStation - 1 + numbStations) % numbStations);
   EEPROM.write(2, NEWStation);
   EEPROM.commit();
 }
@@ -909,7 +889,7 @@ void initSpiffs()
     i++;
   }
   file.close();
-  numbStations = i - 1; // Количесто реальных станций
+  numbStations = i; // Количесто реальных станций
   Serial.printf("Read %d stations, numbStations = %d\n", i, numbStations);
   Serial.printf("SPIFFS total: %d bytes\n", SPIFFS.totalBytes());
   Serial.printf("SPIFFS used: %d bytes\n", SPIFFS.usedBytes());
@@ -927,14 +907,8 @@ void readEEprom()
   }
   Serial.println(" bytes read from Flash . Values are:");
 
-  if (EEPROM.read(2) > 200)
-  {
-    NEWStation = 0;
-  }
-  else
-  {
-    NEWStation = EEPROM.read(2);
-  }
+ (EEPROM.read(2) > 200)?(NEWStation = 0):( NEWStation = EEPROM.read(2));
+  
   if (EEPROM.read(6) > 21)
   {
     sliderValue = 15;
@@ -1162,13 +1136,13 @@ void onMenuPrev()
 {
   if (showRadio)
   {
-    stations = false;
+    stations = true;
     nextStation(stations);
     // printStation(NEWStation);
   }
   if (!showRadio)
   {
-    stations = false;
+    stations = true;
     nextStation(stations);
     stationDisplay(NEWStation);
     currentMillis = millis(); // Пока ходим по меню
@@ -1179,13 +1153,13 @@ void onMenuNext()
 {
   if (showRadio)
   {
-    stations = true;
+    stations = false;
     nextStation(stations);
     // printStation(NEWStation);
   }
   if (!showRadio)
   {
-    stations = true;
+    stations = false;
     nextStation(stations);
     // menuStation();
     stationDisplay(NEWStation);
