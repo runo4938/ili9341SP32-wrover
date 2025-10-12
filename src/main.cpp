@@ -95,11 +95,6 @@ bool opened = false;
 const char *PARAM = "file";
 size_t content_len;
 
-// int y1_prev = 210;
-// int y1_lev = 210;
-// int y2_prev = 210;
-// int y2_lev = 210;
-
 String CurrentDate;
 uint8_t CurrentWeek;
 String days[8] = {"Воскресенье", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"};
