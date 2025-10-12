@@ -522,7 +522,9 @@ String trim(const String &str)
     return "";
   return str.substring(start, end + 1);
 }
+//-------------------
 // Показать VUmeter
+//-------------------
 void soundShow()
 {
   int x_show = 0;
@@ -530,7 +532,6 @@ void soundShow()
   int space = 3;          // расстояние между каналами
   int total_height = 140; // Высота VU-метра
   int y_offset = 80;      // сдиг сверху
-
   // Получаем текущие уровни (замените на ваши реальные значения)
   uint16_t vulevel = audio.getVUlevel();
   uint8_t y1_lev = (vulevel >> 8) & 0xFF; // Левый канал
@@ -736,25 +737,19 @@ void myEncoder()
 
 //----------------------------------
 // ******* Menu stations ***********
-//----------------------------------
-// uint16_t TFT_DARKBROWN = tft.color565(96, 96, 96);
-// uint16_t TFT_DARKGREY1 = tft.color565(128, 128, 128);
-// uint16_t TFT_Y1 = tft.color565(255, 204, 153);
 // Вывод плейлиста на экран с центрированием текущей станции
+//----------------------------------
 void stationDisplay(int currentStation)
 {
   const int MENU_SIZE = 8;     // Количество отображаемых станций
   const int HIGHLIGHT_POS = 4; // Позиция выделения (центр меню)
   const int LINE_HEIGHT = 25;  // Высота одной строки
-
   // Очищаем массив для отображения
   displayStations->clear();
-
   // Настраиваем шрифт и цвета
   tft.setTextSize(1);
   tft.setFreeFont(&CourierCyr12pt8b);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
-
   // Заполняем массив для отображения
   for (int i = 0; i < MENU_SIZE; i++)
   {
@@ -762,12 +757,10 @@ void stationDisplay(int currentStation)
     int stationIndex = (currentStation - HIGHLIGHT_POS + i + numbStations + 1) % (numbStations + 1);
     displayStations[i] = nameStations[stationIndex];
   }
-
   // Отрисовываем все станции
   for (int i = 0; i < MENU_SIZE; i++)
   {
     int yPos = i * LINE_HEIGHT;
-
     // Очищаем область перед выводом
     tft.fillRect(65, yPos, 242, LINE_HEIGHT, TFT_BLACK);
 
@@ -781,7 +774,7 @@ void stationDisplay(int currentStation)
   tft.setTextColor(TFT_BLACK, ST_BG);
   tft.drawString(utf8rus(displayStations[HIGHLIGHT_POS]), 65, highlightY);
 }
-
+//----------------------------------
 // Дополнить строку пробелами
 String make_str(String str)
 {

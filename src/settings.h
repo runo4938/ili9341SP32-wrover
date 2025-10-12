@@ -26,7 +26,7 @@ extern String sliderValue;
 extern Audio audio;
 extern bool volUpdate;
 extern File file;
-extern String listRadio; // радиостанции на странице
+
 extern unsigned long currentMillis;
 
 extern uint8_t NEWStation;

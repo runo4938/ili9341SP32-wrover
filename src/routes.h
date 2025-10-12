@@ -5,7 +5,7 @@
 // Объявляем обработчики
 String processor(const String &var);
 String processor_playlst(const String &var);
-
+extern String listRadio; // радиостанции на странице
 // Объявляем функцию для настройки роутов
 
 extern size_t content_len;
