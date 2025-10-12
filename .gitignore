@@ -4,5 +4,7 @@
 .vscode/launch.json
 .vscode/ipch
 .vscode
-main.cpp_old
-.test
+src/main.cpp_old
+test/server.py
+test/
+src/no_ota.csv
