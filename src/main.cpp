@@ -572,7 +572,7 @@ void clock_on_core0()
   {
     // Set next update for 1 second later
     targetTime_clock = millis() + 1000;
-    //Serial.println(String(ss)); // debug
+    // Serial.println(String(ss)); // debug
     getClock = true;
     // Adjust the time values by adding 1 second
     ss++; // Advance second
@@ -906,8 +906,8 @@ void readEEprom()
   }
   Serial.println(" bytes read from Flash . Values are:");
 
- (EEPROM.read(2) > 200)?(NEWStation = 0):( NEWStation = EEPROM.read(2));
-  
+  (EEPROM.read(2) > 200) ? (NEWStation = 0) : (NEWStation = EEPROM.read(2));
+
   if (EEPROM.read(6) > 21)
   {
     sliderValue = 15;

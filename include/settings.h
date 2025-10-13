@@ -7,8 +7,8 @@
 #include <EncButton.h>
 #include <Audio.h>
 #include <HTTPClient.h>
-
 #include <Update.h>
+
 #define I2S_DOUT 27 // 27 // 18 // DIN connection
 #define I2S_BCLK 26 // 26// Bit clock
 #define I2S_LRC 25  //  25// Left Right Clock
@@ -63,8 +63,6 @@ void onMenu();
 void onMenuNext();
 // void filePosition();
 void audioVolume();
-
-// void handleDoUpdate(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final);
 void newrelease();
 void onMenuPrev();
 void notFound(AsyncWebServerRequest *request);
