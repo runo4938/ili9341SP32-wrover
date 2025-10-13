@@ -44,6 +44,16 @@ void setupRoutes(AsyncWebServer &server)
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(SPIFFS, "/index.html", String(), false, processor_playlst); });
 
+              
+    ws.onEvent([](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
+               {
+  if (type == WS_EVT_CONNECT) {
+    // При подключении — отправляем текущую станцию
+    String json = "{\"currentStationIndex\":" + String(NEWStation) + "}";
+    client->text(json);
+  } });
+    server.addHandler(&ws);
+
     server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send(SPIFFS, "/style.css", "text/css"); });
 

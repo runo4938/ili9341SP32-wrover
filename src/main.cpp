@@ -5,6 +5,7 @@
 #include <GyverNTP.h>
 #include <settings.h>
 #include <routes.h>
+#include <AsyncTCP.h>
 #include <UnixTime.h>
 
 #include "../lib/fonts.h"
@@ -57,6 +58,8 @@ String bitrate;
 // Radio
 uint8_t NEWStation = 0;
 uint8_t OLDStation = 1;
+
+int currentStationIndex = 0; // глобальная переменная
 
 const int MAX_STATIONS = 50; // Задайте достаточный размер
 int numbStations = 0;        // количество радиостанций
@@ -112,6 +115,7 @@ int x_scroll_R;
 Audio audio;
 GyverNTP ntp(3);
 AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
 
 const char *host = "esp32";
 //---------------------------------
@@ -130,6 +134,7 @@ void nextStation(bool stepStation);
 void clock_on_core0();
 void soundShow();
 void lineondisp();
+void notifyWebClients();
 
 static void rebootEspWithReason(String reason);
 void performUpdate(Stream &updateSource, size_t updateSize);
@@ -156,7 +161,7 @@ void setup()
 
   Serial.begin(115200);
   tft.begin();
-  tft.setRotation(1);
+  tft.setRotation(3);
   // tft.loadFont(DS_DIGI28pt7b);
 
   tft.fillScreen(TFT_BLACK);
@@ -635,6 +640,16 @@ void clock_on_core0()
   }
   getClock = false;
 }
+//------------------
+//
+//------------------
+void notifyWebClients() {
+  String json = "{\"currentStationIndex\":" + String(NEWStation) + "}";
+  ws.textAll(json);
+}
+
+
+
 //-------------------
 // Encoder
 //-------------------
@@ -648,6 +663,7 @@ void myEncoder()
       stations = false;
       nextStation(stations);
       printStation(NEWStation);
+      notifyWebClients();
     }
     if (!showRadio)
     {
@@ -666,6 +682,7 @@ void myEncoder()
       stations = true;
       nextStation(stations);
       printStation(NEWStation);
+      notifyWebClients();
     }
     if (!showRadio)
     {
@@ -696,6 +713,7 @@ void myEncoder()
       vuSprite.createSprite(60, 140);
       tft.fillRect(0, 0, 320, 220, TFT_BLACK);
       printStation(NEWStation);
+      notifyWebClients();
       getClock = true; // получить время при переходе от меню станций
       lineondisp();
       printCodecAndBitrate();

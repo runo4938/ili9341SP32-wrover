@@ -17,9 +17,9 @@
 #define LED_BUILT 22      // управление яркостью дисплея
 
 // encoder
-#define CLK 35 // 35 //
-#define DT 32  //  //
-#define SW 33  //  //
+#define CLK 32 // 35 //
+#define DT 33  // 32 //
+#define SW 35  //  33//
 
 extern const char *PARAM_INPUT;
 extern String sliderValue;
@@ -72,4 +72,5 @@ void menuStation();
 void listStaton();
 void setupRoutes(AsyncWebServer &server);
 String processor_update(const String &var);
+extern AsyncWebSocket ws;  // WebSocket эндпоинт
 #endif

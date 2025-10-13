@@ -50,6 +50,31 @@
         </div>
 
         <script>
+
+            /// ============ WebSocket ============
+            const socket = new WebSocket('ws://' + location.host + '/ws');
+
+            socket.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                const newIndex = data.currentStationIndex;
+
+                // Убираем выделение со всех строк
+                document.querySelectorAll('.station-row').forEach(row => {
+                    row.classList.remove('current-station');
+                });
+
+                // Выделяем нужную строку по data-station-id
+                const targetRow = document.querySelector(`.station-row[data-station-id="${newIndex}"]`);
+                if (targetRow) {
+                    targetRow.classList.add('current-station');
+                    // Плавная прокрутка к ней (опционально)
+                    targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            };
+
+            socket.onerror = (err) => console.error("WebSocket error:", err);
+
+
             function updateStationsTable() {
                 fetch("/stations")
                     .then(response => response.text())
@@ -127,6 +152,7 @@
             document.addEventListener('DOMContentLoaded', () => {
                 scrollToSelected();
             });
+
         </script>
 </body>
 
