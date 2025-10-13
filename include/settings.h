@@ -70,6 +70,7 @@ void handleDoUpload(AsyncWebServerRequest *request, String filename, size_t inde
 void initSpiffs();
 void menuStation();
 void listStaton();
+void notifyWebClients();
 void setupRoutes(AsyncWebServer &server);
 String processor_update(const String &var);
 extern AsyncWebSocket ws;  // WebSocket эндпоинт

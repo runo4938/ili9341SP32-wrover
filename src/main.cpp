@@ -134,7 +134,6 @@ void nextStation(bool stepStation);
 void clock_on_core0();
 void soundShow();
 void lineondisp();
-void notifyWebClients();
 
 static void rebootEspWithReason(String reason);
 void performUpdate(Stream &updateSource, size_t updateSize);
@@ -713,10 +712,10 @@ void myEncoder()
       vuSprite.createSprite(60, 140);
       tft.fillRect(0, 0, 320, 220, TFT_BLACK);
       printStation(NEWStation);
-      notifyWebClients();
       getClock = true; // получить время при переходе от меню станций
       lineondisp();
       printCodecAndBitrate();
+      notifyWebClients();
     }
   }
   if (enc1.rightH())
@@ -1155,6 +1154,7 @@ void onMenuPrev()
   {
     stations = true;
     nextStation(stations);
+    notifyWebClients();
     // printStation(NEWStation);
   }
   if (!showRadio)
@@ -1172,6 +1172,7 @@ void onMenuNext()
   {
     stations = false;
     nextStation(stations);
+    notifyWebClients();
     // printStation(NEWStation);
   }
   if (!showRadio)

@@ -173,7 +173,7 @@ void setupRoutes(AsyncWebServer &server)
 
         if (stationIndex >= 0 && stationIndex <= numbStations) {
             NEWStation = stationIndex;
-            // startPlayingCurrentStation(); // ваша функция воспроизведения
+            notifyWebClients();
             request->send(200, "text/plain", "OK");
             return;
         }
