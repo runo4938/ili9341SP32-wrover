@@ -749,7 +749,7 @@ void stationDisplay(int currentStation)
   for (int i = 0; i < MENU_SIZE; i++)
   {
     // Вычисляем индекс станции в общем списке с учетом циклического перехода
-    int stationIndex = (currentStation - HIGHLIGHT_POS + i + numbStations + 1) % (numbStations + 1);
+    int stationIndex = (currentStation - HIGHLIGHT_POS + i + numbStations) % (numbStations);
     displayStations[i] = nameStations[stationIndex];
   }
   // Отрисовываем все станции
@@ -1312,7 +1312,7 @@ void listStaton()
     i++;
   }
 
-  listRadio = "<table class=\"table table-success table-striped\">"
+  listRadio = "<table id=\"myTable\" class=\"table table-success table-striped\">"
               "<thead><tr><th>№</th><th>Station name</th><th>Station url</th></tr></thead>"
               "<tbody>" +
               partlistStation + "</tbody></table>";

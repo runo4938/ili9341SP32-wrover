@@ -102,5 +102,5 @@
 
 .scrolable {
     height: 400px;
-    overflow: scroll;
+    overflow-y: auto;
 }
