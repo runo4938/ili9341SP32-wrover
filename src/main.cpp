@@ -74,7 +74,7 @@ String listRadio; // радиостанции на странице
 unsigned long lastTime = 0;
 unsigned long lastTime_ssid = 0;
 unsigned long timerDelay_ssid = 4000;
-uint32_t vumetersDelay = 250;
+uint32_t vumetersShow = 250;
 int16_t spriteX = 320;       // Начинаем справа
 int16_t spriteXForRIGHT = 0; // Начинаем с 0 позиции
 State currentState = MOVING_TO_LEFT_EDGE;
@@ -132,7 +132,7 @@ void myEncoder();
 
 void nextStation(bool stepStation);
 void clock_on_core0();
-void soundShow();
+void vuMeter();
 void lineondisp();
 
 static void rebootEspWithReason(String reason);
@@ -489,9 +489,9 @@ void loop()
     //-------------
     scrolling();
 
-// выввод даты после меню станций
+    // выввод даты после меню станций
     if (first && CurrentDate != "Not sync" && CurrentDate != "20.02.1611")
-    { 
+    {
       tft.setTextSize(1);
       tft.setTextColor(0x9772);
       tft.setFreeFont(&CourierCyr12pt8b);
@@ -520,12 +520,12 @@ void loop()
       audio.connecttohost(sl); // новая станция
       OLDStation = NEWStation;
     }
-
-    if (vumetersDelay < millis())
+    //-----vumeter
+    if (vumetersShow < millis())
     {
-      soundShow();
-      vumetersDelay = millis() + 25;
-    } //-----end vumeter
+      vuMeter();
+      vumetersShow = millis() + 25;
+    } 
 
     // WiFi level
     unsigned long timer_curr = millis();
@@ -540,31 +540,10 @@ void loop()
   }
 } // end LOOP
 
-String trim(const String &str)
-{
-  const String WHITESPACE = " \n\r\t\f\v";
-  int start = 0;
-  int end = str.length() - 1;
-  // Пропускаем ведущие пробелы
-  while (start <= end && WHITESPACE.indexOf(str.charAt(start)) >= 0)
-  {
-    start++;
-  }
-  // Пропускаем завершающие пробелы
-  while (end >= start && WHITESPACE.indexOf(str.charAt(end)) >= 0)
-  {
-    end--;
-  }
-  // Возвращаем подстроку
-  if (start > end)
-    return "";
-  return str.substring(start, end + 1);
-}
-
 //-------------------
 // Показать VUmeter
 //-------------------
-void soundShow()
+void vuMeter()
 {
   int x_show = 0;
   int width = 25;         // ширина
@@ -1498,4 +1477,25 @@ void performUpdate(Stream &updateSource, size_t updateSize)
     result += "Not enough space for OTA";
   }
   // http send 'result'
+}
+
+String trim(const String &str)
+{
+  const String WHITESPACE = " \n\r\t\f\v";
+  int start = 0;
+  int end = str.length() - 1;
+  // Пропускаем ведущие пробелы
+  while (start <= end && WHITESPACE.indexOf(str.charAt(start)) >= 0)
+  {
+    start++;
+  }
+  // Пропускаем завершающие пробелы
+  while (end >= start && WHITESPACE.indexOf(str.charAt(end)) >= 0)
+  {
+    end--;
+  }
+  // Возвращаем подстроку
+  if (start > end)
+    return "";
+  return str.substring(start, end + 1);
 }
