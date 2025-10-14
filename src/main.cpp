@@ -98,7 +98,7 @@ bool opened = false;
 const char *PARAM = "file";
 size_t content_len;
 
-String CurrentDate;
+String CurrentData;
 uint8_t CurrentWeek;
 String days[8] = {"Воскресенье", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"};
 
@@ -211,7 +211,7 @@ void setup()
   const char *sl = newSt.c_str();
   audio.setVolume(EEPROM.read(6));
   audio.connecttohost(sl); // переключаем станцию
-  Serial.println(sl);
+  Serial.printf("\n %s \n",sl);
   OLDStation = NEWStation;  //
   printStation(NEWStation); // display the name of the station on the screen
   printCodecAndBitrate();
@@ -426,27 +426,27 @@ void loop()
       txtTrek.pushSprite(0, 47);
     }
     //-------end Scrolling---------------------------------
-    if (first && CurrentDate != "Not sync" && CurrentDate != "20.02.1611")
+    if (first )//&& CurrentData != "Not sync" && CurrentData != "20.02.1611")
     { // выввод даты после меню станций
       tft.setTextSize(1);
       tft.setTextColor(0x9772);
       tft.setFreeFont(&CourierCyr12pt8b);
       tft.setCursor(285, 152);
       tft.print(utf8rus(days[CurrentWeek]));
-
       tft.setTextSize(1);
       tft.setFreeFont(RU8);
       tft.setTextColor(color_clock);
       tft.setCursor(x_data, y_data);
-      tft.print(CurrentDate);
+      tft.fillRect(x_data,y_data,180,30,TFT_BLACK);
+      tft.drawString(CurrentData,x_data,y_data);
       printStation(NEWStation);
       wifiLevel();
       printCodecAndBitrate();
       first = false;
+      Serial.println("\nfirst - Выполнилось обновление времени");
     }
     if (NEWStation != OLDStation)
     {
-      // StationList[NEWStation].replace("_", space);
       ind = StationList[NEWStation].indexOf('\t');
       newSt = StationList[NEWStation].substring(ind + 1, StationList[NEWStation].length());
       const char *sl = newSt.c_str();
@@ -570,13 +570,12 @@ void clock_on_core0()
   hh = ntp.hour();
   mm = ntp.minute();
   ss = ntp.second();
-  CurrentDate = ntp.dateString();
+  CurrentData = ntp.dateString();
   CurrentWeek = ntp.dayWeek();
   if (targetTime_clock < millis())
   {
     // Set next update for 1 second later
     targetTime_clock = millis() + 1000;
-    // Serial.println(String(ss)); // debug
     getClock = true;
     // Adjust the time values by adding 1 second
     ss++; // Advance second

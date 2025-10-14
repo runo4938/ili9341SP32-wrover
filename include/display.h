@@ -19,7 +19,7 @@ uint16_t x_wifi = 90;
 uint16_t y_wifi = 182;
 //Current Data нижняя строка
 uint16_t x_data = 5;
-uint16_t y_data =238;
+uint16_t y_data =225;
 bool title_flag = true;
 bool show_title = false; // если не титров
 String before;
