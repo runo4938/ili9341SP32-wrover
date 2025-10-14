@@ -269,7 +269,7 @@ void volemeUpdate()
   }
 }
 // подготовка к показу названия трека
-void trekPreparingShou()
+void trekPreparingShow()
 {
   if (title_flag && showRadio && show_title)
   {
@@ -295,7 +295,7 @@ void trekPreparingShou()
       tft.setFreeFont(&CourierCyr10pt8b);
       txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
       txtTrek.drawString(before, 0, 0);
-      txtSprite.drawString(after, 320, 0);
+      txtSprite.drawString(after, 0, 0);
     }
   }
 }
@@ -331,6 +331,8 @@ void noTitle()
     txtTrek.fillScreen(TFT_BLACK);
     after = "";
     before = "";
+    txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
+    txtSprite.fillRect(0, 64, 255, txtSpriteHight, TFT_BLACK);
   }
 }
 // Scrolling
@@ -461,21 +463,15 @@ void showIPAndSSID()
 unsigned long timer_prev = 0;
 int timer_interval = 3000;
 int timer_interval_W = 4000;
-
 void loop()
 {
   // обновить прогресс громкости на экране
   volemeUpdate();
   // подготовка для названия трека
-  trekPreparingShou();
-
-  txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
-  txtSprite.fillRect(0, 64, 255, txtSpriteHight, TFT_BLACK);
-
+  trekPreparingShow();
   // Опрос энкодера
   if (enc1.tick())
     myEncoder();
-
   // для возврата из меню по истечении времени
   returnFromDisplayScreen();
 
@@ -485,10 +481,8 @@ void loop()
     // Титры не получены - очистить
     noTitle();
     //-------------
-    // Scrolling left
-    //-------------
+    // Scrolling 
     scrolling();
-
     // выввод даты после меню станций
     if (first && CurrentDate != "Not sync" && CurrentDate != "20.02.1611")
     {
@@ -525,8 +519,7 @@ void loop()
     {
       vuMeter();
       vumetersShow = millis() + 25;
-    } 
-
+    }
     // WiFi level
     unsigned long timer_curr = millis();
     if (timer_curr - timer_prev >= timer_interval) // 2 sec
@@ -534,7 +527,6 @@ void loop()
       timer_prev = timer_curr;
       wifiLevel();
     }
-
     // show IP and SSID
     showIPAndSSID();
   }
