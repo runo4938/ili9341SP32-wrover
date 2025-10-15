@@ -8,3 +8,4 @@ src/main.cpp_old
 test/server.py
 test/
 src/no_ota.csv
+partitions.csv

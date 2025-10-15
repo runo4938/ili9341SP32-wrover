@@ -94,13 +94,13 @@ void setupRoutes(AsyncWebServer &server)
     delay(2000);
     ESP.restart(); });
 
-    // server.on(
-    //     "/doUpdate", HTTP_POST,
-    //     [](AsyncWebServerRequest *request) {},
-    //     [](AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
-    //     {
-    //         handleDoUpdate(request, filename, index, data, len, final);
-    //     });
+    server.on(
+        "/doUpdate", HTTP_POST,
+        [](AsyncWebServerRequest *request) {},
+        [](AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
+        {
+            handleDoUpdate(request, filename, index, data, len, final);
+        });
 
     server.on(
         "/doUpload", HTTP_POST, [](AsyncWebServerRequest *request)
@@ -291,4 +291,41 @@ String processor_update(const String &var)
         return filelist;
     }
     return String();
+}
+
+void handleDoUpdate(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final)
+{
+  if (!index)
+  {
+    content_len = request->contentLength();
+    int cmd = (filename.indexOf("spiffs") > -1) ? U_PART : U_FLASH;
+    if (!Update.begin(UPDATE_SIZE_UNKNOWN, cmd))
+    {
+      Update.printError(Serial);
+    }
+  }
+
+  if (Update.write(data, len) != len)
+  {
+    Update.printError(Serial);
+    Serial.printf("Progress: %d%%\n", (Update.progress() * 100) / Update.size());
+  }
+
+  if (final)
+  {
+    AsyncWebServerResponse *response = request->beginResponse(200, "text/plain", "Ok");
+    response->addHeader("Refresh", "30");
+    response->addHeader("Location", "/");
+    request->send(response);
+    if (!Update.end(true))
+    {
+      Update.printError(Serial);
+    }
+    else
+    {
+      Serial.println("Update complete");
+      Serial.flush();
+      ESP.restart();
+    }
+  }
 }

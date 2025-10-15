@@ -11,4 +11,5 @@ extern String listRadio; // радиостанции на странице
 extern size_t content_len;
 extern bool opened;
 extern const char *PARAM;
+void handleDoUpdate(AsyncWebServerRequest *request, const String &filename, size_t index, uint8_t *data, size_t len, bool final);
 #endif
