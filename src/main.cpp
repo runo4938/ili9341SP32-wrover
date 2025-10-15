@@ -580,6 +580,11 @@ void clock_on_core0()
     tft.setFreeFont(DIG20); //
     tft.setTextSize(3);     // 3
     ntp.tick();
+    if (ntp.status() != 0)
+    {
+      Serial.println("Что-то с UPD сервером....");
+      ntp.tick();
+    }
     // vTaskDelay(20);
     hh = ntp.hour();
     mm = ntp.minute();
