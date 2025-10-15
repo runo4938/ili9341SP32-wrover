@@ -481,7 +481,7 @@ void loop()
     // Титры не получены - очистить
     noTitle();
     //-------------
-    // Scrolling 
+    // Scrolling
     scrolling();
     // выввод даты после меню станций
     if (first && CurrentDate != "Not sync" && CurrentDate != "20.02.1611")
