@@ -221,7 +221,7 @@ void setup()
   xTaskCreatePinnedToCore(
       Task1code,     /* Функция задачи. */
       "Task1",       /* Ее имя. */
-      4000,          /* Размер стека функции */
+      10000,          /* Размер стека функции */
       NULL,          /* Параметры */
       1,             /* Приоритет */
       &myTaskHandle, /* Дескриптор задачи для отслеживания */
@@ -257,7 +257,7 @@ void Task1code(void *pvParameters)
   for (;;)
   {
     audio.loop();
-    vTaskDelay(2);
+    vTaskDelay(1 / portTICK_PERIOD_MS);
   }
 }
 void volemeUpdate()
@@ -507,11 +507,13 @@ void loop()
       ind = StationList[NEWStation].indexOf('\t');
       newSt = StationList[NEWStation].substring(ind + 1, StationList[NEWStation].length());
       const char *sl = newSt.c_str();
-      audio.pauseResume();
+      audio.stopSong();
       printStation(NEWStation);
       delay(100);
       audio.setVolume(EEPROM.read(6));
+    
       audio.connecttohost(sl); // новая станция
+      
       OLDStation = NEWStation;
     }
     //-----vumeter
@@ -670,7 +672,7 @@ void myEncoder()
     {
       stations = false;
       nextStation(stations);
-      printStation(NEWStation);
+      // printStation(NEWStation);
       notifyWebClients();
     }
     if (!showRadio)
@@ -689,7 +691,7 @@ void myEncoder()
     {
       stations = true;
       nextStation(stations);
-      printStation(NEWStation);
+      // printStation(NEWStation);
       notifyWebClients();
     }
     if (!showRadio)
@@ -1213,8 +1215,8 @@ void onMenu()
     txtTrek.createSprite(250, txtTrekHight);
     vuSprite.createSprite(60, 140);
     tft.fillRect(0, 0, 320, 220, TFT_BLACK);
-    // //printStation(NEWStation);
-    // getClock = true; // получить время при переходе от меню станций
+    // printStation(NEWStation);
+    // getClock = true; // получить время при переходе 
     lineondisp();
     printCodecAndBitrate();
   }

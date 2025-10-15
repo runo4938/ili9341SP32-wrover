@@ -1,10 +1,10 @@
 РетроFM	http://emgregion.hostingradio.ru:8064/moscow.retrofm.mp3?8206
 РадиоКП	http://kpradio.hostingradio.ru:8000/128?radiostatistica=top-radio.ru
 Радио7	http://radio7.hostingradio.ru:8040/radio7256.mp3
-РадиоОдесса	http://listen6.myradio24.com/odesradio
-ЕвропаПлюс	http://epdop.hostingradio.ru:8033/europaplus32.mp3
-МонтеКарло	http://montecarlo.hostingradio.ru/dfm128.mp3?128
-РуссРадио	http://rusradio.hostingradio.ru/rusradio96.aacp
+Радио Одесса	http://listen6.myradio24.com/odesradio
+Европа Плюс	http://epdop.hostingradio.ru:8033/europaplus32.mp3
+Монте Карло	http://montecarlo.hostingradio.ru/dfm128.mp3?128
+Русское радио	http://rusradio.hostingradio.ru/rusradio96.aacp
 ДорожнРадио	http://dorognoe.hostingradio.ru/dorognoe
 Remix	http://rmx.amgradio.ru/RemixFM
 Fresh	http://fresh.amgradio.ru/Fresh
@@ -22,7 +22,7 @@ liveradio	http://79.120.77.11:8000/hardrock?n=6618f062c3fd1821abc2
 ВолнаФМ	http://radio.volnafm.ru:8000/ekb
 lunafm	http://stream.lunafm.net/listen/lunaworld/radio.aac
 FFH	http://mp3.ffh.de/radioffh/hqlivestream.aac
-ДядяВаня	https://ic1.radiosignal.one/vanya-mp3
+Дядя Ваня	https://ic1.radiosignal.one/vanya-mp3
 VOA	https://1a-90er.radionetz.de/1a-90er.mp3
 LBS	https://media-ssl.musicradio.com/LBCLondon
 Check	http://192.168.0.106:8000/LRchanal.mp3
