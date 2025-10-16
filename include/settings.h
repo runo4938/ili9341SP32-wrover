@@ -17,9 +17,9 @@
 #define LED_BUILT 22      // управление яркостью дисплея
 
 // encoder
-#define CLK 32 // 35 //
-#define DT 33  // 32 //
-#define SW 35  //  33//
+#define CLK  35//32 // 35 //
+#define DT   32//33  // 32 //
+#define SW   33//35  //  33//
 
 extern const char *PARAM_INPUT;
 extern String sliderValue;
@@ -50,6 +50,8 @@ enum State
   WAITING_TO_RIGHT,
   WAITING_TO_LEFT
 };
+
+// #define BOARD_ILI9341_PLASTIC  // раскомментируйте, если нужно
 
 const unsigned long waitDuration = 3000; // 3 секунды ожидания
 const int screenWidth = 320;

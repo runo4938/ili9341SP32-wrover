@@ -160,9 +160,20 @@ void setup()
 
   Serial.begin(115200);
   tft.begin();
+
+#ifdef BOARD_ILI9341_PLYWOOD
+  tft.setRotation(1);
+#elif defined(BOARD_ILI9341_PLASTIC)
   tft.setRotation(3);
+#else
+  #error "Board type not defined!"
+#endif
   // tft.loadFont(DS_DIGI28pt7b);
 
+  Serial.println();
+  Serial.printf("Flash chip size: %u MB\n", ESP.getFlashChipSize() / (1024 * 1024));
+  Serial.printf("PSRAM size: %u KB\n", ESP.getPsramSize() / 1024);
+  
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextSize(2);
@@ -221,7 +232,7 @@ void setup()
   xTaskCreatePinnedToCore(
       Task1code,     /* Функция задачи. */
       "Task1",       /* Ее имя. */
-      10000,          /* Размер стека функции */
+      10000,         /* Размер стека функции */
       NULL,          /* Параметры */
       1,             /* Приоритет */
       &myTaskHandle, /* Дескриптор задачи для отслеживания */
@@ -511,9 +522,9 @@ void loop()
       printStation(NEWStation);
       delay(100);
       audio.setVolume(EEPROM.read(6));
-    
+
       audio.connecttohost(sl); // новая станция
-      
+
       OLDStation = NEWStation;
     }
     //-----vumeter
@@ -1221,7 +1232,7 @@ void onMenu()
     vuSprite.createSprite(60, 140);
     tft.fillRect(0, 0, 320, 220, TFT_BLACK);
     // printStation(NEWStation);
-    // getClock = true; // получить время при переходе 
+    // getClock = true; // получить время при переходе
     lineondisp();
     printCodecAndBitrate();
   }
