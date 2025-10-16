@@ -564,7 +564,7 @@ void vuMeter()
   int segment_height = 8;
   for (int y = 0; y < 150; y += segment_height)
   {
-    uint16_t color = (y < 80) ? VU_MAX : (y < 120) ? TFT_CYAN
+    uint16_t color = (y < 50) ? VU_MAX : (y < 100) ? TFT_CYAN
                                                    : VU_MIN;
     vuSprite.fillRect(0, y, 25, segment_height - 2, color);  // левый канал
     vuSprite.fillRect(28, y, 25, segment_height - 2, color); // правый канал
