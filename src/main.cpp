@@ -75,7 +75,7 @@ unsigned long lastTime = 0;
 unsigned long lastTime_ssid = 0;
 unsigned long timerDelay_ssid = 4000;
 uint32_t vumetersShow = 250;
-int16_t spriteX = 320;       // Начинаем справа
+int16_t spriteX = 0;       // Начинаем справа
 int16_t spriteXForRIGHT = 0; // Начинаем с 0 позиции
 State currentState = MOVING_TO_LEFT_EDGE;
 State currentStateForRight = MOVING_TO_LEFT;
@@ -166,14 +166,14 @@ void setup()
 #elif defined(BOARD_ILI9341_PLASTIC)
   tft.setRotation(3);
 #else
-  #error "Board type not defined!"
+#error "Board type not defined!"
 #endif
   // tft.loadFont(DS_DIGI28pt7b);
 
   Serial.println();
   Serial.printf("Flash chip size: %u MB\n", ESP.getFlashChipSize() / (1024 * 1024));
   Serial.printf("PSRAM size: %u KB\n", ESP.getPsramSize() / 1024);
-  
+
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextSize(2);
@@ -212,6 +212,7 @@ void setup()
 
   setupRoutes(server);
   ntp.begin();
+  ntp.setHost("time.google.com");
   server.onNotFound(notFound);
   server.begin();
   Update.onProgress(printProgress);
@@ -560,10 +561,10 @@ void vuMeter()
   uint8_t y1_lev = (vulevel >> 8) & 0xFF; // Левый канал
   uint8_t y2_lev = vulevel & 0xFF;        // Правый канал
 
-  int segment_height = 10;
+  int segment_height = 8;
   for (int y = 0; y < 150; y += segment_height)
   {
-    uint16_t color = (y < 50) ? VU_MAX : (y < 100) ? TFT_CYAN
+    uint16_t color = (y < 80) ? VU_MAX : (y < 120) ? TFT_CYAN
                                                    : VU_MIN;
     vuSprite.fillRect(0, y, 25, segment_height - 2, color);  // левый канал
     vuSprite.fillRect(28, y, 25, segment_height - 2, color); // правый канал
