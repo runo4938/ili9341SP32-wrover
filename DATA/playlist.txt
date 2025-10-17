@@ -23,4 +23,5 @@ lunafm	http://stream.lunafm.net/listen/lunaworld/radio.aac
 FFH	http://mp3.ffh.de/radioffh/hqlivestream.aac
 VOA	https://1a-90er.radionetz.de/1a-90er.mp3
 LBS	https://media-ssl.musicradio.com/LBCLondon
+Paradise	http://stream.radioparadise.com/flac
 Check	http://192.168.0.106:8000/LRchanal.mp3
