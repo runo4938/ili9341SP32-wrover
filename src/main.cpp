@@ -179,24 +179,18 @@ void setup()
   tft.setTextSize(2);
   tft.setCursor(40, 60);
   tft.println("Starting Radio...");
-
+  
   readEEprom();
   initSpiffs();
   initWiFi();
-
-  tft.fillScreen(TFT_BLACK);
-  tft.setCursor(40, 90);
-  tft.println("Connected to SSID: ");
-  tft.setCursor(40, 120);
-  tft.println(WiFi.SSID());
+  
+  //tft.fillScreen(TFT_BLACK);
   delay(1000);
-
+  
   // newVer();
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(EEPROM.read(6));
-  // audio.setVolume(audiovol);
-
-  tft.fillScreen(TFT_BLACK);
+    //tft.fillScreen(TFT_BLACK);
   // firs raw
   if (!MDNS.begin(host))
   {
@@ -206,6 +200,7 @@ void setup()
       delay(1000);
     }
   }
+  
   Serial.println("mDNS responder started");
 
   listDir(SPIFFS, "/", 0);
@@ -216,7 +211,7 @@ void setup()
   server.onNotFound(notFound);
   server.begin();
   Update.onProgress(printProgress);
-
+  
   // The first connection
   ind = StationList[NEWStation].indexOf('\t');
   newSt = StationList[NEWStation].substring(ind + 1, StationList[NEWStation].length());
@@ -225,6 +220,7 @@ void setup()
   audio.connecttohost(sl); // переключаем станцию
   Serial.printf("\n %s \n", sl);
   OLDStation = NEWStation;  //
+  tft.fillScreen(TFT_BLACK);
   printStation(NEWStation); // display the name of the station on the screen
   printCodecAndBitrate();
   lineondisp();
@@ -981,7 +977,7 @@ void initWiFi()
   WiFi.setAutoReconnect(true);
 
   Serial.println("Scanning for available networks...");
-  tft.setCursor(40, 120);
+  tft.setCursor(40, 80);
   tft.println("Scanning WiFi...");
 
   // Сканируем доступные сети
@@ -1040,11 +1036,6 @@ void initWiFi()
     Serial.print(" (RSSI: ");
     Serial.print(net.rssi);
     Serial.println(" dBm)");
-
-    tft.setCursor(40, 140);
-    tft.print("Connecting to: ");
-    tft.setCursor(40, 160);
-    tft.println(net.ssid);
 
     WiFi.begin(net.ssid.c_str(), net.password.c_str(), net.channel);
 
@@ -1127,11 +1118,15 @@ void printConnectionInfo()
   Serial.println(sysInfo);
 
   // Вывод на TFT дисплей
-  tft.println("WiFi connected!");
+  tft.setCursor(40, 80);
+  tft.print("WiFi connected!");
+  tft.setCursor(40, 100);
   tft.print("SSID: ");
   tft.println(WiFi.SSID());
+  tft.setCursor(40, 120);
   tft.print("IP: ");
   tft.println(WiFi.localIP());
+  tft.setCursor(40, 140);
   tft.print("Signal: ");
   tft.print(WiFi.RSSI());
   tft.println(" dBm");

@@ -9,6 +9,7 @@ Fresh	http://fresh.amgradio.ru/Fresh
 ХитFM	http://hitfm.hostingradio.ru/hitfm96.aacp
 СеребрДождь	http://silverrain.hostingradio.ru/silver64.aac
 Дядя Ваня	https://ic1.radiosignal.one/vanya-mp3
+New Radio	http://stream.newradio.ru/novoe96.aacp
 PiFM-2	https://cdn.pifm.ru/mp3web?rn=133
 ВолнаФМ	http://radio.volnafm.ru:8000/ekb
 РадиоКП	http://kpradio.hostingradio.ru:8000/128?radiostatistica=top-radio.ru
