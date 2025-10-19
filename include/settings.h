@@ -72,7 +72,6 @@ void stationDisplay(int st);
 void deleteFile(fs::FS &fs, const String &path);
 void onMenu();
 void onMenuNext();
-// void filePosition();
 void audioVolume();
 void newrelease();
 void onMenuPrev();

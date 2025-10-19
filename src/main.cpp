@@ -14,6 +14,7 @@
 #include "../lib/CourierCyr12.h" //для меню станций
 #include "../lib/Free_Fonts.h"
 #include "../lib/DS_DIGI28pt7b.h"
+
 #define RU12 &FreeSansBold10pt8b
 #define RU10 &FreeSans18pt7b
 #define RU8 &FreeSans9pt7b
@@ -40,7 +41,6 @@ WiFiManager wifiManager;
 
 TaskHandle_t myTaskHandle = NULL;
 // TaskHandle_t LogoHandle = NULL;
-
 
 uint16_t PL_0 = tft.color565(115, 115, 115);
 uint16_t PL_1 = tft.color565(89, 89, 89);
@@ -77,7 +77,7 @@ unsigned long lastTime = 0;
 unsigned long lastTime_ssid = 0;
 unsigned long timerDelay_ssid = 4000;
 uint32_t vumetersShow = 250;
-int16_t spriteX = 0;       // Начинаем справа
+int16_t spriteX = 0;         // Начинаем справа
 int16_t spriteXForRIGHT = 0; // Начинаем с 0 позиции
 State currentState = MOVING_TO_LEFT_EDGE;
 State currentStateForRight = MOVING_TO_LEFT;
@@ -173,20 +173,20 @@ void setup()
   logoTaskSemaphore = xSemaphoreCreateBinary();
 
   xTaskCreatePinnedToCore(
-    logoTask,
-    "LogoTask",
-    4096,
-    NULL,
-    0,
-    &logoTaskHandle,
-    1  // Ядро 1 для logo
+      logoTask,
+      "LogoTask",
+      4096,
+      NULL,
+      0,
+      &logoTaskHandle,
+      1 // Ядро 1 для logo
   );
 #ifdef BOARD_ILI9341_PLYWOOD
   tft.setRotation(1);
 #elif defined(BOARD_ILI9341_PLASTIC)
   tft.setRotation(3);
 #else
-  #error "Board type not defined!"
+#error "Board type not defined!"
 #endif
   // tft.loadFont(DS_DIGI28pt7b);
 
@@ -199,18 +199,18 @@ void setup()
   tft.setTextSize(2);
   tft.setCursor(40, 60);
   tft.println("Starting Radio...");
-  
+
   readEEprom();
   initSpiffs();
   initWiFi();
-  
-  //tft.fillScreen(TFT_BLACK);
+
+  // tft.fillScreen(TFT_BLACK);
   delay(1000);
-  
+
   // newVer();
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(EEPROM.read(6));
-    //tft.fillScreen(TFT_BLACK);
+  // tft.fillScreen(TFT_BLACK);
   // firs raw
   if (!MDNS.begin(host))
   {
@@ -220,7 +220,7 @@ void setup()
       delay(1000);
     }
   }
-  
+
   Serial.println("mDNS responder started");
 
   listDir(SPIFFS, "/", 0);
@@ -231,10 +231,11 @@ void setup()
   server.onNotFound(notFound);
   server.begin();
   Update.onProgress(printProgress);
-  
+
   showLogo = false;
   // Ждем, пока задача логотипа завершится и освободит семафор
-  if (xSemaphoreTake(logoTaskSemaphore, portMAX_DELAY) == pdTRUE) {
+  if (xSemaphoreTake(logoTaskSemaphore, portMAX_DELAY) == pdTRUE)
+  {
     // Задача завершилась, можно удалять семафор? Но мы больше не используем.
     vSemaphoreDelete(logoTaskSemaphore);
     logoTaskHandle = NULL;
@@ -248,7 +249,7 @@ void setup()
   audio.setVolume(EEPROM.read(6));
   audio.connecttohost(sl); // переключаем станцию
   Serial.printf("\n %s \n", sl);
-  OLDStation = NEWStation;  //
+  OLDStation = NEWStation; //
   tft.fillScreen(TFT_BLACK);
   printStation(NEWStation); // display the name of the station on the screen
   printCodecAndBitrate();
@@ -297,46 +298,59 @@ void Task1code(void *pvParameters)
     vTaskDelay(1 / portTICK_PERIOD_MS);
   }
 }
-
-void logoTask(void *cparametr){
+int xLogo = 100;
+int yLogo = 220;
+void logoTask(void *cparametr)
+{
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextSize(2);
-  
-  while (showLogo) {
-    tft.setCursor(120, 220);
-    tft.print(".    ");
+
+  while (showLogo)
+  {
+    tft.setCursor(xLogo, yLogo);
+    tft.print(".       ");
     vTaskDelay(200 / portTICK_PERIOD_MS);
 
-    tft.setCursor(120, 220);
-    tft.print("..   ");
+    tft.setCursor(xLogo, yLogo);
+    tft.print("..      ");
     vTaskDelay(200 / portTICK_PERIOD_MS);
 
-    tft.setCursor(120, 220);
-    tft.print("...  ");
+    tft.setCursor(xLogo, yLogo);
+    tft.print("...     ");
     vTaskDelay(200 / portTICK_PERIOD_MS);
 
-    tft.setCursor(120, 220);
-    tft.print(" ... ");
+    tft.setCursor(xLogo, yLogo);
+    tft.print(" ...    ");
     vTaskDelay(200 / portTICK_PERIOD_MS);
 
-    tft.setCursor(120, 220);
-    tft.print("  ...");
+    tft.setCursor(xLogo, yLogo);
+    tft.print("  ...   ");
     vTaskDelay(200 / portTICK_PERIOD_MS);
 
-    tft.setCursor(120, 220);
-    tft.print("   ..");
+    tft.setCursor(xLogo, yLogo);
+    tft.print("    ... ");
     vTaskDelay(200 / portTICK_PERIOD_MS);
 
-    tft.setCursor(120, 220);
-    tft.print("    .");
+    tft.setCursor(xLogo, yLogo);
+    tft.print("     ...");
     vTaskDelay(200 / portTICK_PERIOD_MS);
 
-    tft.setCursor(120, 220);
-    tft.print("     ");
+    tft.setCursor(xLogo, yLogo);
+    tft.print("      ..");
     vTaskDelay(200 / portTICK_PERIOD_MS);
-    if (!showLogo) break;
+
+    tft.setCursor(xLogo, yLogo);
+    tft.print("       .");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+
+    tft.setCursor(xLogo, yLogo);
+    tft.print("        ");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+
+    if (!showLogo)
+      break;
   }
- // Освобождаем семафор, сигнализируя о завершении
+  // Освобождаем семафор, сигнализируя о завершении
   xSemaphoreGive(logoTaskSemaphore);
   // Самоудаление
   vTaskDelete(NULL);
