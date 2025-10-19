@@ -9,17 +9,26 @@
 #include <HTTPClient.h>
 #include <Update.h>
 
-#define I2S_DOUT 27 // 27 // 18 // DIN connection
-#define I2S_BCLK 26 // 26// Bit clock
-#define I2S_LRC 25  //  25// Left Right Clock
-                    // end audio
+#define I2S_DOUT 27        // 27 // 18 // DIN connection
+#define I2S_BCLK 26        // 26// Bit clock
+#define I2S_LRC 25         //  25// Left Right Clock
+                           // end audio
 #define LED_BRIGHTNESS 200 // яркость дисплея при старте
-#define LED_BUILT 22      // управление яркостью дисплея
+#define LED_BUILT 22       // управление яркостью дисплея
 
 // encoder
-#define CLK  35//32 // 35 //
-#define DT   32//33  // 32 //
-#define SW   33//35  //  33//
+
+#ifdef BOARD_ILI9341_PLYWOOD
+  #define CLK 35 // 32 // 35 //
+  #define DT 32  // 33  // 32 //
+  #define SW 33  // 35  //  33//
+#elif defined(BOARD_ILI9341_PLASTIC)
+  #define CLK 32 // 35 //
+  #define DT 33  // 32 //
+  #define SW 35  //  33//
+#else
+  #error "Board type not defined!"
+#endif
 
 extern const char *PARAM_INPUT;
 extern String sliderValue;
@@ -30,8 +39,8 @@ extern File file;
 extern unsigned long currentMillis;
 
 extern uint8_t NEWStation;
-extern int numbStations;        // количество радиостанций
-//new banch
+extern int numbStations; // количество радиостанций
+// new banch
 #define U_PART U_SPIFFS
 
 static unsigned long lastUpdate = 0;
@@ -75,5 +84,5 @@ void listStaton();
 void notifyWebClients();
 void setupRoutes(AsyncWebServer &server);
 String processor_update(const String &var);
-extern AsyncWebSocket ws;  // WebSocket эндпоинт
+extern AsyncWebSocket ws; // WebSocket эндпоинт
 #endif

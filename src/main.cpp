@@ -39,6 +39,8 @@ WiFiManager wifiManager;
 #define FORMAT_SPIFFS_IF_FAILED true
 
 TaskHandle_t myTaskHandle = NULL;
+// TaskHandle_t LogoHandle = NULL;
+
 
 uint16_t PL_0 = tft.color565(115, 115, 115);
 uint16_t PL_1 = tft.color565(89, 89, 89);
@@ -120,8 +122,14 @@ AsyncWebSocket ws("/ws");
 const char *host = "esp32";
 //---------------------------------
 TaskHandle_t Task1;
+TaskHandle_t logoTaskHandle;
+
+bool showLogo = true;
+SemaphoreHandle_t logoTaskSemaphore;
 
 void Task1code(void *pvParameters);
+void logoTask(void *cparameter);
+
 void printStation(uint8_t indexOfStation);
 void printCodecAndBitrate();
 
@@ -161,12 +169,24 @@ void setup()
   Serial.begin(115200);
   tft.begin();
 
+  // Создаем семафор для сигнала о завершении задачи логотипа
+  logoTaskSemaphore = xSemaphoreCreateBinary();
+
+  xTaskCreatePinnedToCore(
+    logoTask,
+    "LogoTask",
+    4096,
+    NULL,
+    0,
+    &logoTaskHandle,
+    1  // Ядро 1 для logo
+  );
 #ifdef BOARD_ILI9341_PLYWOOD
   tft.setRotation(1);
 #elif defined(BOARD_ILI9341_PLASTIC)
   tft.setRotation(3);
 #else
-#error "Board type not defined!"
+  #error "Board type not defined!"
 #endif
   // tft.loadFont(DS_DIGI28pt7b);
 
@@ -212,6 +232,15 @@ void setup()
   server.begin();
   Update.onProgress(printProgress);
   
+  showLogo = false;
+  // Ждем, пока задача логотипа завершится и освободит семафор
+  if (xSemaphoreTake(logoTaskSemaphore, portMAX_DELAY) == pdTRUE) {
+    // Задача завершилась, можно удалять семафор? Но мы больше не используем.
+    vSemaphoreDelete(logoTaskSemaphore);
+    logoTaskHandle = NULL;
+  }
+  delay(500);
+
   // The first connection
   ind = StationList[NEWStation].indexOf('\t');
   newSt = StationList[NEWStation].substring(ind + 1, StationList[NEWStation].length());
@@ -252,7 +281,7 @@ void setup()
   txtTrek.setTextDatum(TL_DATUM); // Привязка к верхнему левому углу
 
   vuSprite.createSprite(60, 140); // Ширина 60, высота 150
-
+  // vTaskGetInfo(logoTaskHandle);
 } // End Setup
 
 //----------------------------------------
@@ -268,6 +297,51 @@ void Task1code(void *pvParameters)
     vTaskDelay(1 / portTICK_PERIOD_MS);
   }
 }
+
+void logoTask(void *cparametr){
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  tft.setTextSize(2);
+  
+  while (showLogo) {
+    tft.setCursor(120, 220);
+    tft.print(".    ");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+
+    tft.setCursor(120, 220);
+    tft.print("..   ");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+
+    tft.setCursor(120, 220);
+    tft.print("...  ");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+
+    tft.setCursor(120, 220);
+    tft.print(" ... ");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+
+    tft.setCursor(120, 220);
+    tft.print("  ...");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+
+    tft.setCursor(120, 220);
+    tft.print("   ..");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+
+    tft.setCursor(120, 220);
+    tft.print("    .");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+
+    tft.setCursor(120, 220);
+    tft.print("     ");
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+    if (!showLogo) break;
+  }
+ // Освобождаем семафор, сигнализируя о завершении
+  xSemaphoreGive(logoTaskSemaphore);
+  // Самоудаление
+  vTaskDelete(NULL);
+}
+
 void volemeUpdate()
 {
   if (volUpdate)
