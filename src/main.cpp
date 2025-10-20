@@ -114,7 +114,11 @@ int16_t width_txt;
 int x_scroll_L;
 int x_scroll_R;
 
+#ifdef BOARD_PCM5102
 Audio audio;
+#elif BOARD_VS1953
+VS1053 audio(VS1053_CS, VS1053_DCS, VS1053_DREQ, VSPI, VS1053_MOSI, VS1053_MISO, VS1053_SCK);
+#endif
 GyverNTP ntp(3);
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
@@ -217,7 +221,7 @@ void setup()
     Serial.println("Error setting up MDNS responder!");
     while (1)
     {
-      delay(1000);
+      delay(500);
     }
   }
 
@@ -298,57 +302,26 @@ void Task1code(void *pvParameters)
     vTaskDelay(1 / portTICK_PERIOD_MS);
   }
 }
-int xLogo = 100;
-int yLogo = 220;
+int xLogo = 30;
+int yLogo = 210;
 void logoTask(void *cparametr)
 {
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  tft.setTextColor(color_clock, TFT_BLACK);
   tft.setTextSize(2);
-
-  while (showLogo)
+  // while (showLogo)
+  // {
+  int count = 30;
+  int widthLogo = 270;
+  int hightLogo = 10;
+  int widthLprogress = 7;
+  tft.drawRect(xLogo, yLogo, widthLogo, hightLogo, TFT_BLUE);
+  for (int i = 0; i < count; i++)
   {
-    tft.setCursor(xLogo, yLogo);
-    tft.print(".       ");
-    vTaskDelay(200 / portTICK_PERIOD_MS);
-
-    tft.setCursor(xLogo, yLogo);
-    tft.print("..      ");
-    vTaskDelay(200 / portTICK_PERIOD_MS);
-
-    tft.setCursor(xLogo, yLogo);
-    tft.print("...     ");
-    vTaskDelay(200 / portTICK_PERIOD_MS);
-
-    tft.setCursor(xLogo, yLogo);
-    tft.print(" ...    ");
-    vTaskDelay(200 / portTICK_PERIOD_MS);
-
-    tft.setCursor(xLogo, yLogo);
-    tft.print("  ...   ");
-    vTaskDelay(200 / portTICK_PERIOD_MS);
-
-    tft.setCursor(xLogo, yLogo);
-    tft.print("    ... ");
-    vTaskDelay(200 / portTICK_PERIOD_MS);
-
-    tft.setCursor(xLogo, yLogo);
-    tft.print("     ...");
-    vTaskDelay(200 / portTICK_PERIOD_MS);
-
-    tft.setCursor(xLogo, yLogo);
-    tft.print("      ..");
-    vTaskDelay(200 / portTICK_PERIOD_MS);
-
-    tft.setCursor(xLogo, yLogo);
-    tft.print("       .");
-    vTaskDelay(200 / portTICK_PERIOD_MS);
-
-    tft.setCursor(xLogo, yLogo);
-    tft.print("        ");
-    vTaskDelay(200 / portTICK_PERIOD_MS);
-
+    tft.fillRect(xLogo, yLogo, widthLprogress, hightLogo, color_clock);
+    xLogo += 9;
     if (!showLogo)
       break;
+    vTaskDelay(300 / portTICK_PERIOD_MS);
   }
   // Освобождаем семафор, сигнализируя о завершении
   xSemaphoreGive(logoTaskSemaphore);
@@ -1514,7 +1487,7 @@ void audioVolume()
 {
   int16_t volumeLevel = audio.getVolume() * 10;
   tft.fillRect(x_FP, y_FP, 210, 5, TFT_BLACK);
-  tft.drawRect(x_FP, y_FP, 210, 6, color_volume);
+  tft.drawRect(x_FP, y_FP, 210, 6, TFT_BLUE);
   tft.fillRect(x_FP, y_FP, volumeLevel, 6, color_volume);
   tft.setTextSize(1);
   tft.setFreeFont(RU8);

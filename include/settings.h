@@ -5,29 +5,41 @@
 #include <SPIFFS.h>
 #include <EEPROM.h>
 #include <EncButton.h>
-#include <Audio.h>
 #include <HTTPClient.h>
 #include <Update.h>
 
-#define I2S_DOUT 27        // 27 // 18 // DIN connection
-#define I2S_BCLK 26        // 26// Bit clock
-#define I2S_LRC 25         //  25// Left Right Clock
-                           // end audio
+#ifdef BOARD_PCM5102
+#include <Audio.h>
+#define I2S_DOUT 27 // 27 // 18 // DIN connection
+#define I2S_BCLK 26 // 26// Bit clock
+#define I2S_LRC 25  //  25// Left Right Clock
+
+#elif BOARD_VS1053
+#include <vs1053_ext.h>
+#define VS1053_MOSI 23
+#define VS1053_MISO 19
+#define VS1053_SCK 18
+#define VS1053_CS 2
+#define VS1053_DCS 4
+#define VS1053_DREQ 36
+#endif
+
+// end audio
 #define LED_BRIGHTNESS 200 // яркость дисплея при старте
 #define LED_BUILT 22       // управление яркостью дисплея
 
 // encoder
 
 #ifdef BOARD_ILI9341_PLYWOOD
-  #define CLK 35 // 32 // 35 //
-  #define DT 32  // 33  // 32 //
-  #define SW 33  // 35  //  33//
+#define CLK 35 // 32 // 35 //
+#define DT 32  // 33  // 32 //
+#define SW 33  // 35  //  33//
 #elif defined(BOARD_ILI9341_PLASTIC)
-  #define CLK 32 // 35 //
-  #define DT 33  // 32 //
-  #define SW 35  //  33//
+#define CLK 32 // 35 //
+#define DT 33  // 32 //
+#define SW 35  //  33//
 #else
-  #error "Board type not defined!"
+#error "Board type not defined!"
 #endif
 
 extern const char *PARAM_INPUT;
