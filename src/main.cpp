@@ -89,7 +89,7 @@ unsigned long currentMillis;   // To return from the menu after the time has exp
 unsigned long intervalForMenu; // Для возврата из меню по истечении времении
 bool f_startProgress = true;
 bool showRadio = true; // show radio or menu of station,
-bool stations;         // Станция вверх или вниз (true or false)
+bool directionStations = true;         // Направление движения по меню
 
 EncButton enc1(CLK, DT, SW);
 File file;
@@ -744,16 +744,12 @@ void myEncoder()
   {
     if (showRadio)
     {
-      stations = false;
-      nextStation(stations);
-      // printStation(NEWStation);
+      nextStation(!directionStations);
       notifyWebClients();
     }
     if (!showRadio)
     {
-      stations = false;
-      nextStation(stations);
-      // menuStation();
+      nextStation(!directionStations);
       stationDisplay(NEWStation);
       currentMillis = millis(); // Пока ходим по меню
     }
@@ -763,15 +759,12 @@ void myEncoder()
   {
     if (showRadio)
     {
-      stations = true;
-      nextStation(stations);
-      // printStation(NEWStation);
+      nextStation(directionStations);
       notifyWebClients();
     }
     if (!showRadio)
     {
-      stations = true;
-      nextStation(stations);
+      nextStation(directionStations);
       stationDisplay(NEWStation);
       currentMillis = millis(); // Пока ходим по меню
     }
@@ -921,7 +914,7 @@ void printCodecAndBitrate()
 //-- new nextStation
 void nextStation(bool stepStation)
 {
-  (stepStation) ? (NEWStation = (NEWStation + 1) % numbStations) : (NEWStation = (NEWStation - 1 + numbStations) % numbStations);
+  (stepStation) ? (NEWStation = (NEWStation - 1 + numbStations) % numbStations) : (NEWStation = (NEWStation + 1) % numbStations);
   EEPROM.write(2, NEWStation);
   EEPROM.commit();
 }
@@ -1235,15 +1228,13 @@ void onMenuPrev()
 {
   if (showRadio)
   {
-    stations = true;
-    nextStation(stations);
+    nextStation(directionStations);
     notifyWebClients();
     // printStation(NEWStation);
   }
   if (!showRadio)
   {
-    stations = true;
-    nextStation(stations);
+    nextStation(directionStations);
     stationDisplay(NEWStation);
     currentMillis = millis(); // Пока ходим по меню
   }
@@ -1253,15 +1244,13 @@ void onMenuNext()
 {
   if (showRadio)
   {
-    stations = false;
-    nextStation(stations);
+    nextStation(!directionStations);
     notifyWebClients();
     // printStation(NEWStation);
   }
   if (!showRadio)
   {
-    stations = false;
-    nextStation(stations);
+    nextStation(!directionStations);
     // menuStation();
     stationDisplay(NEWStation);
     currentMillis = millis(); // Пока ходим по меню
@@ -1363,7 +1352,6 @@ String utf8rus(String source)
 
 void audio_showstreamtitle(const char *info)
 {
-  Serial.printf(info, "----");
   title_flag = true;
   show_title = true;
   MessageToScroll_1 = info;
