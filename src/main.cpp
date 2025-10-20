@@ -51,6 +51,8 @@ uint16_t VU_MIN = tft.color565(135, 125, 123);
 uint16_t VU_MAX = tft.color565(231, 211, 90);
 uint16_t color_volume = tft.color565(165, 165, 132);
 uint16_t color_clock = tft.color565(231, 211, 90);
+uint16_t COLOR_SNG_TITLE_1 = tft.color565(165, 162, 132);
+uint16_t COLOR_SNG_TITLE_2 = tft.color565(255, 255, 255);
 
 int ypos = 190; // position title
 int xpos = 0;
@@ -273,14 +275,14 @@ void setup()
   tft.setSwapBytes(true);
   txtSprite.createSprite(250, txtSpriteHight); // Ширина и высота спрайта
   txtSprite.setTextSize(1);
-  txtSprite.setTextColor(TFT_WHITE, TFT_BLACK);
+  txtSprite.setTextColor(COLOR_SNG_TITLE_1, TFT_BLACK);
   txtSprite.fillSprite(TFT_BLACK);
   txtSprite.setFreeFont(&CourierCyr10pt8b);
   txtSprite.setTextDatum(TL_DATUM); // Привязка к верхнему левому углу
 
   txtTrek.createSprite(250, txtTrekHight); // Название трека
   txtTrek.setTextSize(1);
-  txtTrek.setTextColor(TFT_WHITE, TFT_BLACK);
+  txtTrek.setTextColor(COLOR_SNG_TITLE_2, TFT_BLACK);
   txtTrek.fillSprite(TFT_BLACK);
   txtTrek.setFreeFont(&CourierCyr10pt8b);
   txtTrek.setTextDatum(TL_DATUM); // Привязка к верхнему левому углу
@@ -360,10 +362,11 @@ void trekPreparingShow()
       before = utf8rus(before) + char(0x20);
       after = utf8rus(after) + char(0x20);
       tft.setTextSize(1);
-      tft.setTextColor(0x9772);
+      tft.setTextColor(COLOR_SNG_TITLE_1);
       tft.setFreeFont(&CourierCyr10pt8b);
       txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
       txtTrek.drawString(before, 0, 0);
+      tft.setTextColor(COLOR_SNG_TITLE_2);
       txtSprite.drawString(after, 0, 0);
     }
   }
