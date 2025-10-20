@@ -1228,13 +1228,13 @@ void onMenuPrev()
 {
   if (showRadio)
   {
-    nextStation(directionStations);
+    nextStation(!directionStations);
     notifyWebClients();
     // printStation(NEWStation);
   }
   if (!showRadio)
   {
-    nextStation(directionStations);
+    nextStation(!directionStations);
     stationDisplay(NEWStation);
     currentMillis = millis(); // Пока ходим по меню
   }
@@ -1244,13 +1244,13 @@ void onMenuNext()
 {
   if (showRadio)
   {
-    nextStation(!directionStations);
+    nextStation(directionStations);
     notifyWebClients();
     // printStation(NEWStation);
   }
   if (!showRadio)
   {
-    nextStation(!directionStations);
+    nextStation(directionStations);
     // menuStation();
     stationDisplay(NEWStation);
     currentMillis = millis(); // Пока ходим по меню
