@@ -262,7 +262,7 @@ void handleDoUpload(AsyncWebServerRequest *request, String filename, size_t inde
         request->send(response);
         file.close();
         opened = false;
-        initSpiffs();
+        // initSpiffs();
         Serial.println("---------------");
         Serial.println("Upload complete");
     }

@@ -34,7 +34,7 @@ uint16_t ind;
 int audiovol = 15;
 String newSt;
 
-int yForInit = 40; //Для вывода на первый экран
+int yForInit = 40; // Для вывода на первый экран
 
 //---------
 WiFiManager wifiManager;
@@ -92,8 +92,8 @@ bool textUpdated = false;
 unsigned long currentMillis;   // To return from the menu after the time has expired
 unsigned long intervalForMenu; // Для возврата из меню по истечении времении
 bool f_startProgress = true;
-bool showRadio = true; // show radio or menu of station,
-bool directionStations = true;         // Направление движения по меню
+bool showRadio = true;         // show radio or menu of station,
+bool directionStations = true; // Направление движения по меню
 
 EncButton enc1(CLK, DT, SW);
 File file;
@@ -902,7 +902,7 @@ void printCodecAndBitrate()
   tft.setTextColor(TFT_CYAN, TFT_BLACK);
   tft.setFreeFont(&CourierCyr10pt8b);
   tft.setTextSize(1);
-  tft.drawString(String(audio.getCodecname()).substring(0, 3), x_codec, y_codec);
+  tft.drawString(String(audio.getCodecname()).substring(0, 3) + " ", x_codec, y_codec);
   int bit = audio.getBitRate(); // bitrate.toInt();
   if (bit < 128000)
   {
@@ -995,7 +995,7 @@ void initSpiffs()
   menuStation();
   listStaton();
   yForInit += 20;
-  tft.setCursor(40,yForInit);
+  tft.setCursor(40, yForInit);
   tft.print("Init SPIFFS has passed.");
 }
 // EEPROM
@@ -1022,7 +1022,7 @@ void readEEprom()
     audio.setVolume(sliderValue.toInt());
   }
   yForInit += 20;
-  tft.setCursor(40,yForInit);
+  tft.setCursor(40, yForInit);
   tft.print("Init EEPROM has passed");
 }
 //****************************
@@ -1042,7 +1042,7 @@ void initWiFi()
   WiFi.setAutoReconnect(true);
 
   Serial.println("Scanning for available networks...");
-  yForInit +=20;
+  yForInit += 20;
   tft.setCursor(40, yForInit);
   tft.println("Scanning WiFi...");
 
