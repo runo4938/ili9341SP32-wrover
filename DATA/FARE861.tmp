@@ -6,11 +6,11 @@
 Дорожное Радио	http://dorognoe.hostingradio.ru/dorognoe
 Remix	http://rmx.amgradio.ru/RemixFM
 Fresh	http://fresh.amgradio.ru/Fresh
-Хит FM	http://hitfm.hostingradio.ru/hitfm96.aacp
+ХитFM	http://hitfm.hostingradio.ru/hitfm96.aacp
 СеребрДождь	http://silverrain.hostingradio.ru/silver64.aac
 Дядя Ваня	https://ic1.radiosignal.one/vanya-mp3
 New Radio	http://stream.newradio.ru/novoe96.aacp
-Pi FM	https://cdn.pifm.ru/mp3web?rn=133
+PiFM-2	https://cdn.pifm.ru/mp3web?rn=133
 Волна ФМ	http://radio.volnafm.ru:8000/ekb
 Радио КП	http://kpradio.hostingradio.ru:8000/128?radiostatistica=top-radio.ru
 Маяк ФМ	https://icecast-vgtrk.cdnvideo.ru/mayakfm_mp3_128kbps
@@ -20,8 +20,8 @@ Overpass	http://mp3.ffh.de/radioffh/hqlivestream.mp3
 Kommersant	http://kommersant77.hostingradio.ru:8016/kommersant64.mp3
 Шансон	http://chanson.hostingradio.ru:8041/chanson64.mp3
 Мое Радио	http://listen2.myradio24.com/8032
-Live Radio	http://79.120.77.11:8000/hardrock?n=6618f062c3fd1821abc2
-Luna fm	http://stream.lunafm.net/listen/lunaworld/radio.aac
+liveradio	http://79.120.77.11:8000/hardrock?n=6618f062c3fd1821abc2
+luna fm	http://stream.lunafm.net/listen/lunaworld/radio.aac
 FFH	http://mp3.ffh.de/radioffh/hqlivestream.aac
 VOA	https://1a-90er.radionetz.de/1a-90er.mp3
 LBS	https://media-ssl.musicradio.com/LBCLondon

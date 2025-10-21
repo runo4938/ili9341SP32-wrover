@@ -34,6 +34,8 @@ uint16_t ind;
 int audiovol = 15;
 String newSt;
 
+int yForInit = 40; //Для вывода на первый экран
+
 //---------
 WiFiManager wifiManager;
 /* this info will be read by the python script */
@@ -203,7 +205,7 @@ void setup()
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextSize(2);
-  tft.setCursor(40, 60);
+  tft.setCursor(40, yForInit);
   tft.println("Starting Radio...");
 
   readEEprom();
@@ -885,8 +887,8 @@ void printStation(uint8_t indexOfStation)
   localIndex = StationList[indexOfStation].indexOf('\t');
   StName = StationList[indexOfStation].substring(0, localIndex + 1);
   tft.setTextColor(TFT_BLACK, ST_BG);
-  tft.setTextSize(2);
-  tft.setFreeFont(RU12);
+  tft.setTextSize(1);
+  tft.setFreeFont(BAHAMAS);
   tft.fillRect(0, 0, 319, 43, ST_BG);
   tft.fillRect(0, 44, 319, 43, TFT_BLACK); // очистка бегущей строки
   tft.drawString(utf8rus(StName), x_stName, y_stName);
@@ -992,6 +994,9 @@ void initSpiffs()
   Serial.printf("SPIFFS free: %d bytes\n", freeSpace);
   menuStation();
   listStaton();
+  yForInit += 20;
+  tft.setCursor(40,yForInit);
+  tft.print("Init SPIFFS has passed.");
 }
 // EEPROM
 void readEEprom()
@@ -1016,6 +1021,9 @@ void readEEprom()
     sliderValue = EEPROM.read(6);
     audio.setVolume(sliderValue.toInt());
   }
+  yForInit += 20;
+  tft.setCursor(40,yForInit);
+  tft.print("Init EEPROM has passed");
 }
 //****************************
 //    WiFi
@@ -1034,7 +1042,8 @@ void initWiFi()
   WiFi.setAutoReconnect(true);
 
   Serial.println("Scanning for available networks...");
-  tft.setCursor(40, 80);
+  yForInit +=20;
+  tft.setCursor(40, yForInit);
   tft.println("Scanning WiFi...");
 
   // Сканируем доступные сети
@@ -1122,7 +1131,8 @@ void initWiFi()
 void startWiFiManager()
 {
   tft.fillScreen(TFT_BLACK);
-  tft.setCursor(40, 60);
+  yForInit += 20;
+  tft.setCursor(40, yForInit);
   Serial.println("Starting WiFiManager");
   tft.println("Starting WiFiManager");
   tft.println("SSID: ESP32-Clock");
@@ -1175,15 +1185,19 @@ void printConnectionInfo()
   Serial.println(sysInfo);
 
   // Вывод на TFT дисплей
-  tft.setCursor(40, 80);
+  yForInit += 20;
+  tft.setCursor(40, yForInit);
   tft.print("WiFi connected!");
-  tft.setCursor(40, 100);
+  yForInit += 20;
+  tft.setCursor(40, yForInit);
   tft.print("SSID: ");
   tft.println(WiFi.SSID());
-  tft.setCursor(40, 120);
+  yForInit += 20;
+  tft.setCursor(40, yForInit);
   tft.print("IP: ");
   tft.println(WiFi.localIP());
-  tft.setCursor(40, 140);
+  yForInit += 20;
+  tft.setCursor(40, yForInit);
   tft.print("Signal: ");
   tft.print(WiFi.RSSI());
   tft.println(" dBm");
