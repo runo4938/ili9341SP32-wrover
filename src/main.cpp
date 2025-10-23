@@ -11,6 +11,7 @@
 #include "../lib/fonts.h"
 #include "../lib/CourierCyr10.h"
 #include "../lib/Bahamas18.h"
+#define CODE &FreeMonoBold8pt8b
 #include "../lib/CourierCyr12.h" //для меню станций
 #include "../lib/Free_Fonts.h"
 #include "../lib/DS_DIGI28pt7b.h"
@@ -35,7 +36,8 @@ int audiovol = 15;
 String newSt;
 
 int yForInit = 40; // Для вывода на первый экран
-
+bool initStart = true;
+bool showBitrate = false;
 //---------
 WiFiManager wifiManager;
 /* this info will be read by the python script */
@@ -189,6 +191,7 @@ void setup()
       &logoTaskHandle,
       1 // Ядро 1 для logo
   );
+  
 #ifdef BOARD_ILI9341_PLYWOOD
   tft.setRotation(1);
 #elif defined(BOARD_ILI9341_PLASTIC)
@@ -290,6 +293,13 @@ void setup()
   txtTrek.setTextDatum(TL_DATUM); // Привязка к верхнему левому углу
 
   vuSprite.createSprite(60, 140); // Ширина 60, высота 150
+
+  tft.setFreeFont(&CourierCyr10pt8b);
+  tft.setTextSize(1);
+  tft.setTextColor(TFT_CYAN, TFT_BLACK);
+  tft.fillRect(x_wifi_ssid, y_wifi_ssid + 5, 183, 30, TFT_BLACK);
+  tft.drawString(WiFi.SSID(), x_wifi_ssid, y_wifi_ssid);
+  tft.drawString(WiFi.localIP().toString(), 160, y_wifi);
   // vTaskGetInfo(logoTaskHandle);
 } // End Setup
 
@@ -353,7 +363,7 @@ void trekPreparingShow()
     txtSprite.fillRect(0, 64, 255, txtSpriteHight, TFT_BLACK);
     txtSprite.drawString("                                             ", 0, 0);
     txtSprite.pushSprite(0, 64);
-
+   
     String str = MessageToScroll_1;
     char delimiter = '-';
     int pos = str.indexOf(delimiter); // Находим позицию символа
@@ -370,6 +380,7 @@ void trekPreparingShow()
       txtTrek.drawString(before, 0, 0);
       tft.setTextColor(COLOR_SNG_TITLE_2);
       txtSprite.drawString(after, 0, 0);
+       Serial.println(after);
     }
   }
 }
@@ -390,6 +401,10 @@ void returnFromDisplayScreen()
     vuSprite.createSprite(60, 140);
     txtSprite.createSprite(250, txtSpriteHight);
     txtTrek.createSprite(250, txtTrekHight);
+    tft.setFreeFont(&CourierCyr10pt8b);
+    tft.setTextSize(1);
+    tft.setTextColor(TFT_CYAN, TFT_BLACK);
+    tft.drawString(WiFi.localIP().toString(), 160, y_wifi);
     lineondisp();
     printCodecAndBitrate();
     first = true;
@@ -502,34 +517,13 @@ void scrolling()
 }
 //--------------
 // show IP and SSID
-void showIPAndSSID()
-{
-  if ((millis() - lastTime_ssid) > timerDelay_ssid)
-  {
-    printCodecAndBitrate();
-    switch (ssid_show)
-    {
-    case 1:
-      tft.setFreeFont(&CourierCyr10pt8b);
-      tft.setTextSize(1);
-      tft.setTextColor(TFT_CYAN, TFT_BLACK);
-      tft.fillRect(x_wifi_ssid, y_wifi_ssid + 5, 183, 30, TFT_BLACK);
-      tft.drawString(WiFi.SSID(), x_wifi_ssid, y_wifi_ssid);
-      lastTime_ssid = millis();
-      ssid_show = 2;
-      break;
-    case 2:
-      tft.setFreeFont(&CourierCyr10pt8b);
-      tft.setTextSize(1);
-      tft.setTextColor(TFT_CYAN, TFT_BLACK);
-      tft.fillRect(x_WiFi_localIP, y_WiFi_localIP + 5, 183, 20, TFT_BLACK);
-      tft.drawString(WiFi.localIP().toString(), x_WiFi_localIP, y_WiFi_localIP);
-      lastTime_ssid = millis();
-      ssid_show = 1;
-      break;
-    }
-  }
-}
+// void showIPAndSSID()
+// {
+//   if ((millis() - lastTime_ssid) > timerDelay_ssid)
+//   {
+//     printCodecAndBitrate();
+//   }
+// }
 //-----------------------
 //*******************************
 // START loop
@@ -569,7 +563,7 @@ void loop()
       tft.setFreeFont(RU8);
       tft.setTextColor(color_clock);
       tft.setCursor(x_data, y_data);
-      tft.fillRect(x_data, y_data, 180, 30, TFT_BLACK);
+      tft.fillRect(x_data, y_data, 130, 30, TFT_BLACK);
       tft.drawString(CurrentDate, x_data, y_data);
       printStation(NEWStation);
       wifiLevel();
@@ -585,9 +579,7 @@ void loop()
       printStation(NEWStation);
       delay(100);
       audio.setVolume(EEPROM.read(6));
-
       audio.connecttohost(sl); // новая станция
-
       OLDStation = NEWStation;
     }
     //-----vumeter
@@ -604,7 +596,12 @@ void loop()
       wifiLevel();
     }
     // show IP and SSID
-    showIPAndSSID();
+    if ((millis() - lastTime_ssid) > timerDelay_ssid)
+    {
+        printCodecAndBitrate();
+        lastTime_ssid = millis();
+
+    }
   }
 } // end LOOP
 
@@ -799,6 +796,10 @@ void myEncoder()
       lineondisp();
       printCodecAndBitrate();
       notifyWebClients();
+      tft.setFreeFont(&CourierCyr10pt8b);
+      tft.setTextSize(1);
+      tft.setTextColor(TFT_CYAN, TFT_BLACK);
+      tft.drawString(WiFi.localIP().toString(), 160, y_wifi);
     }
   }
   if (enc1.rightH())
@@ -899,19 +900,23 @@ void printStation(uint8_t indexOfStation)
 //----------------------------
 void printCodecAndBitrate()
 {
-  tft.setTextColor(TFT_CYAN, TFT_BLACK);
-  tft.setFreeFont(&CourierCyr10pt8b);
-  tft.setTextSize(1);
-  tft.drawString(String(audio.getCodecname()).substring(0, 3) + " ", x_codec, y_codec);
   int bit = audio.getBitRate(); // bitrate.toInt();
+  tft.setFreeFont(CODE);
+  tft.setTextSize(1);
+  tft.setTextColor(ST_BG, TFT_BLACK);
+  tft.fillRect(280, 44, 32, 33, ST_BG);
+  tft.fillRect(282, 45, 28, 16, TFT_BLACK);
   if (bit < 128000)
   {
-    tft.drawString(String(bit).substring(0, 2) + "k ", x_bitrate, x_bitrate);
+    tft.drawString(String(bit).substring(0, 2) + " ", 282, 45);
   }
   else
   {
-    tft.drawString(bitrate.substring(0, 3) + "k", x_bitrate, y_bitrate);
+    tft.drawString(String(bit).substring(0, 3), 282, 45);
   }
+  tft.setTextColor(TFT_BLACK, ST_BG);
+  tft.drawString(String(audio.getCodecname()).substring(0, 3) + " ", 282, 61);
+  showBitrate = false;
   EEPROM.write(2, NEWStation);
   EEPROM.commit();
 }
@@ -994,9 +999,13 @@ void initSpiffs()
   Serial.printf("SPIFFS free: %d bytes\n", freeSpace);
   menuStation();
   listStaton();
-  yForInit += 20;
-  tft.setCursor(40, yForInit);
-  tft.print("Init SPIFFS has passed.");
+  if (initStart)
+  {
+    yForInit += 20;
+    tft.setCursor(40, yForInit);
+    tft.print("Init SPIFFS has passed.");
+    initStart = false;
+  }
 }
 // EEPROM
 void readEEprom()
@@ -1207,7 +1216,7 @@ void printConnectionInfo()
 // уровень вафай
 void wifiLevel()
 {
-  uint16_t x_wifi = 140, y_wifi = ypos;
+  uint16_t x_wifi = 90, y_wifi = ypos;
   int8_t rssi = WiFi.RSSI();
   // Определяем количество полосок по уровню сигнала
   int bars;
@@ -1378,6 +1387,10 @@ void audio_showstreamtitle(const char *info)
   MessageToScroll_1 += F(" ");
   MessageToScroll_1 = utf8rus(MessageToScroll_1);
 }
+void audio_codec(const char *info)
+{
+  Serial.println(info);
+}
 
 void audio_bitrate(const char *info)
 {
@@ -1480,7 +1493,7 @@ void lineondisp()
   //  wifi level codec bitrate
   tft.drawRect(70, 175, 250, 42, TFT_CYAN);
   tft.setTextColor(TFT_CYAN);
-  tft.drawString("WiFi", x_wifi, y_wifi);
+  // tft.drawString("WiFi", x_wifi - 5, y_wifi);
   audioVolume();
 }
 
