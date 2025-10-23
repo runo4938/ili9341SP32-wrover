@@ -1,6 +1,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
-#include <Arduino.h>
+
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 #include <EEPROM.h>
@@ -13,15 +13,14 @@
 #define I2S_DOUT 27 // 27 // 18 // DIN connection
 #define I2S_BCLK 26 // 26// Bit clock
 #define I2S_LRC 25  //  25// Left Right Clock
-
 #elif BOARD_VS1053
-#include <vs1053_ext.h>
-#define VS1053_MOSI 23
-#define VS1053_MISO 19
-#define VS1053_SCK 18
-#define VS1053_CS 2
-#define VS1053_DCS 4
-#define VS1053_DREQ 36
+#define VS1053_MOSI   23
+#define VS1053_MISO   19
+#define VS1053_SCK    18
+#define VS1053_CS      27
+#define VS1053_DCS     25
+#define VS1053_DREQ   26
+extern VS1053 audio;
 #endif
 
 // end audio
@@ -46,7 +45,7 @@ extern const char *PARAM_INPUT;
 extern String sliderValue;
 extern Audio audio;
 extern bool volUpdate;
-extern File file;
+extern File myFile;
 
 extern unsigned long currentMillis;
 

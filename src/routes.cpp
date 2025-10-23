@@ -242,14 +242,14 @@ void handleDoUpload(AsyncWebServerRequest *request, String filename, size_t inde
     if (opened == false)
     {
         opened = true;
-        file = SPIFFS.open(String("/") + filename, FILE_WRITE);
-        if (!file)
+        myFile = SPIFFS.open(String("/") + filename, FILE_WRITE);
+        if (!myFile)
         {
             Serial.println("- failed to open file for writing");
             return;
         }
     }
-    if (file.write(data, len) != len)
+    if (myFile.write(data, len) != len)
     {
         Serial.println("- failed to write");
         return;
@@ -260,7 +260,7 @@ void handleDoUpload(AsyncWebServerRequest *request, String filename, size_t inde
         response->addHeader("Refresh", "20");
         response->addHeader("Location", "/filesystem");
         request->send(response);
-        file.close();
+        myFile.close();
         opened = false;
         initSpiffs();
         Serial.println("---------------");

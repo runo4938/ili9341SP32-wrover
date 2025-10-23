@@ -1,3 +1,5 @@
+
+
 #include <TFT_eSPI.h>
 #include <display.h>
 #include <ESPmDNS.h>
@@ -7,6 +9,7 @@
 #include <routes.h>
 #include <AsyncTCP.h>
 #include <UnixTime.h>
+
 
 #include "../lib/fonts.h"
 #include "../lib/CourierCyr10.h"
@@ -29,6 +32,13 @@ TFT_eSprite vuSprite = TFT_eSprite(&tft);  // Create Sprite
 TFT_eSprite txtTrek = TFT_eSprite(&tft);   // Create Sprite
 
 UnixTime stamp(3); // указать GMT (3 для Москвы)
+
+
+#ifdef BOARD_PCM5102
+Audio audio;
+#elif BOARD_VS1053
+VS1053 audio(VS1053_CS, VS1053_DCS, VS1053_DREQ, VSPI, VS1053_MOSI, VS1053_MISO, VS1053_SCK);
+#endif
 
 // Loop
 uint16_t ind;
@@ -98,7 +108,7 @@ bool showRadio = true;         // show radio or menu of station,
 bool directionStations = true; // Направление движения по меню
 
 EncButton enc1(CLK, DT, SW);
-File file;
+File myFile;
 
 String sliderValue;
 const char *PARAM_INPUT = "value";
@@ -120,11 +130,6 @@ int16_t width_txt;
 int x_scroll_L;
 int x_scroll_R;
 
-#ifdef BOARD_PCM5102
-Audio audio;
-#elif BOARD_VS1953
-VS1053 audio(VS1053_CS, VS1053_DCS, VS1053_DREQ, VSPI, VS1053_MOSI, VS1053_MISO, VS1053_SCK);
-#endif
 GyverNTP ntp(3);
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
@@ -218,9 +223,14 @@ void setup()
   // tft.fillScreen(TFT_BLACK);
   delay(1000);
 
-  // newVer();
+
+  #ifdef BOARD_PCM5102
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(EEPROM.read(6));
+  #elif BOARD_VS1053
+  // Start SPI bus
+    SPI.begin(VS1053_SCK, VS1053_MISO, VS1053_MOSI);
+#endif
   // tft.fillScreen(TFT_BLACK);
   // firs raw
   if (!MDNS.begin(host))
@@ -257,8 +267,13 @@ void setup()
   ind = StationList[NEWStation].indexOf('\t');
   newSt = StationList[NEWStation].substring(ind + 1, StationList[NEWStation].length());
   const char *sl = newSt.c_str();
+  // audio.begin();
   audio.setVolume(EEPROM.read(6));
   audio.connecttohost(sl); // переключаем станцию
+  
+  // stream.setVolume(EEPROM.read(6));
+  // stream.connecttohost(sl); // переключаем станцию
+  
   Serial.printf("\n %s \n", sl);
   OLDStation = NEWStation; //
   tft.fillScreen(TFT_BLACK);
@@ -312,7 +327,7 @@ void Task1code(void *pvParameters)
   Serial.println(xPortGetCoreID());
   for (;;)
   {
-    audio.loop();
+     audio.loop();
     vTaskDelay(1 / portTICK_PERIOD_MS);
   }
 }
@@ -968,8 +983,8 @@ void initSpiffs()
     return;
   }
 
-  file = SPIFFS.open("/playlist.txt", FILE_READ);
-  if (!file)
+  myFile = SPIFFS.open("/playlist.txt", FILE_READ);
+  if (!myFile)
   {
     Serial.println("------File does not exist!------");
     Serial.println("Failed to open stations file");
@@ -977,21 +992,21 @@ void initSpiffs()
     return;
   }
 
-  size_t fileSize = file.size();
+  size_t fileSize = myFile.size();
   size_t freeSpace = SPIFFS.totalBytes() - SPIFFS.usedBytes();
 
   Serial.printf("File size: %d bytes\n", fileSize);
   Serial.printf("Lines in file: ");
 
   int i = 0;
-  while (file.available() && i < MAX_STATIONS)
+  while (myFile.available() && i < MAX_STATIONS)
   {
-    StationList[i] = file.readStringUntil('\n'); // Станции в массиве пронумерованы от 0
+    StationList[i] = myFile.readStringUntil('\n'); // Станции в массиве пронумерованы от 0
     if (i >= MAX_STATIONS)
       break; // Дополнительная защита
     i++;
   }
-  file.close();
+  myFile.close();
   numbStations = i; // Количесто реальных станций
   Serial.printf("Read %d stations, numbStations = %d\n", i, numbStations);
   Serial.printf("SPIFFS total: %d bytes\n", SPIFFS.totalBytes());
@@ -1309,24 +1324,24 @@ void onMenu()
     printCodecAndBitrate();
   }
 }
-
+/*
 String readFile(fs::FS &fs, const char *path)
 {
   Serial.printf("Reading file: %s\r\n", path);
-  File file = fs.open(path);
-  if (!file || file.isDirectory())
+  myFile = fs.open(path);
+  if (!myFile || myFile.isDirectory())
   {
     Serial.println("- failed to open file for reading");
     return String();
   }
   String fileContent;
-  while (file.available())
+  while (mbedtls_entropy_f_source_ptravailable())
   {
-    fileContent = file.readStringUntil('\n');
+    fileContent = myFile.readStringUntil('\n');
     break;
   }
   return fileContent;
-}
+}*/
 // end readFile
 
 String utf8rus(String source)
