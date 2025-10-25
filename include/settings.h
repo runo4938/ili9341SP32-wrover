@@ -1,5 +1,9 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
+#ifdef BOARD_VS1053
+#include "SPI.h"
+#include "vs1053_ext.h"
+#endif
 
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
@@ -43,7 +47,9 @@ extern VS1053 audio;
 
 extern const char *PARAM_INPUT;
 extern String sliderValue;
+#ifdef BOARD_PCM5102
 extern Audio audio;
+#endif
 extern bool volUpdate;
 extern File myFile;
 

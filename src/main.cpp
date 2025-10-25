@@ -1,4 +1,8 @@
 
+#ifdef BOARD_VS1053
+#include "SPI.h"
+#include "vs1053_ext.h"
+#endif
 
 #include <TFT_eSPI.h>
 #include <display.h>
@@ -9,7 +13,6 @@
 #include <routes.h>
 #include <AsyncTCP.h>
 #include <UnixTime.h>
-
 
 #include "../lib/fonts.h"
 #include "../lib/CourierCyr10.h"
@@ -32,7 +35,6 @@ TFT_eSprite vuSprite = TFT_eSprite(&tft);  // Create Sprite
 TFT_eSprite txtTrek = TFT_eSprite(&tft);   // Create Sprite
 
 UnixTime stamp(3); // указать GMT (3 для Москвы)
-
 
 #ifdef BOARD_PCM5102
 Audio audio;
@@ -182,6 +184,10 @@ void setup()
   analogWrite(LED_BUILT, LED_BRIGHTNESS); // первоначальная яркость дисплея
 
   Serial.begin(115200);
+
+#ifdef BOARD_VS1053
+  SPI.begin(VS1053_SCK, VS1053_MISO, VS1053_MOSI);
+#endif
   tft.begin();
 
   // Создаем семафор для сигнала о завершении задачи логотипа
@@ -196,7 +202,7 @@ void setup()
       &logoTaskHandle,
       1 // Ядро 1 для logo
   );
-  
+
 #ifdef BOARD_ILI9341_PLYWOOD
   tft.setRotation(1);
 #elif defined(BOARD_ILI9341_PLASTIC)
@@ -223,13 +229,12 @@ void setup()
   // tft.fillScreen(TFT_BLACK);
   delay(1000);
 
-
-  #ifdef BOARD_PCM5102
+#ifdef BOARD_PCM5102
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   audio.setVolume(EEPROM.read(6));
-  #elif BOARD_VS1053
+#elif BOARD_VS1053
   // Start SPI bus
-    SPI.begin(VS1053_SCK, VS1053_MISO, VS1053_MOSI);
+  SPI.begin(VS1053_SCK, VS1053_MISO, VS1053_MOSI);
 #endif
   // tft.fillScreen(TFT_BLACK);
   // firs raw
@@ -270,10 +275,10 @@ void setup()
   // audio.begin();
   audio.setVolume(EEPROM.read(6));
   audio.connecttohost(sl); // переключаем станцию
-  
+
   // stream.setVolume(EEPROM.read(6));
   // stream.connecttohost(sl); // переключаем станцию
-  
+
   Serial.printf("\n %s \n", sl);
   OLDStation = NEWStation; //
   tft.fillScreen(TFT_BLACK);
@@ -327,7 +332,7 @@ void Task1code(void *pvParameters)
   Serial.println(xPortGetCoreID());
   for (;;)
   {
-     audio.loop();
+    audio.loop();
     vTaskDelay(1 / portTICK_PERIOD_MS);
   }
 }
@@ -378,7 +383,7 @@ void trekPreparingShow()
     txtSprite.fillRect(0, 64, 255, txtSpriteHight, TFT_BLACK);
     txtSprite.drawString("                                             ", 0, 0);
     txtSprite.pushSprite(0, 64);
-   
+
     String str = MessageToScroll_1;
     char delimiter = '-';
     int pos = str.indexOf(delimiter); // Находим позицию символа
@@ -395,7 +400,7 @@ void trekPreparingShow()
       txtTrek.drawString(before, 0, 0);
       tft.setTextColor(COLOR_SNG_TITLE_2);
       txtSprite.drawString(after, 0, 0);
-       Serial.println(after);
+      Serial.println(after);
     }
   }
 }
@@ -590,7 +595,11 @@ void loop()
       ind = StationList[NEWStation].indexOf('\t');
       newSt = StationList[NEWStation].substring(ind + 1, StationList[NEWStation].length());
       const char *sl = newSt.c_str();
+      #ifdef BOARD_PCM5102
       audio.stopSong();
+      #elif BOARD_VS1053
+      audio.stop_mp3client();
+      #endif
       printStation(NEWStation);
       delay(100);
       audio.setVolume(EEPROM.read(6));
@@ -613,9 +622,8 @@ void loop()
     // show IP and SSID
     if ((millis() - lastTime_ssid) > timerDelay_ssid)
     {
-        printCodecAndBitrate();
-        lastTime_ssid = millis();
-
+      printCodecAndBitrate();
+      lastTime_ssid = millis();
     }
   }
 } // end LOOP
@@ -905,8 +913,8 @@ void printStation(uint8_t indexOfStation)
   tft.setTextColor(TFT_BLACK, ST_BG);
   tft.setTextSize(1);
   tft.setFreeFont(BAHAMAS);
-  tft.fillRect(0, 0, 319, 43, ST_BG);
-  tft.fillRect(0, 44, 319, 43, TFT_BLACK); // очистка бегущей строки
+  tft.fillRect(0, 0, 318, 43, ST_BG);
+  tft.fillRect(0, 44, 318, 43, TFT_BLACK); // очистка бегущей строки
   tft.drawString(utf8rus(StName), x_stName, y_stName);
   show_title = false;
 } // end PrintStation
@@ -919,18 +927,18 @@ void printCodecAndBitrate()
   tft.setFreeFont(CODE);
   tft.setTextSize(1);
   tft.setTextColor(ST_BG, TFT_BLACK);
-  tft.fillRect(280, 44, 32, 33, ST_BG);
-  tft.fillRect(282, 45, 28, 16, TFT_BLACK);
+  tft.fillRect(284, 45, 32, 33, ST_BG);
+  tft.fillRect(286, 46, 28, 16, TFT_BLACK);
   if (bit < 128000)
   {
-    tft.drawString(String(bit).substring(0, 2) + " ", 282, 45);
+    tft.drawString(String(bit).substring(0, 2) + " ", 286, 46);
   }
   else
   {
-    tft.drawString(String(bit).substring(0, 3), 282, 45);
+    tft.drawString(String(bit).substring(0, 3), 286, 46);
   }
   tft.setTextColor(TFT_BLACK, ST_BG);
-  tft.drawString(String(audio.getCodecname()).substring(0, 3) + " ", 282, 61);
+  tft.drawString(String(audio.getCodecname()).substring(0, 3) + " ", 286, 62);
   showBitrate = false;
   EEPROM.write(2, NEWStation);
   EEPROM.commit();
