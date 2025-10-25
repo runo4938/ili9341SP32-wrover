@@ -298,14 +298,14 @@ void setup()
   delay(1);
 
   tft.setSwapBytes(true);
-  txtSprite.createSprite(250, txtSpriteHight); // Ширина и высота спрайта
+  txtSprite.createSprite(278, txtSpriteHight); // Ширина и высота спрайта
   txtSprite.setTextSize(1);
   txtSprite.setTextColor(COLOR_SNG_TITLE_1, TFT_BLACK);
   txtSprite.fillSprite(TFT_BLACK);
   txtSprite.setFreeFont(&CourierCyr10pt8b);
   txtSprite.setTextDatum(TL_DATUM); // Привязка к верхнему левому углу
 
-  txtTrek.createSprite(250, txtTrekHight); // Название трека
+  txtTrek.createSprite(278, txtTrekHight); // Название трека
   txtTrek.setTextSize(1);
   txtTrek.setTextColor(COLOR_SNG_TITLE_2, TFT_BLACK);
   txtTrek.fillSprite(TFT_BLACK);
@@ -419,8 +419,8 @@ void returnFromDisplayScreen()
     getClock = true; // получить время при переходе от меню станций
     showRadio = true;
     vuSprite.createSprite(60, 140);
-    txtSprite.createSprite(250, txtSpriteHight);
-    txtTrek.createSprite(250, txtTrekHight);
+    txtSprite.createSprite(278, txtSpriteHight);
+    txtTrek.createSprite(278, txtTrekHight);
     tft.setFreeFont(&CourierCyr10pt8b);
     tft.setTextSize(1);
     tft.setTextColor(TFT_CYAN, TFT_BLACK);
@@ -810,8 +810,8 @@ void myEncoder()
     if (showRadio)
     {
       first = true;
-      txtSprite.createSprite(250, txtSpriteHight);
-      txtTrek.createSprite(250, txtTrekHight);
+      txtSprite.createSprite(278, txtSpriteHight);
+      txtTrek.createSprite(278, txtTrekHight);
       vuSprite.createSprite(60, 140);
       tft.fillRect(0, 0, 320, 220, TFT_BLACK);
       printStation(NEWStation);
@@ -1322,8 +1322,8 @@ void onMenu()
   if (showRadio)
   {
     first = true;
-    txtSprite.createSprite(250, txtSpriteHight);
-    txtTrek.createSprite(250, txtTrekHight);
+    txtSprite.createSprite(278, txtSpriteHight);
+    txtTrek.createSprite(278, txtTrekHight);
     vuSprite.createSprite(60, 140);
     tft.fillRect(0, 0, 320, 220, TFT_BLACK);
     // printStation(NEWStation);
