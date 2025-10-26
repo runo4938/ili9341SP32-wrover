@@ -10,6 +10,7 @@
 #include <WiFiManager.h>
 #include <GyverNTP.h>
 #include <settings.h>
+
 #include <routes.h>
 #include <AsyncTCP.h>
 #include <UnixTime.h>
@@ -21,6 +22,12 @@
 #include "../lib/CourierCyr12.h" //для меню станций
 #include "../lib/Free_Fonts.h"
 #include "../lib/DS_DIGI28pt7b.h"
+#include <DIYables_IRcontroller.h> // DIYables_IRcontroller library
+#define IR_RECEIVER_PIN 7 // The Arduino pin connected to IR controller
+
+#define RECEIVER_PIN 15
+DIYables_IRcontroller_17 irController(RECEIVER_PIN, 200);
+
 
 #define RU12 &FreeSansBold10pt8b
 #define RU10 &FreeSans18pt7b
@@ -160,6 +167,7 @@ void clock_on_core0();
 void vuMeter();
 void lineondisp();
 
+void ircontrol();
 static void rebootEspWithReason(String reason);
 void performUpdate(Stream &updateSource, size_t updateSize);
 String trim(const String &str);
@@ -184,6 +192,7 @@ void setup()
   analogWrite(LED_BUILT, LED_BRIGHTNESS); // первоначальная яркость дисплея
 
   Serial.begin(115200);
+  irController.begin();
 
 #ifdef BOARD_VS1053
   SPI.begin(VS1053_SCK, VS1053_MISO, VS1053_MOSI);
@@ -558,6 +567,7 @@ void loop()
   // подготовка для названия трека
   trekPreparingShow();
   // Опрос энкодера
+  ircontrol();
   if (enc1.tick())
     myEncoder();
   // для возврата из меню по истечении времени
@@ -1606,4 +1616,134 @@ String trim(const String &str)
   if (start > end)
     return "";
   return str.substring(start, end + 1);
+}
+
+void ircontrol()
+{
+
+  Key17 key = irController.getKey();
+  if (key != Key17::NONE)
+  {
+    switch (key)
+    {
+    case Key17::KEY_1:
+      NEWStation = 1;
+      Serial.println("1");
+      // TODO: YOUR CONTROL
+      break;
+    case Key17::KEY_2:
+      NEWStation = 2;
+      Serial.println("2");
+      // TODO: YOUR CONTROL
+      break;
+    case Key17::KEY_3:
+      NEWStation = 3;
+      Serial.println("3");
+      // TODO: YOUR CONTROL
+      break;
+    case Key17::KEY_4:
+      NEWStation = 4;
+      Serial.println("4");
+
+      break;
+    case Key17::KEY_5:
+      NEWStation = 5;
+      Serial.println("5");
+      break;
+    case Key17::KEY_6:
+      NEWStation = 6;
+      Serial.println("6");
+      // TODO: YOUR CONTROL
+      break;
+    case Key17::KEY_7:
+      NEWStation = 7;
+      Serial.println("7");
+      // TODO: YOUR CONTROL
+      break;
+    case Key17::KEY_8:
+      NEWStation = 8;
+      Serial.println("8");
+      // TODO: YOUR CONTROL
+      break;
+    case Key17::KEY_9:
+      NEWStation = 9;
+      Serial.println("9");
+      // TODO: YOUR CONTROL
+      break;
+    case Key17::KEY_0:
+      NEWStation = 0;
+      Serial.println("0");
+      break;
+    case Key17::KEY_SHARP:
+      Serial.println("#");
+      break;
+    case Key17::KEY_UP:
+      if (showRadio)
+      {
+        directionStations = false;
+        nextStation(directionStations);
+        printStation(NEWStation);
+      }
+      if (!showRadio)
+      {
+        directionStations = false; // вниз по меню
+        first = true;
+        nextStation(directionStations);
+        stationDisplay(NEWStation);
+        currentMillis = millis(); // Пока ходим по меню
+      }
+      break;
+
+    case Key17::KEY_DOWN:
+      if (showRadio)
+      {
+        directionStations = true;
+        nextStation(directionStations);
+        printStation(NEWStation);
+      }
+      if (!showRadio)
+      {
+       directionStations = true; // вверх по меню
+        nextStation(directionStations);
+        stationDisplay(NEWStation);
+        currentMillis = millis(); // Пока ходим по меню
+        first = true;
+      }
+      break;
+    case Key17::KEY_LEFT:
+      audiovol--;
+      audio.setVolume(audiovol);
+    //   filePosition();
+      // TODO: YOUR CONTROL
+      break;
+    case Key17::KEY_RIGHT:
+      audiovol++;
+      audio.setVolume(audiovol);
+    //   filePosition();
+      // TODO: YOUR CONTROL
+      break;
+    case Key17::KEY_OK:
+      showRadio = !showRadio;
+      f_startProgress = true; // for starting
+      if (!showRadio)
+      {
+        currentMillis = millis(); // начало отсчета времени простоя
+        tft.fillRect(0, 0, 320, ypos + 14, TFT_BLACK);
+        stationDisplay(NEWStation);
+        first = true;
+      }
+      if (showRadio)
+      {
+        first = true;
+        tft.fillRect(0, 0, 320, ypos + 8, TFT_BLACK);
+        printStation(NEWStation);
+        getClock = true; // получить время при переходе от меню станций
+      }
+      Serial.println("OK");
+      break;
+    default:
+      Serial.println("WARNING: undefined key:");
+      break;
+    }
+  }
 }
