@@ -23,11 +23,10 @@
 #include "../lib/Free_Fonts.h"
 #include "../lib/DS_DIGI28pt7b.h"
 #include <DIYables_IRcontroller.h> // DIYables_IRcontroller library
-#define IR_RECEIVER_PIN 7 // The Arduino pin connected to IR controller
+#define IR_RECEIVER_PIN 7          // The Arduino pin connected to IR controller
 
 #define RECEIVER_PIN 15
 DIYables_IRcontroller_17 irController(RECEIVER_PIN, 200);
-
 
 #define RU12 &FreeSansBold10pt8b
 #define RU10 &FreeSans18pt7b
@@ -605,11 +604,11 @@ void loop()
       ind = StationList[NEWStation].indexOf('\t');
       newSt = StationList[NEWStation].substring(ind + 1, StationList[NEWStation].length());
       const char *sl = newSt.c_str();
-      #ifdef BOARD_PCM5102
+#ifdef BOARD_PCM5102
       audio.stopSong();
-      #elif BOARD_VS1053
+#elif BOARD_VS1053
       audio.stop_mp3client();
-      #endif
+#endif
       printStation(NEWStation);
       delay(100);
       audio.setVolume(EEPROM.read(6));
@@ -1683,6 +1682,7 @@ void ircontrol()
         directionStations = false;
         nextStation(directionStations);
         printStation(NEWStation);
+        notifyWebClients();
       }
       if (!showRadio)
       {
@@ -1700,10 +1700,11 @@ void ircontrol()
         directionStations = true;
         nextStation(directionStations);
         printStation(NEWStation);
+        notifyWebClients();
       }
       if (!showRadio)
       {
-       directionStations = true; // вверх по меню
+        directionStations = true; // вверх по меню
         nextStation(directionStations);
         stationDisplay(NEWStation);
         currentMillis = millis(); // Пока ходим по меню
@@ -1713,13 +1714,11 @@ void ircontrol()
     case Key17::KEY_LEFT:
       audiovol--;
       audio.setVolume(audiovol);
-    //   filePosition();
-      // TODO: YOUR CONTROL
       break;
     case Key17::KEY_RIGHT:
       audiovol++;
       audio.setVolume(audiovol);
-    //   filePosition();
+      //   filePosition();
       // TODO: YOUR CONTROL
       break;
     case Key17::KEY_OK:
@@ -1728,7 +1727,7 @@ void ircontrol()
       if (!showRadio)
       {
         currentMillis = millis(); // начало отсчета времени простоя
-        tft.fillRect(0, 0, 320, ypos + 14, TFT_BLACK);
+        tft.fillRect(0, 0, 320, 220, TFT_BLACK);
         stationDisplay(NEWStation);
         first = true;
       }
@@ -1738,6 +1737,13 @@ void ircontrol()
         tft.fillRect(0, 0, 320, ypos + 8, TFT_BLACK);
         printStation(NEWStation);
         getClock = true; // получить время при переходе от меню станций
+        lineondisp();
+        printCodecAndBitrate();
+        notifyWebClients();
+        tft.setFreeFont(&CourierCyr10pt8b);
+        tft.setTextSize(1);
+        tft.setTextColor(TFT_CYAN, TFT_BLACK);
+        tft.drawString(WiFi.localIP().toString(), 160, y_wifi);
       }
       Serial.println("OK");
       break;
