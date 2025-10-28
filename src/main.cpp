@@ -22,11 +22,6 @@
 #include "../lib/CourierCyr12.h" //для меню станций
 #include "../lib/Free_Fonts.h"
 #include "../lib/DS_DIGI28pt7b.h"
-#include <DIYables_IRcontroller.h> // DIYables_IRcontroller library
-// #define IR_RECEIVER_PIN 7          // The Arduino pin connected to IR controller
-
-#define RECEIVER_PIN 34
-DIYables_IRcontroller_17 irController(RECEIVER_PIN, 200);
 
 #define RU12 &FreeSansBold10pt8b
 #define RU10 &FreeSans18pt7b
@@ -194,8 +189,7 @@ void setup()
   analogWrite(LED_BUILT, LED_BRIGHTNESS); // первоначальная яркость дисплея
 
   Serial.begin(115200);
-  irController.begin();
-
+ 
 #ifdef BOARD_VS1053
   SPI.begin(VS1053_SCK, VS1053_MISO, VS1053_MOSI);
 #endif
