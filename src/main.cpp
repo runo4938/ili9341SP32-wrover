@@ -79,7 +79,7 @@ uint16_t COLOR_SNG_TITLE_2 = tft.color565(255, 255, 255);
 int ypos = 190; // position title
 int xpos = 0;
 
-String bitrate;
+std::string bitrate;
 
 // Radio
 uint8_t NEWStation = 0;
@@ -90,8 +90,11 @@ int currentStationIndex = 0; // глобальная переменная
 const int MAX_STATIONS = 50; // Задайте достаточный размер
 int numbStations = 0;        // количество радиостанций
 
-String displayStations[9];         // Массив для станций на дисплее
-String StationList[MAX_STATIONS];  // Реальные станции в массиве заполняются в iniSpiffs() имена и url
+String displayStations[9];        // Массив для станций на дисплее
+String StationList[MAX_STATIONS]; // Реальные станции в массиве заполняются в iniSpiffs() имена и url
+
+const char *playList[MAX_STATIONS];
+
 String nameStations[MAX_STATIONS]; // Наименования станций
 bool getClock = true;              // Получать время только при запуске
 bool first = true;                 // Вывести дату и день недели
@@ -230,6 +233,9 @@ void setup()
   tft.setCursor(40, yForInit);
   tft.println("Starting Radio...");
 
+  audio.begin();
+  audio.setVolume(audiovol);
+
   readEEprom();
   initSpiffs();
   initWiFi();
@@ -277,17 +283,13 @@ void setup()
   delay(500);
 
   // The first connection
-  ind = StationList[NEWStation].indexOf('\t');
-  newSt = StationList[NEWStation].substring(ind + 1, StationList[NEWStation].length());
-  const char *sl = newSt.c_str();
-  // audio.begin();
+  // Serial.println("init vs1053 ..... ");
+  // ind = StationList[NEWStation].indexOf('\t');
+  // newSt = StationList[NEWStation].substring(ind + 1, StationList[NEWStation].length());
+  // const char *sl = newSt.c_str();
   audio.setVolume(EEPROM.read(6));
-  audio.connecttohost(sl); // переключаем станцию
-
-  // stream.setVolume(EEPROM.read(6));
-  // stream.connecttohost(sl); // переключаем станцию
-
-  Serial.printf("\n %s \n", sl);
+  audio.connecttohost(playList[NEWStation]);
+  // Serial.printf("\n %s \n", sl);
   OLDStation = NEWStation; //
   tft.fillScreen(TFT_BLACK);
   printStation(NEWStation); // display the name of the station on the screen
@@ -487,7 +489,7 @@ void scrolling()
       {                 // Полностью ушел за левый край
         // spriteX = 320;                      // Появляемся с правого края
         currentState = WAITING_TO_LEFT; // Начинаем цикл заново
-        stateStartTime = now; //это добавлено для задержки справа
+        stateStartTime = now;           // это добавлено для задержки справа
       }
       break;
     case WAITING_TO_LEFT:
@@ -531,7 +533,7 @@ void scrolling()
       { // Дошли до левого края
         // spriteX = 320;
         currentStateForRight = WAITING_TO_RIGHT; // Начинаем цикл заново
-        stateStartTimeForRight = nowRight; // ✅ Вот этого не хватало!
+        stateStartTimeForRight = nowRight;       // ✅ Вот этого не хватало!
       }
       break;
     case WAITING_TO_RIGHT:
@@ -545,16 +547,7 @@ void scrolling()
     txtTrek.pushSprite(0, 47);
   }
 }
-//--------------
-// show IP and SSID
-// void showIPAndSSID()
-// {
-//   if ((millis() - lastTime_ssid) > timerDelay_ssid)
-//   {
-//     printCodecAndBitrate();
-//   }
-// }
-//-----------------------
+
 //*******************************
 // START loop
 //*******************************
@@ -609,12 +602,12 @@ void loop()
 #ifdef BOARD_PCM5102
       audio.stopSong();
 #elif BOARD_VS1053
-      audio.stop_mp3client();
+      // audio.stop_mp3client();
 #endif
       printStation(NEWStation);
       delay(100);
       audio.setVolume(EEPROM.read(6));
-      audio.connecttohost(sl); // новая станция
+      audio.connecttohost(playList[NEWStation]);
       OLDStation = NEWStation;
     }
     //-----vumeter
@@ -644,30 +637,52 @@ void loop()
 //-------------------
 void vuMeter()
 {
-  int x_show = 0;
-  int width = 25;         // ширина
-  int space = 3;          // расстояние между каналами
-  int total_height = 140; // Высота VU-метра
-  int y_offset = 80;      // сдиг сверху
-  // Получаем текущие уровни (замените на ваши реальные значения)
-  uint16_t vulevel = audio.getVUlevel();
-  uint8_t y1_lev = (vulevel >> 8) & 0xFF; // Левый канал
-  uint8_t y2_lev = vulevel & 0xFF;        // Правый канал
+  int total_height = 140;
+  int y_offset = 80;
 
+  uint16_t vulevel = audio.getVUlevel();
+  uint8_t y1_lev = (vulevel >> 8) & 0xFF;
+  uint8_t y2_lev = vulevel & 0xFF;
+
+  // СМЕЩАЕМ диапазон 118-125 в 0-255
+  int min_value = 118; // Ваш минимальный уровень
+  int max_value = 125; // Ваш максимальный уровень
+
+  // Преобразуем диапазон 118-125 → 0-255
+
+  float damping = 0.5; // Начните с 0.3, регулируйте от 0.1 до 1.0
+
+  int expanded_y1 = map(y1_lev, min_value, max_value, 0, 255 * damping);
+  int expanded_y2 = map(y2_lev, min_value, max_value, 0, 255 * damping);
+
+  // Ограничиваем и нормализуем под высоту VU-метра
+  expanded_y1 = constrain(expanded_y1, 0, 255);
+  expanded_y2 = constrain(expanded_y2, 0, 255);
+
+  int normalized_y1 = map(expanded_y1, 0, 255, 0, total_height);
+  int normalized_y2 = map(expanded_y2, 0, 255, 0, total_height);
+
+  // Отрисовка
   int segment_height = 8;
-  for (int y = 0; y < 150; y += segment_height)
+  for (int y = 0; y < total_height; y += segment_height)
   {
     uint16_t color = (y < 50) ? VU_MAX : (y < 100) ? TFT_CYAN
                                                    : VU_MIN;
-    vuSprite.fillRect(0, y, 25, segment_height - 2, color);  // левый канал
-    vuSprite.fillRect(28, y, 25, segment_height - 2, color); // правый канал
+    vuSprite.fillRect(0, y, 25, segment_height - 2, color);
+    vuSprite.fillRect(28, y, 25, segment_height - 2, color);
   }
-  // уровни каналов
-  vuSprite.fillRect(0, 0, 25, total_height - y1_lev, TFT_BLACK);
-  vuSprite.fillRect(28, 0, 25, total_height - y2_lev, TFT_BLACK);
 
-  // Выводим готовый спрайт на экран БЕЗ моргания
+  vuSprite.fillRect(0, 0, 25, total_height - normalized_y1, TFT_BLACK);
+  vuSprite.fillRect(28, 0, 25, total_height - normalized_y2, TFT_BLACK);
   vuSprite.pushSprite(8, y_offset);
+
+  // Отладка
+  // Serial.print("Raw L:");
+  // Serial.print(y1_lev);
+  // Serial.print(" Expanded L:");
+  // Serial.print(expanded_y1);
+  // Serial.print(" Normalized L:");
+  // Serial.println(normalized_y1);
 }
 //---------------------
 //  Clock
@@ -934,19 +949,20 @@ void printStation(uint8_t indexOfStation)
 //----------------------------
 void printCodecAndBitrate()
 {
-  int bit = audio.getBitRate(); // bitrate.toInt();
+  int br;
+  br = atoi(bitrate.c_str()); // bitrate.toInt();
   tft.setFreeFont(CODE);
   tft.setTextSize(1);
   tft.setTextColor(ST_BG, TFT_BLACK);
   tft.fillRect(284, 45, 32, 33, ST_BG);
   tft.fillRect(286, 46, 28, 16, TFT_BLACK);
-  if (bit < 128000)
+  if (br < 128000)
   {
-    tft.drawString(String(bit).substring(0, 2) + " ", 286, 46);
+    tft.drawString(String(br).substring(0, 2) + " ", 286, 46);
   }
   else
   {
-    tft.drawString(String(bit).substring(0, 3), 286, 46);
+    tft.drawString(String(br).substring(0, 3), 286, 46);
   }
   tft.setTextColor(TFT_BLACK, ST_BG);
   tft.drawString(String(audio.getCodecname()).substring(0, 3) + " ", 286, 62);
@@ -1020,12 +1036,34 @@ void initSpiffs()
   int i = 0;
   while (myFile.available() && i < MAX_STATIONS)
   {
-    StationList[i] = myFile.readStringUntil('\n'); // Станции в массиве пронумерованы от 0
-    if (i >= MAX_STATIONS)
-      break; // Дополнительная защита
+    //   StationList[i] = myFile.readStringUntil('\n'); // Станции в массиве пронумерованы от 0
+    //   if (i >= MAX_STATIONS)
+    //     break; // Дополнительная защита
+    //   i++;
+    // }
+    String line = myFile.readStringUntil('\n');
+    StationList[i] = line;
+    line.trim();
+    if (line.length() == 0)
+      continue;
+    // Ищем позицию табуляции
+    int tabPos = line.indexOf('\t');
+    if (tabPos != -1)
+    {
+      // Берем только URL (часть после табуляции)
+      String url = line.substring(tabPos + 1);
+      url.trim();
+
+      // Выделяем память и копируем строку
+      playList[i] = strdup(url.c_str());
+      Serial.println(playList[i]);
+    }
     i++;
+    //-----------
   }
+
   myFile.close();
+
   numbStations = i; // Количесто реальных станций
   Serial.printf("Read %d stations, numbStations = %d\n", i, numbStations);
   Serial.printf("SPIFFS total: %d bytes\n", SPIFFS.totalBytes());
@@ -1051,7 +1089,7 @@ void readEEprom()
   }
   Serial.println(" bytes read from Flash . Values are:");
 
-  (EEPROM.read(2) > 200) ? (NEWStation = 0) : (NEWStation = EEPROM.read(2));
+  (EEPROM.read(2) > 50) ? (NEWStation = 0) : (NEWStation = EEPROM.read(2));
 
   if (EEPROM.read(6) > 21)
   {
@@ -1320,7 +1358,7 @@ void onMenuNext()
 void onMenu()
 {
   showRadio = !showRadio;
-  f_startProgress = true; // for starting
+  // f_startProgress = true; // for starting
   if (!showRadio)
   {
     currentMillis = millis(); // начало отсчета времени простоя
@@ -1343,25 +1381,6 @@ void onMenu()
     printCodecAndBitrate();
   }
 }
-/*
-String readFile(fs::FS &fs, const char *path)
-{
-  Serial.printf("Reading file: %s\r\n", path);
-  myFile = fs.open(path);
-  if (!myFile || myFile.isDirectory())
-  {
-    Serial.println("- failed to open file for reading");
-    return String();
-  }
-  String fileContent;
-  while (mbedtls_entropy_f_source_ptravailable())
-  {
-    fileContent = myFile.readStringUntil('\n');
-    break;
-  }
-  return fileContent;
-}*/
-// end readFile
 
 String utf8rus(String source)
 {
@@ -1428,7 +1447,7 @@ void audio_codec(const char *info)
 
 void audio_bitrate(const char *info)
 {
-  bitrate = info;
+  //bitrate = info;
 }
 
 // ---------new ListRadio ----------
@@ -1761,4 +1780,65 @@ void ircontrol()
       break;
     }
   }
+}
+
+// next code is optional:
+void vs1053_info(const char *info)
+{ // called from vs1053
+  Serial.print("DEBUG:        ");
+  Serial.println(info); // debug infos
+}
+void vs1053_showstation(const char *info)
+{ // called from vs1053
+  Serial.print("STATION:      ");
+  Serial.println(info); // Show station name
+}
+void vs1053_showstreamtitle(const char *info)
+{ // called from vs1053
+  title_flag = true;
+  show_title = true;
+  MessageToScroll_1 = info;
+  // width_txt = tft.textWidth(MessageToScroll_1);
+  MessageToScroll_1 = F(" ");
+  MessageToScroll_1 += trim(info);
+  MessageToScroll_1 += F(" ");
+  MessageToScroll_1 = utf8rus(MessageToScroll_1);
+  Serial.print("STREAMTITLE:  ");
+  Serial.println(info); // Show title
+}
+void vs1053_showstreaminfo(const char *info)
+{ // called from vs1053
+  Serial.print("STREAMINFO:   ");
+  Serial.println(info); // Show streaminfo
+}
+void vs1053_eof_mp3(const char *info)
+{ // called from vs1053
+  Serial.print("vs1053_eof:   ");
+  Serial.print(info); // end of mp3 file (filename)
+}
+void vs1053_bitrate(const char *br)
+{ // called from vs1053
+  bitrate = br;
+  Serial.print("BITRATE:      ");
+  Serial.println(String(br) + "kBit/s"); // bitrate of current stream
+}
+void vs1053_commercial(const char *info)
+{ // called from vs1053
+  Serial.print("ADVERTISING:  ");
+  Serial.println(String(info) + "sec"); // info is the duration of advertising
+}
+void vs1053_icyurl(const char *info)
+{ // called from vs1053
+  Serial.print("Homepage:     ");
+  Serial.println(info); // info contains the URL
+}
+void vs1053_eof_speech(const char *info)
+{ // called from vs1053
+  Serial.print("end of speech:");
+  Serial.println(info);
+}
+void vs1053_lasthost(const char *info)
+{ // really connected URL
+  Serial.print("lastURL:      ");
+  Serial.println(info);
 }
