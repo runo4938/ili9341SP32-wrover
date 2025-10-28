@@ -385,12 +385,12 @@ void trekPreparingShow()
   if (title_flag && showRadio && show_title)
   {
     title_flag = false;
-    txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
-    txtTrek.drawString("                                               ", 0, 0);
-    txtTrek.pushSprite(0, 47);
     txtSprite.fillRect(0, 64, 255, txtSpriteHight, TFT_BLACK);
     txtSprite.drawString("                                             ", 0, 0);
     txtSprite.pushSprite(0, 64);
+    txtTrek.fillRect(0, 47, 255, txtTrekHight, TFT_BLACK);
+    txtTrek.drawString("                                               ", 0, 0);
+    txtTrek.pushSprite(0, 47);
 
     String str = MessageToScroll_1;
     char delimiter = '-';
@@ -475,7 +475,7 @@ void scrolling()
       }
       break;
     case WAITING_AT_LEFT:
-      if (now - stateStartTime >= 3000)
+      if (now - stateStartTime >= 7000)
       { // Ждем 3 секунды
         currentState = MOVING_OFF_LEFT;
       }
@@ -487,6 +487,7 @@ void scrolling()
       {                 // Полностью ушел за левый край
         // spriteX = 320;                      // Появляемся с правого края
         currentState = WAITING_TO_LEFT; // Начинаем цикл заново
+        stateStartTime = now; //это добавлено для задержки справа
       }
       break;
     case WAITING_TO_LEFT:
@@ -518,7 +519,7 @@ void scrolling()
       }
       break;
     case WAITING_AT_RIGHT:
-      if (nowRight - stateStartTimeForRight >= 3000)
+      if (nowRight - stateStartTimeForRight >= 7000)
       { // Ждем 3 секунды
         currentStateForRight = MOVING_TO_RIGHT;
       }
@@ -530,6 +531,7 @@ void scrolling()
       { // Дошли до левого края
         // spriteX = 320;
         currentStateForRight = WAITING_TO_RIGHT; // Начинаем цикл заново
+        stateStartTimeForRight = nowRight; // ✅ Вот этого не хватало!
       }
       break;
     case WAITING_TO_RIGHT:
@@ -1714,10 +1716,16 @@ void ircontrol()
     case Key17::KEY_LEFT:
       audiovol--;
       audio.setVolume(audiovol);
+      EEPROM.write(6, audiovol);
+      EEPROM.commit();
+      audioVolume();
       break;
     case Key17::KEY_RIGHT:
       audiovol++;
       audio.setVolume(audiovol);
+      EEPROM.write(6, audiovol);
+      EEPROM.commit();
+      audioVolume();
       //   filePosition();
       // TODO: YOUR CONTROL
       break;
@@ -1744,6 +1752,7 @@ void ircontrol()
         tft.setTextSize(1);
         tft.setTextColor(TFT_CYAN, TFT_BLACK);
         tft.drawString(WiFi.localIP().toString(), 160, y_wifi);
+        tft.drawString(WiFi.SSID(), x_wifi_ssid, y_wifi_ssid);
       }
       Serial.println("OK");
       break;
