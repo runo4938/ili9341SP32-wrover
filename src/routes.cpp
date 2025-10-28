@@ -140,10 +140,10 @@ void setupRoutes(AsyncWebServer &server)
                 request->send(200,"text/plain", "OK");
                 onMenuPrev(); });
 
-    server.on("/Menu", HTTP_GET, [](AsyncWebServerRequest *request)
-              { 
-                request->send(20,"text/plain", "OK");
-                onMenu(); });
+    // server.on("/Menu", HTTP_GET, [](AsyncWebServerRequest *request)
+    //           { 
+    //             request->send(20,"text/plain", "OK");
+    //             onMenu(); });
 
     // Добавьте остальные роуты здесь...
     server.on("/volume", HTTP_GET, [](AsyncWebServerRequest *request)

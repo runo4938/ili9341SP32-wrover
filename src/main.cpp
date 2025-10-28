@@ -277,10 +277,6 @@ void setup()
   delay(500);
 
   // The first connection
-  // Serial.println("init vs1053 ..... ");
-  // ind = StationList[NEWStation].indexOf('\t');
-  // newSt = StationList[NEWStation].substring(ind + 1, StationList[NEWStation].length());
-  // const char *sl = newSt.c_str();
   audio.setVolume(EEPROM.read(6));
   audio.connecttohost(playList[NEWStation]);
   // Serial.printf("\n %s \n", sl);
@@ -346,8 +342,7 @@ void logoTask(void *cparametr)
 {
   tft.setTextColor(color_clock, TFT_BLACK);
   tft.setTextSize(2);
-  // while (showLogo)
-  // {
+  
   int count = 30;
   int widthLogo = 270;
   int hightLogo = 10;
@@ -429,6 +424,7 @@ void returnFromDisplayScreen()
     tft.setTextSize(1);
     tft.setTextColor(TFT_CYAN, TFT_BLACK);
     tft.drawString(WiFi.localIP().toString(), 160, y_wifi);
+    tft.drawString(WiFi.SSID(), x_wifi_ssid, y_wifi_ssid);
     lineondisp();
     printCodecAndBitrate();
     first = true;
@@ -1347,32 +1343,32 @@ void onMenuNext()
   }
 }
 // Показать меню радиостанций
-void onMenu()
-{
-  showRadio = !showRadio;
-  // f_startProgress = true; // for starting
-  if (!showRadio)
-  {
-    currentMillis = millis(); // начало отсчета времени простоя
-    tft.fillRect(0, 0, 320, 220, TFT_BLACK);
-    vuSprite.deleteSprite();
-    txtSprite.deleteSprite();
-    txtTrek.deleteSprite();
-    stationDisplay(NEWStation);
-  }
-  if (showRadio)
-  {
-    first = true;
-    txtSprite.createSprite(278, txtSpriteHight);
-    txtTrek.createSprite(278, txtTrekHight);
-    vuSprite.createSprite(60, 140);
-    tft.fillRect(0, 0, 320, 220, TFT_BLACK);
-    // printStation(NEWStation);
-    // getClock = true; // получить время при переходе
-    lineondisp();
-    printCodecAndBitrate();
-  }
-}
+// void onMenu()
+// {
+//   showRadio = !showRadio;
+//   // f_startProgress = true; // for starting
+//   if (!showRadio)
+//   {
+//     currentMillis = millis(); // начало отсчета времени простоя
+//     tft.fillRect(0, 0, 320, 220, TFT_BLACK);
+//     vuSprite.deleteSprite();
+//     txtSprite.deleteSprite();
+//     txtTrek.deleteSprite();
+//     stationDisplay(NEWStation);
+//   }
+//   if (showRadio)
+//   {
+//     first = true;
+//     txtSprite.createSprite(278, txtSpriteHight);
+//     txtTrek.createSprite(278, txtTrekHight);
+//     vuSprite.createSprite(60, 140);
+//     tft.fillRect(0, 0, 320, 220, TFT_BLACK);
+//     // printStation(NEWStation);
+//     // getClock = true; // получить время при переходе
+//     lineondisp();
+//     // printCodecAndBitrate();
+//   }
+// }
 
 String utf8rus(String source)
 {

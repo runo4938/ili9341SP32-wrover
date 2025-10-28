@@ -87,7 +87,7 @@ const int spriteY = 64; // Y-позиция спрайта на экране
 
 void stationDisplay(int st);
 void deleteFile(fs::FS &fs, const String &path);
-void onMenu();
+// void onMenu();
 void onMenuNext();
 void audioVolume();
 void newrelease();
