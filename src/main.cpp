@@ -1417,26 +1417,26 @@ String utf8rus(String source)
   return target;
 }
 
-void audio_showstreamtitle(const char *info)
-{
-  title_flag = true;
-  show_title = true;
-  MessageToScroll_1 = info;
-  // width_txt = tft.textWidth(MessageToScroll_1);
-  MessageToScroll_1 = F(" ");
-  MessageToScroll_1 += trim(info);
-  MessageToScroll_1 += F(" ");
-  MessageToScroll_1 = utf8rus(MessageToScroll_1);
-}
-void audio_codec(const char *info)
-{
-  Serial.println(info);
-}
+// void audio_showstreamtitle(const char *info)
+// {
+//   title_flag = true;
+//   show_title = true;
+//   MessageToScroll_1 = info;
+//   // width_txt = tft.textWidth(MessageToScroll_1);
+//   MessageToScroll_1 = F(" ");
+//   MessageToScroll_1 += trim(info);
+//   MessageToScroll_1 += F(" ");
+//   MessageToScroll_1 = utf8rus(MessageToScroll_1);
+// }
+// void audio_codec(const char *info)
+// {
+//   Serial.println(info);
+// }
 
-void audio_bitrate(const char *info)
-{
-  //bitrate = info;
-}
+// void audio_bitrate(const char *info)
+// {
+//   //bitrate = info;
+// }
 
 // ---------new ListRadio ----------
 void listStaton()
