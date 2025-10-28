@@ -23,9 +23,9 @@
 #include "../lib/Free_Fonts.h"
 #include "../lib/DS_DIGI28pt7b.h"
 #include <DIYables_IRcontroller.h> // DIYables_IRcontroller library
-#define IR_RECEIVER_PIN 7          // The Arduino pin connected to IR controller
+// #define IR_RECEIVER_PIN 7          // The Arduino pin connected to IR controller
 
-#define RECEIVER_PIN 15
+#define RECEIVER_PIN 34
 DIYables_IRcontroller_17 irController(RECEIVER_PIN, 200);
 
 #define RU12 &FreeSansBold10pt8b
@@ -547,7 +547,6 @@ void scrolling()
     txtTrek.pushSprite(0, 47);
   }
 }
-
 //*******************************
 // START loop
 //*******************************
@@ -561,7 +560,6 @@ void loop()
   // подготовка для названия трека
   trekPreparingShow();
   // Опрос энкодера
-  ircontrol();
   if (enc1.tick())
     myEncoder();
   // для возврата из меню по истечении времени
@@ -641,16 +639,16 @@ void vuMeter()
   int y_offset = 80;
 
   uint16_t vulevel = audio.getVUlevel();
-  uint8_t y1_lev = (vulevel >> 8) & 0xFF;
-  uint8_t y2_lev = vulevel & 0xFF;
-
+  uint8_t y2_lev = (vulevel >> 8) & 0xFF;
+  uint8_t y1_lev = vulevel & 0xFF;
+  
   // СМЕЩАЕМ диапазон 118-125 в 0-255
-  int min_value = 118; // Ваш минимальный уровень
-  int max_value = 125; // Ваш максимальный уровень
+  int min_value = 113; // Ваш минимальный уровень
+  int max_value = 127; // Ваш максимальный уровень
 
   // Преобразуем диапазон 118-125 → 0-255
 
-  float damping = 0.5; // Начните с 0.3, регулируйте от 0.1 до 1.0
+  float damping = 0.45; // Начните с 0.3, регулируйте от 0.1 до 1.0
 
   int expanded_y1 = map(y1_lev, min_value, max_value, 0, 255 * damping);
   int expanded_y2 = map(y2_lev, min_value, max_value, 0, 255 * damping);
@@ -1636,150 +1634,6 @@ String trim(const String &str)
   if (start > end)
     return "";
   return str.substring(start, end + 1);
-}
-
-void ircontrol()
-{
-
-  Key17 key = irController.getKey();
-  if (key != Key17::NONE)
-  {
-    switch (key)
-    {
-    case Key17::KEY_1:
-      NEWStation = 1;
-      Serial.println("1");
-      // TODO: YOUR CONTROL
-      break;
-    case Key17::KEY_2:
-      NEWStation = 2;
-      Serial.println("2");
-      // TODO: YOUR CONTROL
-      break;
-    case Key17::KEY_3:
-      NEWStation = 3;
-      Serial.println("3");
-      // TODO: YOUR CONTROL
-      break;
-    case Key17::KEY_4:
-      NEWStation = 4;
-      Serial.println("4");
-
-      break;
-    case Key17::KEY_5:
-      NEWStation = 5;
-      Serial.println("5");
-      break;
-    case Key17::KEY_6:
-      NEWStation = 6;
-      Serial.println("6");
-      // TODO: YOUR CONTROL
-      break;
-    case Key17::KEY_7:
-      NEWStation = 7;
-      Serial.println("7");
-      // TODO: YOUR CONTROL
-      break;
-    case Key17::KEY_8:
-      NEWStation = 8;
-      Serial.println("8");
-      // TODO: YOUR CONTROL
-      break;
-    case Key17::KEY_9:
-      NEWStation = 9;
-      Serial.println("9");
-      // TODO: YOUR CONTROL
-      break;
-    case Key17::KEY_0:
-      NEWStation = 0;
-      Serial.println("0");
-      break;
-    case Key17::KEY_SHARP:
-      Serial.println("#");
-      break;
-    case Key17::KEY_UP:
-      if (showRadio)
-      {
-        directionStations = false;
-        nextStation(directionStations);
-        printStation(NEWStation);
-        notifyWebClients();
-      }
-      if (!showRadio)
-      {
-        directionStations = false; // вниз по меню
-        first = true;
-        nextStation(directionStations);
-        stationDisplay(NEWStation);
-        currentMillis = millis(); // Пока ходим по меню
-      }
-      break;
-
-    case Key17::KEY_DOWN:
-      if (showRadio)
-      {
-        directionStations = true;
-        nextStation(directionStations);
-        printStation(NEWStation);
-        notifyWebClients();
-      }
-      if (!showRadio)
-      {
-        directionStations = true; // вверх по меню
-        nextStation(directionStations);
-        stationDisplay(NEWStation);
-        currentMillis = millis(); // Пока ходим по меню
-        first = true;
-      }
-      break;
-    case Key17::KEY_LEFT:
-      audiovol--;
-      audio.setVolume(audiovol);
-      EEPROM.write(6, audiovol);
-      EEPROM.commit();
-      audioVolume();
-      break;
-    case Key17::KEY_RIGHT:
-      audiovol++;
-      audio.setVolume(audiovol);
-      EEPROM.write(6, audiovol);
-      EEPROM.commit();
-      audioVolume();
-      //   filePosition();
-      // TODO: YOUR CONTROL
-      break;
-    case Key17::KEY_OK:
-      showRadio = !showRadio;
-      f_startProgress = true; // for starting
-      if (!showRadio)
-      {
-        currentMillis = millis(); // начало отсчета времени простоя
-        tft.fillRect(0, 0, 320, 220, TFT_BLACK);
-        stationDisplay(NEWStation);
-        first = true;
-      }
-      if (showRadio)
-      {
-        first = true;
-        tft.fillRect(0, 0, 320, ypos + 8, TFT_BLACK);
-        printStation(NEWStation);
-        getClock = true; // получить время при переходе от меню станций
-        lineondisp();
-        printCodecAndBitrate();
-        notifyWebClients();
-        tft.setFreeFont(&CourierCyr10pt8b);
-        tft.setTextSize(1);
-        tft.setTextColor(TFT_CYAN, TFT_BLACK);
-        tft.drawString(WiFi.localIP().toString(), 160, y_wifi);
-        tft.drawString(WiFi.SSID(), x_wifi_ssid, y_wifi_ssid);
-      }
-      Serial.println("OK");
-      break;
-    default:
-      Serial.println("WARNING: undefined key:");
-      break;
-    }
-  }
 }
 
 // next code is optional:
