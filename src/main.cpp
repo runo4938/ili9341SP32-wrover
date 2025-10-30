@@ -211,7 +211,7 @@ void setup()
 #ifdef BOARD_ILI9341_PLYWOOD
   tft.setRotation(1);
 #elif defined(BOARD_ILI9341_PLASTIC)
-  tft.setRotation(3);
+  tft.setRotation(1);
 #else
 #error "Board type not defined!"
 #endif
@@ -223,7 +223,7 @@ void setup()
 
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  tft.setTextSize(2);
+  tft.setTextSize(1);
   tft.setCursor(40, yForInit);
   tft.println("Starting Radio...");
 
@@ -1044,7 +1044,7 @@ void initSpiffs()
 
       // Выделяем память и копируем строку
       playList[i] = strdup(url.c_str());
-      Serial.println(playList[i]);
+      // Serial.println(playList[i]);
     }
     i++;
     //-----------

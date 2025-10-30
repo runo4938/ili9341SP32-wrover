@@ -63,7 +63,7 @@ extern int numbStations; // количество радиостанций
 static unsigned long lastUpdate = 0;
 static unsigned long lastUpdateForRight = 0;
 
-const unsigned long frameInterval = 30; // ~33 FPS
+const unsigned long frameInterval = 20; // ~33 FPS
 // int16_t spriteX = -250;        // Начинаем за пределами слева
 enum State
 {
@@ -82,7 +82,7 @@ enum State
 const unsigned long waitDuration = 3000; // 3 секунды ожидания
 const int screenWidth = 320;
 const int spriteWidth = 250;
-const int speed = 4;    // Скорость движения (пикс/кадр)
+const int speed = 2;    // Скорость движения (пикс/кадр)
 const int spriteY = 64; // Y-позиция спрайта на экране
 
 void stationDisplay(int st);
