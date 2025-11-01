@@ -1,0 +1,54 @@
+// StationsManager.cpp
+#include "StationsManager.h"
+#include <FS.h>
+#include <SPIFFS.h>
+
+StationsManager::StationsManager() {
+    // Инициализация SPIFFS в setup() должна быть сделана до вызова loadStations()
+}
+
+void StationsManager::loadStations() {
+    stationNames.clear();
+    stationUrls.clear();
+
+    if (!SPIFFS.begin(true)) {
+        Serial.println("SPIFFS Mount Failed");
+        return;
+    }
+
+    File file = SPIFFS.open("/stations.txt", "r");
+    if (!file) {
+        Serial.println("Failed to open stations.txt");
+        return;
+    }
+
+    while (file.available()) {
+        String line = file.readStringUntil('\n');
+        line.trim();
+        if (line.length() == 0) continue;
+
+        int tabPos = line.indexOf('\t');
+        if (tabPos == -1) continue;
+
+        String name = line.substring(0, tabPos);
+        String url = line.substring(tabPos + 1);
+
+        stationNames.push_back(name);
+        stationUrls.push_back(url);
+    }
+    file.close();
+}
+
+int StationsManager::getStationCount() {
+    return stationNames.size();
+}
+
+String StationsManager::getStationName(int index) {
+    if (index < 0 || index >= (int)stationNames.size()) return "";
+    return stationNames[index];
+}
+
+String StationsManager::getStationUrl(int index) {
+    if (index < 0 || index >= (int)stationUrls.size()) return "";
+    return stationUrls[index];
+}

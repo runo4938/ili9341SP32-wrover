@@ -223,7 +223,7 @@ void setup()
 
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  tft.setTextSize(1);
+  tft.setTextSize(2);
   tft.setCursor(40, yForInit);
   tft.println("Starting Radio...");
 
@@ -235,7 +235,7 @@ void setup()
   initWiFi();
 
   // tft.fillScreen(TFT_BLACK);
-  delay(1000);
+  // delay(1000);
 
 #ifdef BOARD_PCM5102
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
