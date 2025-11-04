@@ -189,7 +189,7 @@ void setup()
   analogWrite(LED_BUILT, LED_BRIGHTNESS); // первоначальная яркость дисплея
 
   Serial.begin(115200);
- 
+
 #ifdef BOARD_VS1053
   SPI.begin(VS1053_SCK, VS1053_MISO, VS1053_MOSI);
 #endif
@@ -342,7 +342,7 @@ void logoTask(void *cparametr)
 {
   tft.setTextColor(color_clock, TFT_BLACK);
   tft.setTextSize(2);
-  
+
   int count = 30;
   int widthLogo = 270;
   int hightLogo = 10;
@@ -548,6 +548,8 @@ void loop()
   // обновить прогресс громкости на экране
   volemeUpdate();
   // подготовка для названия трека
+  // Титры не получены - очистить
+  noTitle();
   trekPreparingShow();
   // Опрос энкодера
   if (enc1.tick())
@@ -597,6 +599,7 @@ void loop()
       audio.setVolume(EEPROM.read(6));
       audio.connecttohost(playList[NEWStation]);
       OLDStation = NEWStation;
+      show_title = false;
     }
     //-----vumeter
     if (vumetersShow < millis())
@@ -631,7 +634,7 @@ void vuMeter()
   uint16_t vulevel = audio.getVUlevel();
   uint8_t y2_lev = (vulevel >> 8) & 0xFF;
   uint8_t y1_lev = vulevel & 0xFF;
-  
+
   // СМЕЩАЕМ диапазон 118-125 в 0-255
   int min_value = 113; // Ваш минимальный уровень
   int max_value = 127; // Ваш максимальный уровень
@@ -930,7 +933,7 @@ void printStation(uint8_t indexOfStation)
   tft.fillRect(0, 0, 318, 43, ST_BG);
   tft.fillRect(0, 44, 318, 43, TFT_BLACK); // очистка бегущей строки
   tft.drawString(utf8rus(StName), x_stName, y_stName);
-  show_title = false;
+  // show_title = false;
 } // end PrintStation
 //----------------------------
 // CodecName Bitrate
