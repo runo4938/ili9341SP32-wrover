@@ -113,7 +113,7 @@ bool f_startProgress = true;
 bool showRadio = true;         // show radio or menu of station,
 bool directionStations = true; // Направление движения по меню
 
-EncButton enc1(CLK, DT, SW);
+// EncButton enc1(CLK, DT, SW);
 File myFile;
 
 String sliderValue;
@@ -182,6 +182,18 @@ void printConnectionInfo();
 int8_t txtSpriteHight = 17;
 int8_t txtTrekHight = 17;
 uint8_t ssid_show = 1;
+// Определение объекта энкодера (единственное место определения)
+EncButton eb(32, 33, 35);
+
+IRAM_ATTR void isr()
+{
+  eb.tickISR();
+}
+
+// void isr() {
+//   eb.tickISR();
+// }
+
 //--- START ---
 void setup()
 {
@@ -189,6 +201,11 @@ void setup()
   analogWrite(LED_BUILT, LED_BRIGHTNESS); // первоначальная яркость дисплея
 
   Serial.begin(115200);
+
+  attachInterrupt(32, isr, CHANGE);
+  attachInterrupt(33, isr, CHANGE);
+  attachInterrupt(35, isr, CHANGE);
+  eb.setEncISR(true);
 
 #ifdef BOARD_VS1053
   SPI.begin(VS1053_SCK, VS1053_MISO, VS1053_MOSI);
@@ -552,7 +569,7 @@ void loop()
   noTitle();
   trekPreparingShow();
   // Опрос энкодера
-  if (enc1.tick())
+  
     myEncoder();
   // для возврата из меню по истечении времени
   returnFromDisplayScreen();
@@ -781,8 +798,8 @@ void notifyWebClients()
 //-------------------
 void myEncoder()
 {
-  // enc1.tick();
-  if (enc1.right())
+  eb.tick();
+  if (eb.right())
   {
     if (showRadio)
     {
@@ -797,7 +814,7 @@ void myEncoder()
     }
     // если меню
   }
-  if (enc1.left())
+  if (eb.left())
   {
     if (showRadio)
     {
@@ -811,7 +828,7 @@ void myEncoder()
       currentMillis = millis(); // Пока ходим по меню
     }
   }
-  if (enc1.click())
+  if (eb.click())
   { // Меню станций
     showRadio = !showRadio;
     f_startProgress = true; // for starting
@@ -842,7 +859,7 @@ void myEncoder()
       tft.drawString(WiFi.localIP().toString(), 160, y_wifi);
     }
   }
-  if (enc1.rightH())
+  if (eb.rightH())
   {
     audiovol = EEPROM.read(6);
     audiovol++;
@@ -852,7 +869,7 @@ void myEncoder()
     audioVolume();
   }
 
-  if (enc1.leftH())
+  if (eb.leftH())
   {
     audiovol = EEPROM.read(6);
     audiovol--;
@@ -861,7 +878,7 @@ void myEncoder()
     EEPROM.commit();
     audioVolume();
   }
-  if (enc1.step(2))
+  if (eb.step(2))
   {
     WiFi.disconnect(false, true);
     wifiManager.resetSettings();

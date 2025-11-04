@@ -33,17 +33,19 @@ extern VS1053 audio;
 
 // encoder
 
-#ifdef BOARD_ILI9341_PLYWOOD
-#define CLK 35 // 32 // 35 //
-#define DT 32  // 33  // 32 //
-#define SW 33  // 35  //  33//
-#elif defined(BOARD_ILI9341_PLASTIC)
-#define CLK 32 // 35 //
-#define DT 33  // 32 //
-#define SW 35  //  33//
-#else
-#error "Board type not defined!"
-#endif
+// #ifdef BOARD_ILI9341_PLYWOOD
+// #define CLK 35 // 32 // 35 //
+// #define DT 32  // 33  // 32 //
+// #define SW 33  // 35  //  33//
+// #elif defined(BOARD_ILI9341_PLASTIC)
+// // #define CLK 32 // 35 //
+// // #define DT 33  // 32 //
+// // #define SW 35  //  33//
+// #else
+// #error "Board type not defined!"
+// #endif
+// объявление внешнего объекта энкодера (определение — в одном .cpp файле)
+extern EncButton eb;
 
 extern const char *PARAM_INPUT;
 extern String sliderValue;
